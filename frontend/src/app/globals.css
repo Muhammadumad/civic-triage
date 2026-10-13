@@ -1,0 +1,374 @@
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+
+/* ======================================================== */
+/* 1. STITCH MCP DESIGN TOKENS (DARK & LIGHT PALETTES)      */
+/* ======================================================== */
+
+:root {
+  /* Default Stitch Dark Mode Tokens */
+  --canvas-base: #090A0F;
+  --surface-card: #11131A;
+  --surface-elevated: #161922;
+  --surface-sunken: #0D0E13;
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.16);
+  --text-primary: #F8FAFC;
+  --text-muted: #94A3B8;
+
+  /* Brand Primary (Emerald Glow) */
+  --brand-primary: #10B981;
+  --brand-hover: #059669;
+  --brand-glow: rgba(16, 185, 129, 0.22);
+  --brand-text: #090A0F;
+
+  /* Priority Color Tokens */
+  --priority-high-text: #FB7185;
+  --priority-high-border: rgba(244, 63, 94, 0.35);
+  --priority-high-bg: rgba(244, 63, 94, 0.12);
+
+  --priority-medium-text: #FBBF24;
+  --priority-medium-border: rgba(245, 158, 11, 0.35);
+  --priority-medium-bg: rgba(245, 158, 11, 0.12);
+
+  --priority-low-text: #60A5FA;
+  --priority-low-border: rgba(59, 130, 246, 0.25);
+  --priority-low-bg: rgba(59, 130, 246, 0.10);
+
+  /* Category Color Tokens */
+  --cat-road-damage: #EA580C;
+  --cat-garbage: #84CC16;
+  --cat-streetlights: #FACC15;
+  --cat-water-leakage: #06B6D4;
+  --cat-blocked-drains: #8B5CF6;
+
+  /* Status Workflow Tokens */
+  --status-new: #6366F1;
+  --status-under-review: #D946EF;
+  --status-assigned: #3B82F6;
+  --status-in-progress: #F59E0B;
+  --status-resolved: #10B981;
+  --status-duplicate: #71717A;
+}
+
+/* Light Theme Overrides from Stitch Design System v2 */
+html.light {
+  --canvas-base: #FAF9FD;
+  --surface-card: #FFFFFF;
+  --surface-elevated: #F6F5F1;
+  --surface-sunken: #EFEDE7;
+  --border-subtle: #E2DFD7;
+  --border-strong: #8A929D;
+  --text-primary: #1B2430;
+  --text-muted: #566170;
+
+  /* Brand Primary (Civic Navy) */
+  --brand-primary: #1B365D;
+  --brand-hover: #12264A;
+  --brand-glow: rgba(27, 54, 93, 0.2);
+  --brand-text: #FFFFFF;
+
+  /* Light Priority Tokens */
+  --priority-high-text: #9E2A14;
+  --priority-high-border: #E9B8AC;
+  --priority-high-bg: #FBECE8;
+
+  --priority-medium-text: #7A4F00;
+  --priority-medium-border: #E5CD98;
+  --priority-medium-bg: #FBF1DC;
+
+  --priority-low-text: #4A5360;
+  --priority-low-border: #C9CED4;
+  --priority-low-bg: #EFF1F3;
+}
+
+@theme {
+  --color-canvas: var(--canvas-base);
+  --color-surface-card: var(--surface-card);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-surface-sunken: var(--surface-sunken);
+  --color-border-subtle: var(--border-subtle);
+  --color-border-strong: var(--border-strong);
+  --color-text-primary: var(--text-primary);
+  --color-text-muted: var(--text-muted);
+
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-glow: var(--brand-glow);
+
+  --color-priority-high: var(--priority-high-text);
+  --color-priority-medium: var(--priority-medium-text);
+  --color-priority-low: var(--priority-low-text);
+
+  --color-cat-road: var(--cat-road-damage);
+  --color-cat-garbage: var(--cat-garbage);
+  --color-cat-streetlights: var(--cat-streetlights);
+  --color-cat-water: var(--cat-water-leakage);
+  --color-cat-drains: var(--cat-blocked-drains);
+
+  --color-status-new: var(--status-new);
+  --color-status-review: var(--status-under-review);
+  --color-status-assigned: var(--status-assigned);
+  --color-status-progress: var(--status-in-progress);
+  --color-status-resolved: var(--status-resolved);
+  --color-status-duplicate: var(--status-duplicate);
+}
+
+/* ======================================================== */
+/* 2. BASE STYLING & SMOOTH TRANSITIONS                     */
+/* ======================================================== */
+
+body {
+  background-color: var(--canvas-base);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+html.dark body {
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.08) 0%, transparent 45%),
+    radial-gradient(circle at 100% 40%, rgba(99, 102, 241, 0.05) 0%, transparent 40%);
+  background-attachment: fixed;
+}
+
+html.light body {
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(27, 54, 93, 0.04) 0%, transparent 45%),
+    radial-gradient(circle at 100% 40%, rgba(14, 165, 233, 0.04) 0%, transparent 40%);
+  background-attachment: fixed;
+}
+
+/* ======================================================== */
+/* 3. GLASSMORPHISM & SURFACE PRIMITIVES                    */
+/* ======================================================== */
+
+.glass-panel {
+  background: var(--surface-card);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--border-subtle);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-nav {
+  background: var(--surface-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-subtle);
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+html.dark .glass-nav {
+  background: rgba(9, 10, 15, 0.85);
+}
+
+html.light .glass-nav {
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.glass-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card:hover {
+  background: var(--surface-elevated);
+  border-color: var(--border-strong);
+  transform: translateY(-2px);
+}
+
+/* ======================================================== */
+/* 4. ANIMATION SUITE (STITCH MOTION SYSTEM)                */
+/* ======================================================== */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 16px -2px rgba(16, 185, 129, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 28px 2px rgba(16, 185, 129, 0.4);
+  }
+}
+
+@keyframes scanline {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(1000%);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Animation utility classes */
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-float {
+  animation: floatSlow 4s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 3s ease-in-out infinite;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 3s infinite;
+}
+
+/* Stagger entrance delays */
+.delay-75 { animation-delay: 75ms; }
+.delay-150 { animation-delay: 150ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+
+/* Interactive Hover Cards */
+.hover-lift {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px -6px rgba(0, 0, 0, 0.3);
+}
+
+/* ======================================================== */
+/* 5. SCROLLBAR & MAP THEME ADAPTATION                      */
+/* ======================================================== */
+
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--canvas-base);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.25);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--brand-primary);
+}
+
+/* Leaflet Container Adaptations */
+.leaflet-container {
+  background-color: var(--canvas-base) !important;
+  font-family: inherit;
+  transition: background-color 0.3s ease;
+}
+
+/* Dark mode map tiles (Dark Matter) */
+html.dark .leaflet-tile {
+  filter: brightness(0.7) invert(1) contrast(3) hue-rotate(200deg) saturate(0.35);
+}
+
+/* Light mode map tiles (Clean street view) */
+html.light .leaflet-tile {
+  filter: none;
+}
+
+/* Leaflet Bar & Controls */
+html.dark .leaflet-bar a {
+  background-color: #11131A !important;
+  color: #E2E8F0 !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+html.light .leaflet-bar a {
+  background-color: #FFFFFF !important;
+  color: #1B2430 !important;
+  border-color: #E2DFD7 !important;
+}
+
+/* Leaflet Popups */
+html.dark .leaflet-popup-content-wrapper {
+  background-color: #11131A !important;
+  color: #F3F4F6 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6) !important;
+  border-radius: 10px !important;
+}
+
+html.light .leaflet-popup-content-wrapper {
+  background-color: #FFFFFF !important;
+  color: #1B2430 !important;
+  border: 1px solid #E2DFD7 !important;
+  box-shadow: 0 10px 25px -5px rgba(27, 36, 48, 0.15) !important;
+  border-radius: 10px !important;
+}
+
+html.dark .leaflet-popup-tip {
+  background-color: #11131A !important;
+}
+
+html.light .leaflet-popup-tip {
+  background-color: #FFFFFF !important;
+}
