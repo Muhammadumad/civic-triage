@@ -1,13 +1,8 @@
-import express from 'express';
-import mongoose from 'mongoose';
+const express = require('express');
+const mongoose = require('mongoose');
 
 const router = express.Router();
 
-/**
- * @route   GET /api/health
- * @desc    Get API health status, environment, and database state
- * @access  Public
- */
 router.get('/', (req, res) => {
   const dbStateMap = {
     0: 'Disconnected',
@@ -19,17 +14,11 @@ router.get('/', (req, res) => {
   const dbStatus = dbStateMap[mongoose.connection.readyState] || 'Unknown';
 
   res.status(200).json({
-    success: true,
-    message: 'Smart Civic Complaint Triage System API is operational',
+    status: 'ok',
+    uptime: Math.floor(process.uptime()),
+    database: dbStatus,
     timestamp: new Date().toISOString(),
-    uptimeSeconds: Math.floor(process.uptime()),
-    environment: process.env.NODE_ENV || 'development',
-    database: {
-      status: dbStatus,
-      name: mongoose.connection.name || 'civic_complaints_db',
-    },
-    version: '1.0.0',
   });
 });
 
-export default router;
+module.exports = router;

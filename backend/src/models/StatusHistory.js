@@ -1,5 +1,5 @@
-import mongoose from 'mongoose';
-import { COMPLAINT_STATUSES } from './Complaint.js';
+const mongoose = require('mongoose');
+const { COMPLAINT_STATUSES } = require('./Complaint');
 
 const statusHistorySchema = new mongoose.Schema(
   {
@@ -52,4 +52,4 @@ statusHistorySchema.index({ complaintId: 1, changedAt: 1 });
 
 const StatusHistory = mongoose.model('StatusHistory', statusHistorySchema);
 
-export default StatusHistory;
+module.exports = StatusHistory;

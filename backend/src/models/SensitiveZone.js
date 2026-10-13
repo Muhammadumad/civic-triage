@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
-export const SENSITIVE_ZONE_TYPES = ['school', 'hospital', 'main road', 'other'];
+const SENSITIVE_ZONE_TYPES = ['school', 'hospital', 'main road', 'other'];
 
 const sensitiveZoneSchema = new mongoose.Schema(
   {
@@ -26,7 +26,7 @@ const sensitiveZoneSchema = new mongoose.Schema(
     radius: {
       type: Number,
       required: [true, 'Radius in meters is required'],
-      default: 150, // Default 150 meters influence zone
+      default: 150,
     },
     location: {
       type: {
@@ -64,4 +64,7 @@ sensitiveZoneSchema.pre('save', function (next) {
 
 const SensitiveZone = mongoose.model('SensitiveZone', sensitiveZoneSchema);
 
-export default SensitiveZone;
+module.exports = {
+  SensitiveZone,
+  SENSITIVE_ZONE_TYPES,
+};

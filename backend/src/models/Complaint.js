@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
-export const COMPLAINT_CATEGORIES = [
+const COMPLAINT_CATEGORIES = [
   'road_damage',
   'garbage',
   'streetlight',
@@ -15,7 +15,7 @@ export const COMPLAINT_CATEGORIES = [
   'Other',
 ];
 
-export const COMPLAINT_STATUSES = [
+const COMPLAINT_STATUSES = [
   'new',
   'under_review',
   'assigned',
@@ -34,7 +34,7 @@ export const COMPLAINT_STATUSES = [
   'Rejected',
 ];
 
-export const PRIORITY_BANDS = ['low', 'medium', 'high', 'Low', 'Medium', 'High'];
+const PRIORITY_BANDS = ['low', 'medium', 'high', 'Low', 'Medium', 'High'];
 
 const complaintSchema = new mongoose.Schema(
   {
@@ -52,7 +52,7 @@ const complaintSchema = new mongoose.Schema(
       type: String,
       required: true,
       enum: COMPLAINT_CATEGORIES,
-      default: 'Other',
+      default: 'other',
     },
     aiCategory: {
       type: String,
@@ -83,7 +83,6 @@ const complaintSchema = new mongoose.Schema(
         trim: true,
         default: 'Location specified on map',
       },
-      // GeoJSON Point for geospatial queries (e.g. radius duplicate lookup)
       geo: {
         type: {
           type: String,
@@ -97,16 +96,15 @@ const complaintSchema = new mongoose.Schema(
         },
       },
     },
-    // Dense vector embedding representation for semantic similarity duplicate detection
     embedding: {
       type: [Number],
       default: [],
-      select: false, // Don't return heavy embedding array unless explicitly selected
+      select: false,
     },
     status: {
       type: String,
       enum: COMPLAINT_STATUSES,
-      default: 'New',
+      default: 'new',
       index: true,
     },
     priorityScore: {
@@ -138,7 +136,7 @@ const complaintSchema = new mongoose.Schema(
     department: {
       type: String,
       trim: true,
-      default: 'General Works',
+      default: 'General',
     },
     resident: {
       type: mongoose.Schema.Types.ObjectId,
@@ -162,12 +160,10 @@ const complaintSchema = new mongoose.Schema(
   }
 );
 
-// 2dsphere index for radius/geospatial queries (100m duplicate radius detection)
 complaintSchema.index({ 'location.geo': '2dsphere' });
 complaintSchema.index({ category: 1, status: 1 });
 complaintSchema.index({ createdAt: -1 });
 
-// Ensure GeoJSON coordinates match lat and lng before saving
 complaintSchema.pre('save', function (next) {
   if (this.location && this.location.lat != null && this.location.lng != null) {
     this.location.geo = {
@@ -176,7 +172,6 @@ complaintSchema.pre('save', function (next) {
     };
   }
 
-  // Derive priority band from priorityScore (Section 8: >=70 High, 40-69 Medium, <40 Low)
   if (this.priorityScore >= 70) {
     this.priorityBand = 'High';
   } else if (this.priorityScore >= 40) {
@@ -185,7 +180,6 @@ complaintSchema.pre('save', function (next) {
     this.priorityBand = 'Low';
   }
 
-  // Autogenerate title if empty
   if (!this.title && this.description) {
     this.title = this.description.slice(0, 45) + (this.description.length > 45 ? '...' : '');
   }
@@ -195,4 +189,9 @@ complaintSchema.pre('save', function (next) {
 
 const Complaint = mongoose.model('Complaint', complaintSchema);
 
-export default Complaint;
+module.exports = {
+  Complaint,
+  COMPLAINT_CATEGORIES,
+  COMPLAINT_STATUSES,
+  PRIORITY_BANDS,
+};

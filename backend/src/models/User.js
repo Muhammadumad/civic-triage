@@ -1,5 +1,5 @@
-import mongoose from 'mongoose';
-import bcrypt from 'bcryptjs';
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema(
   {
@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema(
     passwordHash: {
       type: String,
       required: [true, 'Password is required'],
-      select: false, // Don't return password hash in regular queries
+      select: false,
     },
     role: {
       type: String,
@@ -32,17 +32,15 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-// Method to verify password match
 userSchema.methods.matchPassword = async function (enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.passwordHash);
+  return bcrypt.compare(enteredPassword, this.passwordHash);
 };
 
-// Static helper to hash passwords
 userSchema.statics.hashPassword = async function (plainPassword) {
   const salt = await bcrypt.genSalt(10);
-  return await bcrypt.hash(plainPassword, salt);
+  return bcrypt.hash(plainPassword, salt);
 };
 
 const User = mongoose.model('User', userSchema);
 
-export default User;
+module.exports = User;
