@@ -7,7 +7,7 @@ export function MapLoadingSkeleton({ height = '450px' }: { height?: string }) {
   return (
     <div 
       style={{ height }}
-      className="w-full rounded-2xl border border-white/[0.08] bg-[#11131A] relative overflow-hidden flex flex-col items-center justify-center p-6"
+      className="w-full rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-card)] relative overflow-hidden flex flex-col items-center justify-center p-6"
     >
       {/* Background grid simulation */}
       <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#10B981_1px,transparent_1px)] [background-size:20px_20px]" />

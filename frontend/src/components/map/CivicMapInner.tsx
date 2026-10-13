@@ -126,7 +126,7 @@ export default function CivicMapInner({
             <div style="
               width: 32px;
               height: 32px;
-              background-color: #11131A;
+              background-color: var(--surface-card);
               border: 2px solid ${catTheme.hex};
               border-radius: 50%;
               display: flex;

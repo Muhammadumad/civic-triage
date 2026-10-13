@@ -17,17 +17,17 @@ export default function TermsPage() {
   ];
 
   return (
-    <div className="min-h-screen py-16 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto space-y-10">
+    <div className="min-h-screen py-16 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto space-y-10 animate-fade-in">
       {/* Header */}
-      <div className="space-y-2 border-b border-white/[0.08] pb-6">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold">
+      <div className="space-y-2 border-b border-[var(--border-subtle)] pb-6">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
           <Scale className="w-3.5 h-3.5" />
           <span>Municipal User Charter</span>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-[var(--text-primary)] tracking-tight">
           Terms of Municipal Service
         </h1>
-        <p className="text-xs text-zinc-400 font-mono">
+        <p className="text-xs text-[var(--text-secondary)] font-mono">
           Last Revised: October 2026 | Authorized City Technology Agreement
         </p>
       </div>
@@ -35,8 +35,8 @@ export default function TermsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
         {/* Sticky Left Navigation (4 cols) */}
         <div className="lg:col-span-4 sticky top-24 space-y-4">
-          <div className="p-5 rounded-2xl glass-card border border-white/[0.08] space-y-3">
-            <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider block">
+          <div className="p-5 rounded-2xl glass-card border border-[var(--border-subtle)] space-y-3">
+            <span className="text-[11px] font-bold text-[var(--text-secondary)] uppercase tracking-wider block">
               Terms Outline
             </span>
             <nav className="space-y-1.5 text-xs">
@@ -44,7 +44,7 @@ export default function TermsPage() {
                 <a
                   key={sec.id}
                   href={`#${sec.id}`}
-                  className="block px-3 py-2 rounded-lg text-zinc-400 hover:text-white hover:bg-white/5 transition-colors font-medium"
+                  className="block px-3 py-2 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-medium"
                 >
                   {sec.label}
                 </a>
@@ -52,23 +52,23 @@ export default function TermsPage() {
             </nav>
           </div>
 
-          <div className="p-5 rounded-2xl bg-amber-950/20 border border-amber-500/30 text-xs space-y-2">
-            <div className="flex items-center gap-2 font-bold text-amber-400">
+          <div className="p-5 rounded-2xl bg-amber-500/10 dark:bg-amber-950/20 border border-amber-500/30 text-xs space-y-2">
+            <div className="flex items-center gap-2 font-bold text-amber-600 dark:text-amber-400">
               <AlertTriangle className="w-4 h-4" />
               <span>Not for 911 Emergencies</span>
             </div>
-            <p className="text-zinc-300 leading-relaxed text-[11px]">
+            <p className="text-[var(--text-secondary)] leading-relaxed text-[11px]">
               CivicPulse is exclusively for non-life-threatening infrastructure hazards. Always dial 911 for fires, crimes in progress, or medical emergencies.
             </p>
           </div>
         </div>
 
         {/* Content Column (8 cols) */}
-        <div className="lg:col-span-8 space-y-10 text-xs sm:text-sm text-zinc-300 leading-relaxed">
+        <div className="lg:col-span-8 space-y-10 text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed">
           {/* Section 1 */}
           <section id="acceptable-use" className="space-y-3 scroll-mt-28">
-            <h2 className="text-lg font-bold text-white flex items-center gap-2 border-b border-white/[0.08] pb-2">
-              <span className="text-emerald-400">1.</span>
+            <h2 className="text-lg font-bold text-[var(--text-primary)] flex items-center gap-2 border-b border-[var(--border-subtle)] pb-2">
+              <span className="text-emerald-600 dark:text-emerald-400">1.</span>
               <span>Acceptable Public Service Use</span>
             </h2>
             <p>
@@ -78,22 +78,22 @@ export default function TermsPage() {
 
           {/* Section 2 */}
           <section id="false-reporting" className="space-y-3 scroll-mt-28">
-            <h2 className="text-lg font-bold text-white flex items-center gap-2 border-b border-white/[0.08] pb-2">
-              <span className="text-emerald-400">2.</span>
+            <h2 className="text-lg font-bold text-[var(--text-primary)] flex items-center gap-2 border-b border-[var(--border-subtle)] pb-2">
+              <span className="text-emerald-600 dark:text-emerald-400">2.</span>
               <span>False Reporting & Penalties</span>
             </h2>
             <p>
               Intentionally fabricating emergency hazards, submitting malicious imagery, or automated spamming of the triage dispatch queue is a violation of municipal administrative code.
             </p>
-            <p className="text-xs text-zinc-400">
+            <p className="text-xs text-[var(--text-muted)]">
               The city reserves the right to rate-limit or revoke digital intake privileges for bad-faith submitters following administrative review.
             </p>
           </section>
 
           {/* Section 3 */}
           <section id="dispatch-slas" className="space-y-3 scroll-mt-28">
-            <h2 className="text-lg font-bold text-white flex items-center gap-2 border-b border-white/[0.08] pb-2">
-              <span className="text-emerald-400">3.</span>
+            <h2 className="text-lg font-bold text-[var(--text-primary)] flex items-center gap-2 border-b border-[var(--border-subtle)] pb-2">
+              <span className="text-emerald-600 dark:text-emerald-400">3.</span>
               <span>Municipal Dispatch SLAs</span>
             </h2>
             <p>
@@ -103,8 +103,8 @@ export default function TermsPage() {
 
           {/* Section 4 */}
           <section id="reopen-terms" className="space-y-3 scroll-mt-28">
-            <h2 className="text-lg font-bold text-white flex items-center gap-2 border-b border-white/[0.08] pb-2">
-              <span className="text-emerald-400">4.</span>
+            <h2 className="text-lg font-bold text-[var(--text-primary)] flex items-center gap-2 border-b border-[var(--border-subtle)] pb-2">
+              <span className="text-emerald-600 dark:text-emerald-400">4.</span>
               <span>72-Hour Reopen Protections</span>
             </h2>
             <p>
@@ -114,8 +114,8 @@ export default function TermsPage() {
 
           {/* Section 5 */}
           <section id="liability" className="space-y-3 scroll-mt-28">
-            <h2 className="text-lg font-bold text-white flex items-center gap-2 border-b border-white/[0.08] pb-2">
-              <span className="text-emerald-400">5.</span>
+            <h2 className="text-lg font-bold text-[var(--text-primary)] flex items-center gap-2 border-b border-[var(--border-subtle)] pb-2">
+              <span className="text-emerald-600 dark:text-emerald-400">5.</span>
               <span>Limitation of Municipal Liability</span>
             </h2>
             <p>

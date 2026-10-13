@@ -194,7 +194,7 @@ export default function AdminSpatialMapInner({
                 width: 28px;
                 height: 28px;
                 border-radius: 50%;
-                background: #11131A;
+                background: var(--surface-card);
                 border: 2.5px solid ${pinColor};
                 box-shadow: 0 0 14px ${pinColor}99;
                 display: flex;

@@ -112,11 +112,11 @@ export default function MyComplaintsDashboard() {
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-colors shrink-0 ${
                 activeFilter === 'all'
                   ? 'bg-emerald-500 text-zinc-950 font-bold'
-                  : 'bg-[#161922] text-zinc-400 hover:text-white border border-white/[0.08]'
+                  : 'bg-[var(--surface-elevated)] text-[var(--text-muted)] hover:text-[var(--text-primary)] border border-[var(--border-subtle)]'
               }`}
             >
               <span>All</span>
-              <span className="font-mono text-[11px] bg-white/20 px-1.5 py-0.2 rounded" suppressHydrationWarning>
+              <span className="font-mono text-[11px] bg-black/10 dark:bg-white/20 px-1.5 py-0.2 rounded" suppressHydrationWarning>
                 {countAll}
               </span>
             </button>
@@ -126,11 +126,11 @@ export default function MyComplaintsDashboard() {
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-colors shrink-0 ${
                 activeFilter === 'in-progress'
                   ? 'bg-emerald-500 text-zinc-950 font-bold'
-                  : 'bg-[#161922] text-zinc-400 hover:text-white border border-white/[0.08]'
+                  : 'bg-[var(--surface-elevated)] text-[var(--text-muted)] hover:text-[var(--text-primary)] border border-[var(--border-subtle)]'
               }`}
             >
               <span>In Progress</span>
-              <span className="font-mono text-[11px] bg-white/20 px-1.5 py-0.2 rounded" suppressHydrationWarning>
+              <span className="font-mono text-[11px] bg-black/10 dark:bg-white/20 px-1.5 py-0.2 rounded" suppressHydrationWarning>
                 {countInProgress}
               </span>
             </button>
@@ -140,11 +140,11 @@ export default function MyComplaintsDashboard() {
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-colors shrink-0 ${
                 activeFilter === 'resolved'
                   ? 'bg-emerald-500 text-zinc-950 font-bold'
-                  : 'bg-[#161922] text-zinc-400 hover:text-white border border-white/[0.08]'
+                  : 'bg-[var(--surface-elevated)] text-[var(--text-muted)] hover:text-[var(--text-primary)] border border-[var(--border-subtle)]'
               }`}
             >
               <span>Resolved</span>
-              <span className="font-mono text-[11px] bg-white/20 px-1.5 py-0.2 rounded" suppressHydrationWarning>
+              <span className="font-mono text-[11px] bg-black/10 dark:bg-white/20 px-1.5 py-0.2 rounded" suppressHydrationWarning>
                 {countResolved}
               </span>
             </button>
@@ -152,23 +152,23 @@ export default function MyComplaintsDashboard() {
 
           {/* Search bar */}
           <div className="relative w-full sm:w-64">
-            <Search className="w-4 h-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-[var(--text-muted)] absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search reports by title or ID..."
-              className="w-full bg-[#11131A] border border-white/[0.08] rounded-lg pl-9 pr-3 py-1.5 text-xs text-white placeholder:text-zinc-500 focus:border-emerald-500 focus:outline-none transition-colors"
+              className="w-full bg-[var(--surface-elevated)] border border-[var(--border-subtle)] rounded-lg pl-9 pr-3 py-1.5 text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)]/60 focus:border-emerald-500 focus:outline-none transition-colors"
             />
           </div>
         </div>
 
         {/* Reports Container */}
         {filtered.length === 0 ? (
-          <div className="p-12 text-center bg-[#11131A] border border-white/[0.08] rounded-xl flex flex-col items-center justify-center">
-            <Inbox className="w-12 h-12 text-zinc-600 mb-3" />
-            <h3 className="text-base font-bold text-white mb-1">No matching incident reports found</h3>
-            <p className="text-xs text-zinc-400 max-w-sm mb-4">
+          <div className="p-12 text-center bg-[var(--surface-card)] border border-[var(--border-subtle)] rounded-xl flex flex-col items-center justify-center">
+            <Inbox className="w-12 h-12 text-[var(--text-muted)] mb-3" />
+            <h3 className="text-base font-bold text-[var(--text-primary)] mb-1">No matching incident reports found</h3>
+            <p className="text-xs text-[var(--text-muted)] max-w-sm mb-4">
               Try adjusting your active filter or search term, or file a new civic report to track progress.
             </p>
             <Link
@@ -190,21 +190,21 @@ export default function MyComplaintsDashboard() {
               return (
                 <article
                   key={item.id}
-                  className="bg-[#11131A] border border-white/[0.08] hover:border-white/[0.16] rounded-xl p-5 shadow-lg transition-all flex flex-col gap-4"
+                  className="bg-[var(--surface-card)] border border-[var(--border-subtle)] hover:border-[var(--border-strong)] rounded-xl p-5 shadow-lg transition-all flex flex-col gap-4"
                 >
                   {/* Top Meta Line */}
-                  <div className="flex items-center justify-between pb-2 border-b border-white/[0.06]">
+                  <div className="flex items-center justify-between pb-2 border-b border-[var(--border-subtle)]">
                     <div className="flex items-center gap-2">
-                      <span className="font-mono text-xs font-bold text-emerald-400">#{item.id}</span>
-                      <span className="text-zinc-600">•</span>
-                      <span className="text-xs text-zinc-400">
+                      <span className="font-mono text-xs font-bold text-emerald-600 dark:text-emerald-400">#{item.id}</span>
+                      <span className="text-[var(--text-muted)]">•</span>
+                      <span className="text-xs text-[var(--text-muted)]">
                         {formatRelativeTime(item.createdAt)}
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-1.5 bg-[#161922] px-2.5 py-1 rounded-full border border-white/[0.06]">
+                    <div className="flex items-center gap-1.5 bg-[var(--surface-elevated)] px-2.5 py-1 rounded-full border border-[var(--border-subtle)]">
                       <span className="w-2 h-2 rounded-full" style={{ backgroundColor: sTheme.hex }} />
-                      <span className="text-xs font-semibold text-zinc-300">{item.status}</span>
+                      <span className="text-xs font-semibold text-[var(--text-primary)]">{item.status}</span>
                     </div>
                   </div>
 
@@ -236,7 +236,7 @@ export default function MyComplaintsDashboard() {
                     </button>
 
                     {item.duplicateCount > 0 && (
-                      <span className="px-2 py-0.5 rounded text-[11px] font-mono bg-purple-500/10 text-purple-400 border border-purple-500/20">
+                      <span className="px-2 py-0.5 rounded text-[11px] font-mono bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20">
                         +{item.duplicateCount} duplicates merged
                       </span>
                     )}
@@ -244,19 +244,19 @@ export default function MyComplaintsDashboard() {
 
                   {/* Title & Location */}
                   <div>
-                    <h2 className="text-base sm:text-lg font-bold text-white leading-snug">
-                      <Link href={`/complaints/${item.id}`} className="hover:text-emerald-400 transition-colors">
+                    <h2 className="text-base sm:text-lg font-bold text-[var(--text-primary)] leading-snug">
+                      <Link href={`/complaints/${item.id}`} className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
                         {item.title}
                       </Link>
                     </h2>
-                    <div className="flex items-center gap-1.5 mt-1 text-zinc-400 text-xs">
-                      <MapPin className="w-3.5 h-3.5 text-zinc-500 shrink-0" />
+                    <div className="flex items-center gap-1.5 mt-1 text-[var(--text-muted)] text-xs">
+                      <MapPin className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
                       <span className="truncate">{item.location.address}</span>
                     </div>
                   </div>
 
                   {/* Photo & Thumbnail Preview */}
-                  <div className="rounded-lg overflow-hidden bg-[#161922] relative h-32 w-full border border-white/[0.06]">
+                  <div className="rounded-lg overflow-hidden bg-[var(--surface-elevated)] relative h-32 w-full border border-[var(--border-subtle)]">
                     <img
                       src={item.photoUrl}
                       alt={item.title}
@@ -270,46 +270,46 @@ export default function MyComplaintsDashboard() {
 
                   {/* Expandable Priority Breakdown Box */}
                   {isExpanded && (
-                    <div className="p-4 rounded-lg bg-[#161922] border border-white/[0.08] flex flex-col gap-2 transition-all">
-                      <div className="flex items-center justify-between pb-1 border-b border-white/[0.06]">
-                        <span className="text-xs font-semibold text-white flex items-center gap-1.5">
-                          <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                    <div className="p-4 rounded-lg bg-[var(--surface-elevated)] border border-[var(--border-subtle)] flex flex-col gap-2 transition-all">
+                      <div className="flex items-center justify-between pb-1 border-b border-[var(--border-subtle)]">
+                        <span className="text-xs font-semibold text-[var(--text-primary)] flex items-center gap-1.5">
+                          <Sparkles className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" />
                           <span>Priority Score Breakdown ({item.priorityScore}/100)</span>
                         </span>
-                        <span className="font-mono text-xs font-bold text-rose-400">Tier 1</span>
+                        <span className="font-mono text-xs font-bold text-rose-600 dark:text-rose-400">Tier 1</span>
                       </div>
-                      <p className="text-[11px] text-zinc-400">
+                      <p className="text-[11px] text-[var(--text-muted)]">
                         Automated dispatch triage weighting based on safety telemetry & community proximity.
                       </p>
                       <div className="space-y-1.5 pt-1 text-xs">
-                        <div className="flex items-center justify-between bg-[#11131A] px-2.5 py-1.5 rounded border border-white/[0.04]">
-                          <span className="text-zinc-300">Category severity baseline</span>
-                          <span className="font-mono font-semibold text-emerald-400">
+                        <div className="flex items-center justify-between bg-[var(--surface-card)] px-2.5 py-1.5 rounded border border-[var(--border-subtle)]">
+                          <span className="text-[var(--text-primary)]">Category severity baseline</span>
+                          <span className="font-mono font-semibold text-emerald-600 dark:text-emerald-400">
                             +{item.priorityMath?.categoryBasePoints || 30} pts
                           </span>
                         </div>
-                        <div className="flex items-center justify-between bg-[#11131A] px-2.5 py-1.5 rounded border border-white/[0.04]">
-                          <span className="text-zinc-300">Duplicate cluster reports</span>
-                          <span className="font-mono font-semibold text-emerald-400">
+                        <div className="flex items-center justify-between bg-[var(--surface-card)] px-2.5 py-1.5 rounded border border-[var(--border-subtle)]">
+                          <span className="text-[var(--text-primary)]">Duplicate cluster reports</span>
+                          <span className="font-mono font-semibold text-emerald-600 dark:text-emerald-400">
                             +{item.priorityMath?.duplicatePoints || 20} pts
                           </span>
                         </div>
-                        <div className="flex items-center justify-between bg-[#11131A] px-2.5 py-1.5 rounded border border-white/[0.04]">
-                          <span className="text-zinc-300">Sensitive Zone proximity (School/Hospital)</span>
-                          <span className="font-mono font-semibold text-emerald-400">
+                        <div className="flex items-center justify-between bg-[var(--surface-card)] px-2.5 py-1.5 rounded border border-[var(--border-subtle)]">
+                          <span className="text-[var(--text-primary)]">Sensitive Zone proximity (School/Hospital)</span>
+                          <span className="font-mono font-semibold text-emerald-600 dark:text-emerald-400">
                             +{item.priorityMath?.sensitiveZonePoints || 18} pts
                           </span>
                         </div>
-                        <div className="flex items-center justify-between bg-[#11131A] px-2.5 py-1.5 rounded border border-white/[0.04]">
-                          <span className="text-zinc-300">Complaint age factor</span>
-                          <span className="font-mono font-semibold text-zinc-300">
+                        <div className="flex items-center justify-between bg-[var(--surface-card)] px-2.5 py-1.5 rounded border border-[var(--border-subtle)]">
+                          <span className="text-[var(--text-primary)]">Complaint age factor</span>
+                          <span className="font-mono font-semibold text-[var(--text-muted)]">
                             +{item.priorityMath?.agePoints || 5} pts
                           </span>
                         </div>
                       </div>
-                      <div className="pt-2 flex items-center justify-between text-[11px] font-mono text-zinc-500">
+                      <div className="pt-2 flex items-center justify-between text-[11px] font-mono text-[var(--text-muted)]">
                         <span>Algorithm v2.4 · Explainable DPW Triage</span>
-                        <Link href="/admin/rules" className="text-emerald-400 hover:underline">
+                        <Link href="/admin/rules" className="text-emerald-600 dark:text-emerald-400 hover:underline">
                           View Rules
                         </Link>
                       </div>
@@ -317,19 +317,19 @@ export default function MyComplaintsDashboard() {
                   )}
 
                   {/* Footer / Assigned Unit & Details CTA */}
-                  <div className="flex items-center justify-between pt-2 border-t border-white/[0.06]">
+                  <div className="flex items-center justify-between pt-2 border-t border-[var(--border-subtle)]">
                     <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                      <div className="w-6 h-6 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
                         <Wrench className="w-3 h-3" />
                       </div>
-                      <span className="text-xs font-medium text-zinc-300">
+                      <span className="text-xs font-medium text-[var(--text-primary)]">
                         {item.department} Assigned
                       </span>
                     </div>
 
                     <Link
                       href={`/complaints/${item.id}`}
-                      className="text-xs font-semibold text-emerald-400 hover:text-emerald-300 flex items-center gap-1 transition-colors"
+                      className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1 transition-colors"
                     >
                       <span>Details & Timeline</span>
                       <ChevronRight className="w-4 h-4" />

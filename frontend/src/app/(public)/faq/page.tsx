@@ -130,7 +130,7 @@ export default function HelpCenterPage() {
             className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
               selectedCategory === cat
                 ? 'bg-emerald-500 text-slate-950 shadow-[0_0_14px_rgba(16,185,129,0.3)]'
-                : 'bg-[#11131A] text-zinc-400 hover:text-white border border-white/5'
+                : 'bg-[var(--surface-elevated)] text-[var(--text-muted)] hover:text-[var(--text-primary)] border border-[var(--border-subtle)]'
             }`}
           >
             {cat}
@@ -147,7 +147,7 @@ export default function HelpCenterPage() {
               <div
                 key={faq.id}
                 className={`rounded-2xl glass-card border transition-all ${
-                  isExpanded ? 'border-emerald-500/40 bg-[#161922]' : 'border-white/[0.08] hover:border-white/20'
+                  isExpanded ? 'border-emerald-500/40 bg-[var(--surface-elevated)]' : 'border-[var(--border-subtle)] hover:border-emerald-500/20'
                 }`}
               >
                 <button
@@ -156,21 +156,21 @@ export default function HelpCenterPage() {
                   className="w-full p-5 sm:p-6 text-left flex items-start justify-between gap-4"
                 >
                   <div className="space-y-1">
-                    <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider block">
+                    <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider block">
                       {faq.category}
                     </span>
-                    <h3 className="text-sm sm:text-base font-bold text-white">
+                    <h3 className="text-sm sm:text-base font-bold text-[var(--text-primary)]">
                       {faq.question}
                     </h3>
                   </div>
 
-                  <div className="p-1 rounded-lg bg-white/5 text-zinc-400 shrink-0 mt-1">
+                  <div className="p-1 rounded-lg bg-black/5 dark:bg-white/5 text-[var(--text-muted)] shrink-0 mt-1">
                     {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                   </div>
                 </button>
 
                 {isExpanded && (
-                  <div className="px-5 sm:px-6 pb-6 pt-1 border-t border-white/[0.04] text-xs sm:text-sm text-zinc-300 leading-relaxed animate-in slide-in-from-top-1">
+                  <div className="px-5 sm:px-6 pb-6 pt-1 border-t border-[var(--border-subtle)] text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed animate-in slide-in-from-top-1">
                     {faq.answer}
                   </div>
                 )}

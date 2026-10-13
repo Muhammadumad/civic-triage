@@ -321,7 +321,7 @@ export default function NewComplaintPage() {
                     <button
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#11131A]/90 backdrop-blur-md text-white font-mono text-xs shadow-md hover:bg-[#11131A] transition-all border border-white/[0.08]"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--surface-card)]/90 backdrop-blur-md text-[var(--text-primary)] font-mono text-xs shadow-md hover:bg-[var(--surface-card)] transition-all border border-[var(--border-subtle)]"
                     >
                       <RefreshCw className="w-3.5 h-3.5" />
                       <span>Replace</span>
@@ -329,7 +329,7 @@ export default function NewComplaintPage() {
                     <button
                       type="button"
                       onClick={removePhoto}
-                      className="w-8 h-8 rounded-lg bg-rose-500/20 text-rose-400 border border-rose-500/30 flex items-center justify-center hover:bg-rose-500/30 transition-all shadow-md"
+                      className="w-8 h-8 rounded-lg bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/30 flex items-center justify-center hover:bg-rose-500/30 transition-all shadow-md"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -337,31 +337,31 @@ export default function NewComplaintPage() {
 
                   {/* Top Left Metadata Pill */}
                   <div className="absolute top-4 left-4 z-10">
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#11131A]/90 backdrop-blur-md border border-white/[0.08] shadow-md">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                      <span className="font-mono text-xs text-zinc-200">EXIF Verified • 4032×3024</span>
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--surface-card)]/90 backdrop-blur-md border border-[var(--border-subtle)] shadow-md">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" />
+                      <span className="font-mono text-xs text-[var(--text-primary)]">EXIF Verified • 4032×3024</span>
                     </div>
                   </div>
 
                   {/* AI Real-Time Vision HUD Scanner Overlay */}
                   <div className="absolute bottom-4 left-4 right-4 z-10">
-                    <div className="p-4 rounded-xl bg-[#11131A]/95 backdrop-blur-xl border border-white/[0.1] shadow-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="p-4 rounded-xl bg-[var(--surface-card)]/95 backdrop-blur-xl border border-[var(--border-strong)] shadow-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                       <div className="flex items-center gap-3">
                         <div className="w-9 h-9 rounded-lg bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center shrink-0">
-                          <Sparkles className="w-4 h-4 text-emerald-400 animate-spin" style={{ animationDuration: '8s' }} />
+                          <Sparkles className="w-4 h-4 text-emerald-500 dark:text-emerald-400 animate-spin" style={{ animationDuration: '8s' }} />
                         </div>
                         <div>
                           <div className="flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                            <span className="text-sm font-bold text-white">AI Vision Classifier: Asphalt Fracture</span>
+                            <span className="w-2 h-2 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse" />
+                            <span className="text-sm font-bold text-[var(--text-primary)]">AI Vision Classifier: Asphalt Fracture</span>
                           </div>
-                          <p className="font-mono text-xs text-zinc-400 mt-0.5">
+                          <p className="font-mono text-xs text-[var(--text-muted)] mt-0.5">
                             Class: Severe Pothole • Depth Est: 7.2cm • Safety Weight: 0.94
                           </p>
                         </div>
                       </div>
                       <div className="self-start sm:self-auto">
-                        <span className="font-mono text-xs text-emerald-400 font-bold px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+                        <span className="font-mono text-xs text-emerald-600 dark:text-emerald-400 font-bold px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
                           96.8% Confidence
                         </span>
                       </div>
@@ -372,11 +372,11 @@ export default function NewComplaintPage() {
             ) : (
               <div 
                 onClick={() => fileInputRef.current?.click()}
-                className="p-8 rounded-xl bg-[#161922] border-2 border-dashed border-white/[0.15] hover:border-emerald-500/50 flex flex-col items-center justify-center text-center cursor-pointer transition-colors"
+                className="p-8 rounded-xl bg-[var(--surface-elevated)] border-2 border-dashed border-[var(--border-strong)] hover:border-emerald-500/50 flex flex-col items-center justify-center text-center cursor-pointer transition-colors"
               >
-                <Upload className="w-10 h-10 text-zinc-400 mb-2" />
-                <p className="text-sm font-semibold text-white">Drag & drop photographic evidence or click to browse</p>
-                <p className="font-mono text-xs text-zinc-500 mt-1">Supports HEIC, RAW, JPG, PNG up to 25MB with embedded GPS metadata</p>
+                <Upload className="w-10 h-10 text-[var(--text-muted)] mb-2" />
+                <p className="text-sm font-semibold text-[var(--text-primary)]">Drag & drop photographic evidence or click to browse</p>
+                <p className="font-mono text-xs text-[var(--text-muted)] mt-1">Supports HEIC, RAW, JPG, PNG up to 25MB with embedded GPS metadata</p>
               </div>
             )}
 
@@ -392,16 +392,16 @@ export default function NewComplaintPage() {
           {/* ======================================================== */}
           {/* 2. Interactive Geolocation Map Pin & Proximity Analysis */}
           {/* ======================================================== */}
-          <div className="bg-[#11131A] border border-white/[0.08] rounded-xl p-6 shadow-xl space-y-4">
+          <div className="bg-[var(--surface-card)] border border-[var(--border-subtle)] rounded-xl p-6 shadow-xl space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div className="flex items-center gap-2">
-                <MapPin className="w-5 h-5 text-emerald-400" />
-                <h2 className="text-lg font-bold text-white">Spatial Pinpoint & Neighborhood Routing</h2>
+                <MapPin className="w-5 h-5 text-emerald-500 dark:text-emerald-400" />
+                <h2 className="text-lg font-bold text-[var(--text-primary)]">Spatial Pinpoint & Neighborhood Routing</h2>
               </div>
               <button
                 type="button"
                 onClick={handleFetchGps}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#161922] hover:bg-white/[0.08] text-emerald-400 font-mono text-xs border border-white/[0.08] transition-colors self-start sm:self-auto"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--surface-elevated)] hover:bg-[var(--surface-card)] text-emerald-600 dark:text-emerald-400 font-mono text-xs border border-[var(--border-subtle)] transition-colors self-start sm:self-auto"
               >
                 <Navigation className="w-3.5 h-3.5" />
                 <span>Fetch Device GPS</span>
@@ -409,7 +409,7 @@ export default function NewComplaintPage() {
             </div>
 
             {/* Map Container */}
-            <div className="relative w-full h-80 rounded-xl overflow-hidden border border-white/[0.08]">
+            <div className="relative w-full h-80 rounded-xl overflow-hidden border border-[var(--border-subtle)]">
               <LocationPickerMap
                 lat={location.lat}
                 lng={location.lng}
@@ -425,36 +425,36 @@ export default function NewComplaintPage() {
 
               {/* Top-Left Map Overlay: Ward Density Radar */}
               <div className="absolute top-3 left-3 z-[1000]">
-                <div className="px-3 py-1 rounded-lg bg-[#11131A]/90 backdrop-blur-md border border-white/[0.08] shadow-md flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-cyan-400" />
-                  <span className="font-mono text-xs text-white">Ward 4 North • Sector 18-A</span>
+                <div className="px-3 py-1 rounded-lg bg-[var(--surface-card)]/90 backdrop-blur-md border border-[var(--border-subtle)] shadow-md flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-cyan-500 dark:bg-cyan-400" />
+                  <span className="font-mono text-xs text-[var(--text-primary)]">Ward 4 North • Sector 18-A</span>
                 </div>
               </div>
             </div>
 
             {/* Bottom Geocoded Context Card */}
-            <div className="p-4 rounded-xl bg-[#161922] border border-white/[0.08] flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <div className="p-4 rounded-xl bg-[var(--surface-elevated)] border border-[var(--border-subtle)] flex flex-col md:flex-row md:items-center justify-between gap-3">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-lg bg-[#11131A] flex items-center justify-center text-emerald-400 shrink-0 border border-white/[0.06]">
+                <div className="w-9 h-9 rounded-lg bg-[var(--surface-card)] flex items-center justify-center text-emerald-500 dark:text-emerald-400 shrink-0 border border-[var(--border-subtle)]">
                   <MapPin className="w-4 h-4" />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-white">{location.address}</p>
-                  <p className="font-mono text-xs text-zinc-400">Cross-Street: Elmwood Ave • In front of Public School #44</p>
+                  <p className="text-sm font-semibold text-[var(--text-primary)]">{location.address}</p>
+                  <p className="font-mono text-xs text-[var(--text-muted)]">Cross-Street: Elmwood Ave • In front of Public School #44</p>
                 </div>
               </div>
-              <div className="flex items-center gap-2 bg-[#11131A] px-3 py-1.5 rounded-lg border border-white/[0.06] font-mono text-xs text-zinc-300">
-                <Radio className="w-3.5 h-3.5 text-zinc-500" />
+              <div className="flex items-center gap-2 bg-[var(--surface-card)] px-3 py-1.5 rounded-lg border border-[var(--border-subtle)] font-mono text-xs text-[var(--text-primary)]">
+                <Radio className="w-3.5 h-3.5 text-zinc-400" />
                 <span>{location.lat.toFixed(4)}° N, {Math.abs(location.lng).toFixed(4)}° W (±2.8m)</span>
               </div>
             </div>
 
             {/* Proximity Cluster Callout */}
-            <div className="p-4 rounded-xl bg-[#161922]/60 border border-white/[0.06] flex items-start gap-3">
-              <Layers className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" />
+            <div className="p-4 rounded-xl bg-[var(--surface-elevated)]/60 border border-[var(--border-subtle)] flex items-start gap-3">
+              <Layers className="w-5 h-5 text-cyan-500 dark:text-cyan-400 shrink-0 mt-0.5" />
               <div className="space-y-0.5">
-                <p className="text-sm font-semibold text-white">Spatial Correlation Engine Note</p>
-                <p className="text-xs text-zinc-400 leading-relaxed">
+                <p className="text-sm font-semibold text-[var(--text-primary)]">Spatial Correlation Engine Note</p>
+                <p className="text-xs text-[var(--text-muted)] leading-relaxed">
                   No overlapping complaints detected within 120m in the last 72 hours. This report will initialize a new priority ledger index (#PL-88219).
                 </p>
               </div>
@@ -464,13 +464,13 @@ export default function NewComplaintPage() {
           {/* ======================================================== */}
           {/* 3. Issue Category Selection with AI Suggestion           */}
           {/* ======================================================== */}
-          <div className="bg-[#11131A] border border-white/[0.08] rounded-xl p-6 shadow-xl space-y-4">
+          <div className="bg-[var(--surface-card)] border border-[var(--border-subtle)] rounded-xl p-6 shadow-xl space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div className="flex items-center gap-2">
-                <Layers className="w-5 h-5 text-emerald-400" />
-                <h2 className="text-lg font-bold text-white">Municipal Department Categorization</h2>
+                <Layers className="w-5 h-5 text-emerald-500 dark:text-emerald-400" />
+                <h2 className="text-lg font-bold text-[var(--text-primary)]">Municipal Department Categorization</h2>
               </div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 self-start sm:self-auto">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 self-start sm:self-auto">
                 <Sparkles className="w-3.5 h-3.5" />
                 <span className="font-mono text-xs font-semibold">AI Inferred: {aiSuggestedCategory}</span>
               </div>
@@ -495,32 +495,32 @@ export default function NewComplaintPage() {
                     }}
                     className={`p-4 rounded-xl cursor-pointer transition-all flex items-center justify-between border ${
                       isSelected
-                        ? 'bg-emerald-500/10 border-emerald-500/50 shadow-md'
-                        : 'bg-[#161922] border-white/[0.06] hover:border-white/[0.14]'
+                        ? 'bg-emerald-500/10 border-emerald-500/50 shadow-md ring-1 ring-emerald-500/30'
+                        : 'bg-[var(--surface-elevated)] border-[var(--border-subtle)] hover:border-emerald-500/40 hover:bg-[var(--surface-card)]'
                     }`}
                   >
                     <div className="flex items-center gap-3">
                       <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${
-                        isSelected ? 'bg-emerald-500/20 text-emerald-400' : 'bg-[#11131A] text-zinc-400'
+                        isSelected ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400' : 'bg-[var(--surface-card)] text-[var(--text-muted)]'
                       }`}>
                         <Icon className="w-4 h-4" />
                       </div>
                       <div>
-                        <p className={`text-sm font-bold ${isSelected ? 'text-white' : 'text-zinc-200'}`}>{label}</p>
-                        <p className="text-[11px] font-mono text-zinc-500">{desc}</p>
+                        <p className={`text-sm font-bold ${isSelected ? 'text-emerald-600 dark:text-emerald-400' : 'text-[var(--text-primary)]'}`}>{label}</p>
+                        <p className="text-[11px] font-mono text-[var(--text-muted)]">{desc}</p>
                       </div>
                     </div>
                     {isSelected ? (
-                      <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+                      <CheckCircle2 className="w-5 h-5 text-emerald-500 dark:text-emerald-400 shrink-0" />
                     ) : (
-                      <span className="w-4 h-4 rounded-full border border-white/[0.15] shrink-0" />
+                      <span className="w-4 h-4 rounded-full border border-[var(--border-strong)] shrink-0" />
                     )}
                   </div>
                 );
               })}
             </div>
 
-            <p className="font-mono text-xs text-zinc-500">
+            <p className="font-mono text-xs text-[var(--text-muted)]">
               Classification weights are autonomously calibrated by telemetry embeddings. You can select another pill at any moment to override machine dispatch.
             </p>
           </div>
@@ -528,27 +528,27 @@ export default function NewComplaintPage() {
           {/* ======================================================== */}
           {/* 4. Description Field & Voice Shortcut                    */}
           {/* ======================================================== */}
-          <div className="bg-[#11131A] border border-white/[0.08] rounded-xl p-6 shadow-xl space-y-4">
+          <div className="bg-[var(--surface-card)] border border-[var(--border-subtle)] rounded-xl p-6 shadow-xl space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold text-white">Field Description & Impact Scope</h2>
+              <h2 className="text-lg font-bold text-[var(--text-primary)]">Field Description & Impact Scope</h2>
               <button
                 type="button"
                 onClick={toggleRecording}
                 className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono transition-colors border ${
                   isRecording 
-                    ? 'bg-rose-500/20 text-rose-400 border-rose-500/30 animate-pulse'
-                    : 'bg-[#161922] text-zinc-300 border-white/[0.08] hover:bg-white/[0.08]'
+                    ? 'bg-rose-500/20 text-rose-600 dark:text-rose-400 border-rose-500/30 animate-pulse'
+                    : 'bg-[var(--surface-elevated)] text-[var(--text-primary)] border-[var(--border-subtle)] hover:bg-[var(--surface-card)]'
                 }`}
               >
-                <Mic className="w-3.5 h-3.5 text-emerald-400" />
+                <Mic className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" />
                 <span>{isRecording ? 'Listening...' : 'Dictate Note'}</span>
               </button>
             </div>
 
             <div className="space-y-3">
               <div>
-                <label className="text-xs font-semibold text-zinc-300 block mb-1">
-                  Incident Title Summary <span className="text-rose-400">*</span>
+                <label className="text-xs font-semibold text-[var(--text-primary)] block mb-1">
+                  Incident Title Summary <span className="text-rose-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -556,16 +556,16 @@ export default function NewComplaintPage() {
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="e.g. Hazardous Pothole on Tremont St"
-                  className="w-full bg-[#161922] border border-white/[0.08] rounded-lg px-3.5 py-2.5 text-sm text-white focus:border-emerald-500 focus:outline-none placeholder:text-zinc-500 transition-colors"
+                  className="w-full bg-[var(--surface-elevated)] border border-[var(--border-subtle)] rounded-lg px-3.5 py-2.5 text-sm text-[var(--text-primary)] focus:border-emerald-500 focus:outline-none placeholder:text-[var(--text-muted)]/60 transition-colors"
                 />
               </div>
 
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="text-xs font-semibold text-zinc-300">
+                  <label className="text-xs font-semibold text-[var(--text-primary)]">
                     Detailed Notes & Observations
                   </label>
-                  <span className="font-mono text-xs text-zinc-500">{description.length}/500</span>
+                  <span className="font-mono text-xs text-[var(--text-muted)]">{description.length}/500</span>
                 </div>
                 <textarea
                   rows={4}
@@ -573,7 +573,7 @@ export default function NewComplaintPage() {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Describe street landmarks, safety risks, or traffic disruptions..."
-                  className="w-full bg-[#161922] border border-white/[0.08] rounded-lg p-3 text-sm text-white focus:border-emerald-500 focus:outline-none placeholder:text-zinc-500 resize-y transition-colors"
+                  className="w-full bg-[var(--surface-elevated)] border border-[var(--border-subtle)] rounded-lg p-3 text-sm text-[var(--text-primary)] focus:border-emerald-500 focus:outline-none placeholder:text-[var(--text-muted)]/60 resize-y transition-colors"
                 />
               </div>
             </div>
@@ -582,35 +582,35 @@ export default function NewComplaintPage() {
           {/* ======================================================== */}
           {/* 5. Submitter Info Drawer (Privacy Toggle)                */}
           {/* ======================================================== */}
-          <div className="bg-[#11131A] border border-white/[0.08] rounded-xl overflow-hidden shadow-xl">
+          <div className="bg-[var(--surface-card)] border border-[var(--border-subtle)] rounded-xl overflow-hidden shadow-xl">
             <button
               type="button"
               onClick={() => setIsSubmitterOpen(!isSubmitterOpen)}
-              className="w-full p-4 flex items-center justify-between text-left hover:bg-white/[0.02] transition-colors"
+              className="w-full p-4 flex items-center justify-between text-left hover:bg-black/5 dark:hover:bg-white/[0.02] transition-colors"
             >
               <div className="flex items-center gap-2">
-                <UserCheck className="w-5 h-5 text-emerald-400" />
+                <UserCheck className="w-5 h-5 text-emerald-500 dark:text-emerald-400" />
                 <div>
-                  <span className="text-sm font-bold text-white block">Submitter Privacy & Contact Details</span>
-                  <span className="text-xs text-zinc-400">
+                  <span className="text-sm font-bold text-[var(--text-primary)] block">Submitter Privacy & Contact Details</span>
+                  <span className="text-xs text-[var(--text-muted)]">
                     {isAnonymous ? 'Submitting as Anonymous' : `Submitting as ${submitterName}`}
                   </span>
                 </div>
               </div>
-              {isSubmitterOpen ? <ChevronUp className="w-4 h-4 text-zinc-400" /> : <ChevronDown className="w-4 h-4 text-zinc-400" />}
+              {isSubmitterOpen ? <ChevronUp className="w-4 h-4 text-[var(--text-muted)]" /> : <ChevronDown className="w-4 h-4 text-[var(--text-muted)]" />}
             </button>
 
             {isSubmitterOpen && (
-              <div className="p-6 pt-0 border-t border-white/[0.08] space-y-4 mt-2">
+              <div className="p-6 pt-0 border-t border-[var(--border-subtle)] space-y-4 mt-2">
                 <div className="flex items-center gap-2 pt-2">
                   <input
                     type="checkbox"
                     id="anon-check"
                     checked={isAnonymous}
                     onChange={(e) => setIsAnonymous(e.target.checked)}
-                    className="rounded bg-[#161922] border-white/[0.1] text-emerald-500 focus:ring-emerald-500"
+                    className="rounded bg-[var(--surface-elevated)] border-[var(--border-strong)] text-emerald-500 focus:ring-emerald-500"
                   />
-                  <label htmlFor="anon-check" className="text-xs font-semibold text-zinc-300 cursor-pointer">
+                  <label htmlFor="anon-check" className="text-xs font-semibold text-[var(--text-primary)] cursor-pointer">
                     Submit Anonymously (Omits contact information from public records)
                   </label>
                 </div>
@@ -618,30 +618,30 @@ export default function NewComplaintPage() {
                 {!isAnonymous && (
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
                     <div>
-                      <label className="text-xs font-semibold text-zinc-400 block mb-1">Full Name</label>
+                      <label className="text-xs font-semibold text-[var(--text-muted)] block mb-1">Full Name</label>
                       <input
                         type="text"
                         value={submitterName}
                         onChange={(e) => setSubmitterName(e.target.value)}
-                        className="w-full bg-[#161922] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"
+                        className="w-full bg-[var(--surface-elevated)] border border-[var(--border-subtle)] rounded-lg px-3 py-2 text-xs text-[var(--text-primary)] focus:border-emerald-500 focus:outline-none"
                       />
                     </div>
                     <div>
-                      <label className="text-xs font-semibold text-zinc-400 block mb-1">Email Address</label>
+                      <label className="text-xs font-semibold text-[var(--text-muted)] block mb-1">Email Address</label>
                       <input
                         type="email"
                         value={submitterEmail}
                         onChange={(e) => setSubmitterEmail(e.target.value)}
-                        className="w-full bg-[#161922] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"
+                        className="w-full bg-[var(--surface-elevated)] border border-[var(--border-subtle)] rounded-lg px-3 py-2 text-xs text-[var(--text-primary)] focus:border-emerald-500 focus:outline-none"
                       />
                     </div>
                     <div>
-                      <label className="text-xs font-semibold text-zinc-400 block mb-1">Phone Number</label>
+                      <label className="text-xs font-semibold text-[var(--text-muted)] block mb-1">Phone Number</label>
                       <input
                         type="tel"
                         value={submitterPhone}
                         onChange={(e) => setSubmitterPhone(e.target.value)}
-                        className="w-full bg-[#161922] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"
+                        className="w-full bg-[var(--surface-elevated)] border border-[var(--border-subtle)] rounded-lg px-3 py-2 text-xs text-[var(--text-primary)] focus:border-emerald-500 focus:outline-none"
                       />
                     </div>
                   </div>
@@ -673,7 +673,7 @@ export default function NewComplaintPage() {
         </form>
 
         {/* Fixed Mobile Bottom CTA Bar */}
-        <div className="md:hidden fixed bottom-0 left-0 right-0 p-4 bg-[#090A0F]/95 backdrop-blur-xl border-t border-white/[0.08] z-40">
+        <div className="md:hidden fixed bottom-0 left-0 right-0 p-4 bg-[var(--surface-card)]/95 backdrop-blur-xl border-t border-[var(--border-subtle)] z-40 shadow-lg">
           <button
             onClick={handleSubmit}
             disabled={isSubmitting}

@@ -255,7 +255,7 @@ export default function LocationPickerMapInner({
           type="button"
           onClick={handleUseCurrentLocation}
           disabled={isLocating}
-          className="pointer-events-auto flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#11131A]/90 hover:bg-[#161922] backdrop-blur-md border border-emerald-500/30 text-emerald-400 text-xs font-semibold shadow-md transition-all active:scale-95 disabled:opacity-50"
+          className="pointer-events-auto flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[var(--surface-card)]/90 hover:bg-[var(--surface-elevated)] backdrop-blur-md border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs font-semibold shadow-md transition-all active:scale-95 disabled:opacity-50"
         >
           {isLocating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Navigation className="w-3.5 h-3.5" />}
           <span>{isLocating ? 'Locating...' : 'Use Current Location'}</span>

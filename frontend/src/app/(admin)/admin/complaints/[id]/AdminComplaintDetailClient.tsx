@@ -104,17 +104,17 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
 
   if (!complaint) {
     return (
-      <div className="min-h-screen py-16 px-4 flex flex-col items-center justify-center text-center">
-        <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-zinc-400 mb-4">
-          <AlertTriangle className="w-8 h-8 text-amber-400" />
+      <div className="min-h-screen py-16 px-4 flex flex-col items-center justify-center text-center bg-[var(--canvas-base)] text-[var(--text-primary)]">
+        <div className="w-16 h-16 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] flex items-center justify-center text-[var(--text-secondary)] mb-4">
+          <AlertTriangle className="w-8 h-8 text-amber-500" />
         </div>
-        <h2 className="text-xl font-bold text-white mb-2">Complaint Reference Not Found</h2>
-        <p className="text-xs text-zinc-400 max-w-sm mb-6">
-          Could not locate ticket <span className="font-mono text-zinc-200">{id}</span> in administrative dispatch records.
+        <h2 className="text-xl font-bold text-[var(--text-primary)] mb-2">Complaint Reference Not Found</h2>
+        <p className="text-xs text-[var(--text-secondary)] max-w-sm mb-6">
+          Could not locate ticket <span className="font-mono text-[var(--text-primary)] font-semibold">{id}</span> in administrative dispatch records.
         </p>
         <Link
           href="/admin"
-          className="px-4 py-2 rounded-xl bg-emerald-500 text-slate-950 font-bold text-xs"
+          className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs hover-lift transition-all"
         >
           Return to Triage Console
         </Link>
