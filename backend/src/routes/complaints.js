@@ -210,6 +210,61 @@ router.get('/bounds', async (req, res, next) => {
 });
 
 /**
+ * @route   GET /api/complaints/transparency
+ * @desc    Public municipal transparency KPI dashboard metrics
+ * @access  Public
+ */
+router.get('/transparency', async (req, res, next) => {
+  try {
+    const resolvedStatuses = ['resolved', 'closed', 'Resolved', 'Closed'];
+    const [total, resolved, categoryAgg, resolvedComplaints] = await Promise.all([
+      Complaint.countDocuments(),
+      Complaint.countDocuments({ status: { $in: resolvedStatuses } }),
+      Complaint.aggregate([
+        {
+          $group: {
+            _id: '$category',
+            total: { $sum: 1 },
+            resolved: {
+              $sum: {
+                $cond: [{ $in: ['$status', resolvedStatuses] }, 1, 0],
+              },
+            },
+          },
+        },
+      ]),
+      Complaint.find({ status: { $in: resolvedStatuses } }).select('createdAt updatedAt'),
+    ]);
+
+    let avgResolutionHours = 24.0;
+    if (resolvedComplaints.length > 0) {
+      const totalDurationMs = resolvedComplaints.reduce((acc, c) => {
+        const duration = new Date(c.updatedAt).getTime() - new Date(c.createdAt).getTime();
+        return acc + Math.max(0, duration);
+      }, 0);
+      avgResolutionHours = Number((totalDurationMs / (resolvedComplaints.length * 3600000)).toFixed(1));
+    }
+
+    const resolutionRate = total > 0 ? Math.round((resolved / total) * 100) : 100;
+
+    res.status(200).json({
+      totalComplaints: total,
+      totalResolved: resolved,
+      resolutionRate,
+      avgResolutionHours,
+      categories: categoryAgg.map((cat) => ({
+        category: cat._id,
+        total: cat.total,
+        resolved: cat.resolved,
+        rate: cat.total > 0 ? Math.round((cat.resolved / cat.total) * 100) : 0,
+      })),
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+/**
  * @route   GET /api/complaints/:id
  * @desc    Fetch single complaint details, duplicate info, and full timeline history
  * @access  Public

@@ -203,7 +203,7 @@ complaintSchema.statics.findByBounds = function (minLat, minLng, maxLat, maxLng,
   });
 };
 
-complaintSchema.pre('save', function (next) {
+complaintSchema.pre('save', async function () {
   if (this.location && this.location.lat != null && this.location.lng != null) {
     const coords = [Number(this.location.lng), Number(this.location.lat)];
     this.location.type = 'Point';
@@ -225,8 +225,6 @@ complaintSchema.pre('save', function (next) {
   if (!this.title && this.description) {
     this.title = this.description.slice(0, 45) + (this.description.length > 45 ? '...' : '');
   }
-
-  next();
 });
 
 const Complaint = mongoose.model('Complaint', complaintSchema);

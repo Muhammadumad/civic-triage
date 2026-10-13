@@ -74,7 +74,53 @@ const classifyByKeywords = (text = '') => {
   };
 };
 
+const classifyComplaintWithLLM = async (text = '', imageUrl = null) => {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) return null;
+
+  try {
+    const prompt = `You are a municipal civic triage assistant. Classify this complaint description into exactly one of: road_damage, garbage, streetlight, water_leakage, blocked_drain, other.
+Description: "${text}"
+Return ONLY strict JSON:
+{"category": "road_damage|garbage|streetlight|water_leakage|blocked_drain|other", "confidence": 0.85, "reason": "concise reason"}`;
+
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { responseMimeType: 'application/json' },
+        }),
+        signal: AbortSignal.timeout(3000),
+      }
+    );
+
+    if (res.ok) {
+      const data = await res.json();
+      const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (rawText) {
+        const parsed = JSON.parse(rawText);
+        const validCategories = ['road_damage', 'garbage', 'streetlight', 'water_leakage', 'blocked_drain', 'other'];
+        if (validCategories.includes(parsed.category)) {
+          return {
+            category: parsed.category,
+            confidence: Number(parsed.confidence) || 0.88,
+            reason: parsed.reason || 'Classified by Gemini AI Vision/Text model',
+          };
+        }
+      }
+    }
+  } catch (err) {
+    // Silent graceful fallback
+  }
+  return null;
+};
+
 const classifyComplaint = async (text = '', imageUrl = null) => {
+  const llmResult = await classifyComplaintWithLLM(text, imageUrl);
+  if (llmResult) return llmResult;
   return classifyByKeywords(text);
 };
 

@@ -52,14 +52,13 @@ const sensitiveZoneSchema = new mongoose.Schema(
 
 sensitiveZoneSchema.index({ location: '2dsphere' });
 
-sensitiveZoneSchema.pre('save', function (next) {
+sensitiveZoneSchema.pre('save', async function () {
   if (this.lat != null && this.lng != null) {
     this.location = {
       type: 'Point',
       coordinates: [this.lng, this.lat],
     };
   }
-  next();
 });
 
 const SensitiveZone = mongoose.model('SensitiveZone', sensitiveZoneSchema);
