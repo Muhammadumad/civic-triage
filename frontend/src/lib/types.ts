@@ -108,6 +108,89 @@ export interface SensitiveZone {
   createdAt?: string;
 }
 
+export const SAMPLE_SENSITIVE_ZONES: SensitiveZone[] = [
+  {
+    id: 'SZ-001',
+    _id: 'SZ-001',
+    name: 'City General Hospital (Trauma Center)',
+    type: 'hospital',
+    lat: 25.3945,
+    lng: 68.3562,
+    radius: 250,
+    active: true,
+  },
+  {
+    id: 'SZ-002',
+    _id: 'SZ-002',
+    name: 'Model Public High School & Girls College',
+    type: 'school',
+    lat: 25.3980,
+    lng: 68.3590,
+    radius: 180,
+    active: true,
+  },
+  {
+    id: 'SZ-003',
+    _id: 'SZ-003',
+    name: 'Autobahn Commercial Expressway Corridor',
+    type: 'transit_hub',
+    lat: 25.3965,
+    lng: 68.3540,
+    radius: 220,
+    active: true,
+  },
+  {
+    id: 'SZ-004',
+    _id: 'SZ-004',
+    name: 'Civil Hospital Hyderabad Complex',
+    type: 'hospital',
+    lat: 25.3995,
+    lng: 68.3680,
+    radius: 250,
+    active: true,
+  },
+  {
+    id: 'SZ-005',
+    _id: 'SZ-005',
+    name: 'Municipal Water Filtration & Pumping Station',
+    type: 'other',
+    lat: 25.3880,
+    lng: 68.3610,
+    radius: 180,
+    active: true,
+  },
+  {
+    id: 'SZ-006',
+    _id: 'SZ-006',
+    name: 'City General Hospital (Central Emergency)',
+    type: 'hospital',
+    lat: 24.8615,
+    lng: 67.0099,
+    radius: 200,
+    active: true,
+  },
+  {
+    id: 'SZ-007',
+    _id: 'SZ-007',
+    name: 'Model Public High School (Central)',
+    type: 'school',
+    lat: 24.8580,
+    lng: 67.0150,
+    radius: 150,
+    active: true,
+  },
+  {
+    id: 'SZ-008',
+    _id: 'SZ-008',
+    name: 'Jinnah Avenue Commercial Highway Corridor',
+    type: 'transit_hub',
+    lat: 24.8650,
+    lng: 67.0120,
+    radius: 150,
+    active: true,
+  },
+];
+
 export interface TransparencyStats {
   totalComplaints: number;
   totalResolved: number;

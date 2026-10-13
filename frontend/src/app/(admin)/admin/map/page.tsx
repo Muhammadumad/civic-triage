@@ -114,18 +114,31 @@ export default function AdminSpatialMapPage() {
 
         {/* Floating spatial stats HUD badge */}
         <div className="absolute bottom-4 left-4 z-10 pointer-events-none">
-          <div className="pointer-events-auto p-3.5 rounded-2xl bg-[var(--surface-card)]/90 backdrop-blur-md border border-[var(--border-subtle)] text-xs shadow-2xl space-y-1.5 animate-scale-in">
+          <div className="pointer-events-auto p-3.5 rounded-2xl bg-[var(--surface-card)]/90 backdrop-blur-md border border-[var(--border-subtle)] text-xs shadow-2xl space-y-2 animate-scale-in max-w-sm">
             <div className="text-[10px] uppercase font-bold tracking-wider text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
               <Compass className="w-3.5 h-3.5 animate-float" />
-              <span>GIS Geospatial Telemetry</span>
+              <span>GIS Geospatial Telemetry & Impact Engine</span>
             </div>
-            <div className="text-[var(--text-primary)] font-medium">
-              OpenStreetMap Light Cluster Projection
+            <div className="text-[var(--text-primary)] font-semibold text-xs">
+              Affected Incident Perimeters & Safety Corridors
             </div>
-            <div className="text-[11px] text-[var(--text-secondary)] flex items-center gap-2">
-              <span>Dynamic Pins: Colored by Urgency Band</span>
-              <span>•</span>
-              <span>Tap pin for instant triage popout</span>
+            <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-[10px] text-[var(--text-secondary)] pt-1 border-t border-[var(--border-subtle)]">
+              <div className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#FB7185]/30 border border-[#FB7185]" />
+                <span>High Impact (220m)</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#FBBF24]/30 border border-[#FBBF24]" />
+                <span>Medium (140m)</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#60A5FA]/30 border border-[#60A5FA]" />
+                <span>Low Impact (70m)</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-red-500/30 border border-dashed border-red-500" />
+                <span>Hospital/School Zone</span>
+              </div>
             </div>
           </div>
         </div>
