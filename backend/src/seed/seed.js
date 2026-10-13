@@ -6,9 +6,11 @@ const StatusHistory = require('../models/StatusHistory');
 const RuleSettings = require('../models/RuleSettings');
 const { SensitiveZone } = require('../models/SensitiveZone');
 const { processComplaint } = require('../services/pipeline');
+const { downloadAll } = require('./downloadSampleImages');
 
 const seedData = async () => {
   try {
+    await downloadAll();
     const mongoUri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/civic_complaints_db';
     await mongoose.connect(mongoUri);
     console.log('[Seed] Connected to MongoDB.');

@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const path = require('path');
+const fs = require('fs');
 const authRoutes = require('./routes/auth');
 const complaintsRoutes = require('./routes/complaints');
 const adminRoutes = require('./routes/admin');
@@ -28,6 +29,13 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Static serving for uploaded photos
 const uploadDir = path.resolve(process.cwd(), process.env.UPLOAD_DIR || 'uploads');
 app.use('/uploads', express.static(uploadDir));
+app.use('/uploads', (req, res) => {
+  const fallback = path.join(uploadDir, 'sample_pothole_1.jpg');
+  if (fs.existsSync(fallback)) {
+    return res.sendFile(fallback);
+  }
+  res.status(404).json({ error: 'Photo not found' });
+});
 
 // Root route
 app.get('/', (req, res) => {
