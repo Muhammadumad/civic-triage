@@ -1,10 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useComplaintsStore } from '@/lib/complaints-store';
+import { fetchComplaintById } from '@/lib/api';
 import { 
+  Complaint,
   ComplaintStatus, 
   CATEGORY_THEME, 
   STATUS_THEME, 
@@ -33,7 +35,8 @@ import {
   Wrench,
   Layers,
   ChevronRight,
-  ShieldAlert
+  ShieldAlert,
+  Loader2
 } from 'lucide-react';
 import { formatRelativeTime } from '@/lib/utils';
 
@@ -49,9 +52,31 @@ export default function ComplaintTrackingClient({ id }: { id: string }) {
   const router = useRouter();
   const { getComplaintById, reopenComplaint } = useComplaintsStore();
   
-  const storeComplaint = getComplaintById(id);
+  const [mounted, setMounted] = useState(false);
+  const [fetchedComplaint, setFetchedComplaint] = useState<Complaint | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
   const sampleFallback = SAMPLE_COMPLAINTS.find((c) => c.id === id);
-  const complaint = storeComplaint || sampleFallback;
+  const storeComplaint = getComplaintById(id);
+  const complaint = fetchedComplaint || storeComplaint || sampleFallback;
+
+  useEffect(() => {
+    setMounted(true);
+    const existing = getComplaintById(id) || SAMPLE_COMPLAINTS.find((c) => c.id === id);
+    if (existing) {
+      setFetchedComplaint(existing);
+      setIsLoading(false);
+    } else {
+      setIsLoading(true);
+      fetchComplaintById(id)
+        .then((data) => {
+          setFetchedComplaint(data);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
+  }, [id, getComplaintById]);
 
   // Tooltip & Copy state
   const [showPriorityTooltip, setShowPriorityTooltip] = useState(false);
@@ -61,6 +86,18 @@ export default function ComplaintTrackingClient({ id }: { id: string }) {
   const [isReopenModalOpen, setIsReopenModalOpen] = useState(false);
   const [reopenReason, setReopenReason] = useState('');
   const [isSubmittingReopen, setIsSubmittingReopen] = useState(false);
+
+  if (!mounted || isLoading) {
+    return (
+      <div className="min-h-screen py-16 px-4 flex flex-col items-center justify-center text-center bg-[#090A0F] text-white">
+        <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-emerald-400 mb-4 animate-pulse">
+          <Loader2 className="w-6 h-6 animate-spin" />
+        </div>
+        <h2 className="text-sm font-semibold text-white mb-1">Loading Incident Tracking Record...</h2>
+        <p className="text-xs text-zinc-400 font-mono">Synchronizing incident status for {id}</p>
+      </div>
+    );
+  }
 
   if (!complaint) {
     return (

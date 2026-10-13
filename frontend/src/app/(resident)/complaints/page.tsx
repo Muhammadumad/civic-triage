@@ -1,11 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
   useComplaintsStore 
 } from '@/lib/complaints-store';
+import { fetchMyComplaints } from '@/lib/api';
 import { 
+  Complaint,
   CATEGORY_THEME, 
   STATUS_THEME, 
   PRIORITY_THEME, 
@@ -36,9 +38,22 @@ import { formatRelativeTime } from '@/lib/utils';
 
 export default function MyComplaintsDashboard() {
   const { complaints, isLoaded } = useComplaintsStore();
+  const [userSpecificComplaints, setUserSpecificComplaints] = useState<Complaint[] | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<'all' | 'in-progress' | 'resolved'>('all');
   const [expandedBreakdownId, setExpandedBreakdownId] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchMyComplaints().then((mine) => {
+      if (mine && mine.length > 0) {
+        setUserSpecificComplaints(mine);
+      }
+    });
+  }, []);
+
+  const displayList = userSpecificComplaints && userSpecificComplaints.length > 0
+    ? userSpecificComplaints
+    : complaints;
 
   const toggleBreakdown = (id: string, e: React.MouseEvent) => {
     e.preventDefault();
@@ -46,11 +61,11 @@ export default function MyComplaintsDashboard() {
     setExpandedBreakdownId(expandedBreakdownId === id ? null : id);
   };
 
-  const countAll = complaints.length;
-  const countInProgress = complaints.filter(c => c.status !== 'Resolved').length;
-  const countResolved = complaints.filter(c => c.status === 'Resolved').length;
+  const countAll = displayList.length;
+  const countInProgress = displayList.filter(c => c.status !== 'Resolved').length;
+  const countResolved = displayList.filter(c => c.status === 'Resolved').length;
 
-  const filtered = complaints.filter((item) => {
+  const filtered = displayList.filter((item) => {
     // Search match
     const matchesSearch =
       item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -76,7 +91,7 @@ export default function MyComplaintsDashboard() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl font-extrabold tracking-tight">My Reports</h1>
-            <p className="text-xs font-mono text-[var(--text-muted)] mt-1 uppercase tracking-wider">
+            <p className="text-xs font-mono text-[var(--text-muted)] mt-1 uppercase tracking-wider" suppressHydrationWarning>
               Ward 4 Resident Activity · {countInProgress} Active Cases
             </p>
           </div>
@@ -101,7 +116,7 @@ export default function MyComplaintsDashboard() {
               }`}
             >
               <span>All</span>
-              <span className="font-mono text-[11px] bg-white/20 px-1.5 py-0.2 rounded">
+              <span className="font-mono text-[11px] bg-white/20 px-1.5 py-0.2 rounded" suppressHydrationWarning>
                 {countAll}
               </span>
             </button>
@@ -115,7 +130,7 @@ export default function MyComplaintsDashboard() {
               }`}
             >
               <span>In Progress</span>
-              <span className="font-mono text-[11px] bg-white/20 px-1.5 py-0.2 rounded">
+              <span className="font-mono text-[11px] bg-white/20 px-1.5 py-0.2 rounded" suppressHydrationWarning>
                 {countInProgress}
               </span>
             </button>
@@ -129,7 +144,7 @@ export default function MyComplaintsDashboard() {
               }`}
             >
               <span>Resolved</span>
-              <span className="font-mono text-[11px] bg-white/20 px-1.5 py-0.2 rounded">
+              <span className="font-mono text-[11px] bg-white/20 px-1.5 py-0.2 rounded" suppressHydrationWarning>
                 {countResolved}
               </span>
             </button>

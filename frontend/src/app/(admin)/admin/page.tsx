@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { useComplaintsStore } from '@/lib/complaints-store';
 import { 
@@ -33,9 +33,17 @@ import {
   X
 } from 'lucide-react';
 import { formatRelativeTime } from '@/lib/utils';
+import { fetchAdminStats, AdminStatsResponse } from '@/lib/api';
 
 export default function AdminDashboardPage() {
   const { complaints, updateStatusWithEvidence } = useComplaintsStore();
+  const [adminStats, setAdminStats] = useState<AdminStatsResponse | null>(null);
+
+  useEffect(() => {
+    fetchAdminStats().then((data) => {
+      if (data) setAdminStats(data);
+    });
+  }, [complaints]);
 
   // Filters & Search
   const [searchQuery, setSearchQuery] = useState('');
@@ -65,18 +73,22 @@ export default function AdminDashboardPage() {
 
   // 4 KPI Calculations
   const kpis = useMemo(() => {
-    const total = complaints.length;
-    const pendingReview = complaints.filter(
-      (c) => c.status === 'New' || c.status === 'Under Review'
-    ).length;
+    const total = adminStats?.total ?? complaints.length;
+    const pendingReview =
+      adminStats?.openCount ??
+      complaints.filter((c) => c.status === 'New' || c.status === 'Under Review').length;
     const totalDuplicates = complaints.reduce((acc, c) => acc + (c.duplicateCount || 0), 0);
+    const avgHrs = adminStats?.avgResolutionHours ?? 18.5;
+    const slaOverdueCount = adminStats?.slaOverdueCount ?? 0;
+
     return {
       total,
       pendingReview,
       totalDuplicates,
-      avgResolution: '18.4 hrs',
+      avgResolution: `${avgHrs} hrs`,
+      slaOverdueCount,
     };
-  }, [complaints]);
+  }, [complaints, adminStats]);
 
   // Filtering and Sorting
   const filteredComplaints = useMemo(() => {
@@ -172,7 +184,9 @@ export default function AdminDashboardPage() {
               <Layers className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-3xl font-extrabold text-[var(--text-primary)] mt-3 font-mono">{kpis.total}</div>
+          <div className="text-3xl font-extrabold text-[var(--text-primary)] mt-3 font-mono" suppressHydrationWarning>
+            {kpis.total}
+          </div>
           <div className="text-xs text-emerald-600 dark:text-emerald-400 mt-2 flex items-center gap-1 font-medium">
             <span>Live Sync Across All 10 Wards</span>
           </div>
@@ -186,9 +200,16 @@ export default function AdminDashboardPage() {
               <AlertTriangle className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-3xl font-extrabold text-rose-500 dark:text-rose-400 mt-3 font-mono">{kpis.pendingReview}</div>
-          <div className="text-xs text-rose-600/80 dark:text-rose-300/80 mt-2 flex items-center gap-1 font-medium">
+          <div className="text-3xl font-extrabold text-rose-500 dark:text-rose-400 mt-3 font-mono" suppressHydrationWarning>
+            {kpis.pendingReview}
+          </div>
+          <div className="text-xs text-rose-600/80 dark:text-rose-300/80 mt-2 flex items-center justify-between gap-1 font-medium">
             <span>Requires Dispatcher Sign-off</span>
+            {kpis.slaOverdueCount > 0 && (
+              <span className="px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-500 font-bold text-[10px]">
+                {kpis.slaOverdueCount} Overdue SLA
+              </span>
+            )}
           </div>
         </div>
 
@@ -200,7 +221,9 @@ export default function AdminDashboardPage() {
               <TrendingUp className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-3xl font-extrabold text-indigo-600 dark:text-indigo-300 mt-3 font-mono">{kpis.totalDuplicates}</div>
+          <div className="text-3xl font-extrabold text-indigo-600 dark:text-indigo-300 mt-3 font-mono" suppressHydrationWarning>
+            {kpis.totalDuplicates}
+          </div>
           <div className="text-xs text-indigo-600/80 dark:text-indigo-300/80 mt-2 flex items-center gap-1 font-medium">
             <span>Saved ~38 Crew Dispatch Hours</span>
           </div>
@@ -214,7 +237,9 @@ export default function AdminDashboardPage() {
               <Clock className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-3xl font-extrabold text-amber-600 dark:text-amber-300 mt-3 font-mono">{kpis.avgResolution}</div>
+          <div className="text-3xl font-extrabold text-amber-600 dark:text-amber-300 mt-3 font-mono" suppressHydrationWarning>
+            {kpis.avgResolution}
+          </div>
           <div className="text-xs text-emerald-600 dark:text-emerald-400 mt-2 flex items-center gap-1 font-medium">
             <span>-28% Under ISO 18091 SLA</span>
           </div>

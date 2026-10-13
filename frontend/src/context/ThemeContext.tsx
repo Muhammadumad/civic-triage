@@ -13,22 +13,18 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>('dark');
-  const [mounted, setMounted] = useState(false);
+  const [theme, setThemeState] = useState<Theme>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('civicpulse_theme') as Theme | null;
+      if (saved === 'dark' || saved === 'light') return saved;
+    }
+    return 'dark';
+  });
 
   useEffect(() => {
-    setMounted(true);
-    const saved = localStorage.getItem('civicpulse_theme') as Theme | null;
-    if (saved === 'dark' || saved === 'light') {
-      setThemeState(saved);
-      document.documentElement.classList.remove('dark', 'light');
-      document.documentElement.classList.add(saved);
-    } else {
-      // Default to dark mode from Stitch design system
-      document.documentElement.classList.remove('light');
-      document.documentElement.classList.add('dark');
-    }
-  }, []);
+    document.documentElement.classList.remove('dark', 'light');
+    document.documentElement.classList.add(theme);
+  }, [theme]);
 
   const setTheme = (newTheme: Theme) => {
     setThemeState(newTheme);

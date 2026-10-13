@@ -111,7 +111,7 @@ export default function PrivacyPage() {
               In accordance with municipal retention regulations, citizen contact details provided for status updates are kept only for the duration of the active resolution cycle plus 90 days.
             </p>
             <p>
-              Aggregated infrastructure statistics (e.g. "45 potholes repaired in District 3") are permanently retained in municipal open data archives with all identifying personal links purged.
+              Aggregated infrastructure statistics (e.g. &ldquo;45 potholes repaired in District 3&rdquo;) are permanently retained in municipal open data archives with all identifying personal links purged.
             </p>
           </section>
 

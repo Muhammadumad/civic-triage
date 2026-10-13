@@ -59,6 +59,7 @@ export default function AdminSpatialMapPage() {
                 ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30'
                 : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] bg-[var(--surface-elevated)] border border-[var(--border-subtle)]'
             }`}
+            suppressHydrationWarning
           >
             All ({complaints.length})
           </button>
@@ -70,6 +71,7 @@ export default function AdminSpatialMapPage() {
                 ? 'bg-[rgba(244,63,94,0.2)] text-[#FB7185] border border-[rgba(244,63,94,0.4)] shadow-[0_0_12px_rgba(244,63,94,0.3)]'
                 : 'text-[var(--text-secondary)] hover:text-[#FB7185] bg-[var(--surface-elevated)] border border-[var(--border-subtle)]'
             }`}
+            suppressHydrationWarning
           >
             <span className="w-2 h-2 rounded-full bg-[#FB7185]" />
             <span>High ({highCount})</span>
@@ -82,6 +84,7 @@ export default function AdminSpatialMapPage() {
                 ? 'bg-[rgba(245,158,11,0.2)] text-[#FBBF24] border border-[rgba(245,158,11,0.4)] shadow-[0_0_12px_rgba(245,158,11,0.3)]'
                 : 'text-[var(--text-secondary)] hover:text-[#FBBF24] bg-[var(--surface-elevated)] border border-[var(--border-subtle)]'
             }`}
+            suppressHydrationWarning
           >
             <span className="w-2 h-2 rounded-full bg-[#FBBF24]" />
             <span>Medium ({medCount})</span>
@@ -94,6 +97,7 @@ export default function AdminSpatialMapPage() {
                 ? 'bg-[rgba(59,130,246,0.2)] text-[#60A5FA] border border-[rgba(59,130,246,0.4)] shadow-[0_0_12px_rgba(59,130,246,0.3)]'
                 : 'text-[var(--text-secondary)] hover:text-[#60A5FA] bg-[var(--surface-elevated)] border border-[var(--border-subtle)]'
             }`}
+            suppressHydrationWarning
           >
             <span className="w-2 h-2 rounded-full bg-[#60A5FA]" />
             <span>Low ({lowCount})</span>

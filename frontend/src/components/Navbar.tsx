@@ -1,30 +1,43 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { PersonaToggle } from '@/components/PersonaToggle';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { usePersona } from '@/context/PersonaContext';
-import { 
-  Activity, 
-  PlusCircle, 
-  FileText, 
-  LayoutDashboard, 
-  HelpCircle, 
-  Menu, 
+import {
+  Activity,
+  PlusCircle,
+  FileText,
+  LayoutDashboard,
+  Map,
+  SlidersHorizontal,
+  Menu,
   X,
-  Sparkles
+  Sparkles,
+  LogIn,
+  LogOut,
+  User as UserIcon,
 } from 'lucide-react';
 
 export function Navbar() {
   const pathname = usePathname();
-  const { role } = usePersona();
+  const { role, currentUser, isAuthenticated, logout } = usePersona();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Do not render Navbar on login or registration pages
+  if (pathname === '/login' || pathname === '/register') {
+    return null;
+  }
 
   const residentLinks = [
     {
-      name: 'Report',
+      name: 'Report Issue',
       href: '/complaints/new',
       icon: PlusCircle,
       badge: 'New',
@@ -33,21 +46,6 @@ export function Navbar() {
       name: 'My Reports',
       href: '/complaints',
       icon: FileText,
-    },
-    {
-      name: 'About',
-      href: '/about',
-      icon: HelpCircle,
-    },
-    {
-      name: 'FAQ',
-      href: '/faq',
-      icon: HelpCircle,
-    },
-    {
-      name: 'Contact',
-      href: '/contact',
-      icon: PlusCircle,
     },
   ];
 
@@ -61,21 +59,21 @@ export function Navbar() {
     {
       name: 'Spatial Map',
       href: '/admin/map',
-      icon: LayoutDashboard,
+      icon: Map,
     },
     {
       name: 'Scoring Rules',
       href: '/admin/rules',
-      icon: LayoutDashboard,
+      icon: SlidersHorizontal,
     },
     {
-      name: 'Resident Portal',
+      name: 'My Reports',
       href: '/complaints',
       icon: FileText,
     },
   ];
 
-  const navLinks = role === 'admin' ? adminLinks : residentLinks;
+  const navLinks = mounted && isAuthenticated && role === 'admin' ? adminLinks : residentLinks;
 
   return (
     <header className="sticky top-0 z-50 w-full glass-nav border-b border-white/[0.08] backdrop-blur-md">
@@ -105,7 +103,7 @@ export function Navbar() {
             </Link>
 
             {/* Desktop Navigation Links */}
-              <nav className="hidden min-w-0 flex-1 items-center justify-center space-x-1 overflow-hidden 2xl:flex">
+            <nav className="hidden min-w-0 flex-1 items-center justify-center space-x-1 overflow-hidden md:flex">
               {navLinks.map((link) => {
                 const Icon = link.icon;
                 const isActive = pathname === link.href;
@@ -133,14 +131,34 @@ export function Navbar() {
             </nav>
           </div>
 
-          {/* Right Section: Persona Toggle, Theme Toggle & Actions */}
-          <div className="hidden shrink-0 items-center gap-3 sm:flex">
+          {/* Right Section: Theme Toggle & Auth Actions (Desktop) */}
+          <div className="hidden shrink-0 items-center gap-3 md:flex">
             <ThemeToggle />
 
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-zinc-400 hidden lg:inline">Persona:</span>
-              <PersonaToggle />
-            </div>
+            {mounted && isAuthenticated ? (
+              <div className="flex items-center gap-2 pl-1 border-l border-white/10">
+                <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-zinc-300">
+                  <UserIcon className="w-3.5 h-3.5 text-emerald-400" />
+                  <span className="max-w-[100px] truncate">{currentUser.name.split(' ')[0]}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={logout}
+                  title="Sign out of account"
+                  className="p-2 rounded-lg text-zinc-400 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                >
+                  <LogOut className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <Link
+                href="/login"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 transition-colors"
+              >
+                <LogIn className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Sign In</span>
+              </Link>
+            )}
 
             <Link
               href="/complaints/new"
@@ -151,10 +169,9 @@ export function Navbar() {
             </Link>
           </div>
 
-          {/* Mobile menu button & Theme toggle */}
-          <div className="flex items-center gap-2 2xl:hidden">
+          {/* Mobile: ThemeToggle + hamburger (Mobile Only) */}
+          <div className="flex items-center gap-2 md:hidden">
             <ThemeToggle />
-            <PersonaToggle />
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -169,7 +186,7 @@ export function Navbar() {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="2xl:hidden glass-panel border-b border-white/10 px-4 pt-2 pb-5 space-y-2 animate-in slide-in-from-top-2">
+        <div className="md:hidden glass-panel border-b border-white/10 px-4 pt-2 pb-5 space-y-2 animate-in slide-in-from-top-2">
           {navLinks.map((link) => {
             const Icon = link.icon;
             const isActive = pathname === link.href;
@@ -196,7 +213,35 @@ export function Navbar() {
               </Link>
             );
           })}
-          <div className="pt-2">
+          <div className="pt-2 space-y-2">
+            {mounted && isAuthenticated ? (
+              <div className="flex items-center justify-between p-2.5 rounded-lg bg-white/5 border border-white/10 text-xs">
+                <div className="flex items-center gap-2 text-zinc-300">
+                  <UserIcon className="w-4 h-4 text-emerald-400" />
+                  <span>{currentUser.name} ({currentUser.role})</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    logout();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="text-red-400 hover:text-red-300 font-medium"
+                >
+                  Sign Out
+                </button>
+              </div>
+            ) : (
+              <Link
+                href="/login"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-white/10 hover:bg-white/15 text-white font-medium text-sm transition-colors border border-white/15"
+              >
+                <LogIn className="w-4 h-4 text-emerald-400" />
+                <span>Sign In to Account</span>
+              </Link>
+            )}
+
             <Link
               href="/complaints/new"
               onClick={() => setMobileMenuOpen(false)}

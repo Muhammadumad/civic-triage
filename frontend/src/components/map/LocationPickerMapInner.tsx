@@ -72,7 +72,7 @@ export default function LocationPickerMapInner({
       });
       mapRef.current = map;
 
-      // Public OpenStreetMap tiles do not require an API key.
+      // Public OpenStreetMap tiles - 100% free, no API key required
       L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
       }).addTo(map);

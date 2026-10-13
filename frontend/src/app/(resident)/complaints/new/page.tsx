@@ -48,6 +48,7 @@ export default function NewComplaintPage() {
   const [photoUrl, setPhotoUrl] = useState<string>('https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80');
   const [isAnalyzingPhoto, setIsAnalyzingPhoto] = useState(false);
   const [isAiVisionReady, setIsAiVisionReady] = useState(true);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Form states
@@ -80,6 +81,7 @@ export default function NewComplaintPage() {
 
   const processFile = (file: File) => {
     if (!file.type.startsWith('image/')) return;
+    setSelectedFile(file);
     const reader = new FileReader();
     reader.onload = (e) => {
       const result = e.target?.result as string;
@@ -97,6 +99,7 @@ export default function NewComplaintPage() {
 
   const removePhoto = () => {
     setPhotoUrl('');
+    setSelectedFile(null);
     setIsAiVisionReady(false);
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
@@ -178,7 +181,7 @@ export default function NewComplaintPage() {
   };
 
   // Submission handler
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) {
       alert('Please enter a brief summary title for the report.');
@@ -247,11 +250,14 @@ export default function NewComplaintPage() {
       },
     };
 
-    setTimeout(() => {
-      addComplaint(newComplaint);
+    try {
+      const created = await addComplaint(newComplaint, selectedFile);
+      setIsSubmitting(false);
+      router.push(`/complaints/${created.id}`);
+    } catch {
       setIsSubmitting(false);
       router.push(`/complaints/${newId}`);
-    }, 900);
+    }
   };
 
   return (

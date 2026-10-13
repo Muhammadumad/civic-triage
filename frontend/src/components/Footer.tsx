@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { 
   ShieldCheck, 
   Award, 
@@ -14,6 +15,13 @@ import {
 } from 'lucide-react';
 
 export function Footer() {
+  const pathname = usePathname();
+
+  // Do not render Footer on login or registration pages
+  if (pathname === '/login' || pathname === '/register') {
+    return null;
+  }
+
   return (
     <footer className="mt-auto border-t border-[var(--border-subtle)] bg-[var(--canvas-base)] backdrop-blur-md transition-colors duration-300">
       {/* Upper service standards badge row */}

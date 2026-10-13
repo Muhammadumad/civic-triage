@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useComplaintsStore } from '@/lib/complaints-store';
+import { fetchComplaintById } from '@/lib/api';
 import { 
   Complaint, 
   ComplaintStatus, 
@@ -32,7 +33,8 @@ import {
   Check, 
   Copy,
   Sliders,
-  ShieldAlert
+  ShieldAlert,
+  Loader2
 } from 'lucide-react';
 import { formatRelativeTime } from '@/lib/utils';
 
@@ -45,21 +47,62 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
     updateStatusWithEvidence 
   } = useComplaintsStore();
 
-  const storeComplaint = getComplaintById(id);
+  const [mounted, setMounted] = useState(false);
+  const [fetchedComplaint, setFetchedComplaint] = useState<Complaint | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
   const sampleFallback = SAMPLE_COMPLAINTS.find((c) => c.id === id);
-  const complaint = storeComplaint || sampleFallback;
+  const storeComplaint = getComplaintById(id);
+  const complaint = fetchedComplaint || storeComplaint || sampleFallback;
+
+  useEffect(() => {
+    setMounted(true);
+    const existing = getComplaintById(id) || SAMPLE_COMPLAINTS.find((c) => c.id === id);
+    if (existing) {
+      setFetchedComplaint(existing);
+      setIsLoading(false);
+    } else {
+      setIsLoading(true);
+      fetchComplaintById(id)
+        .then((data) => {
+          setFetchedComplaint(data);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
+  }, [id, getComplaintById]);
 
   // Status & Evidence Modal
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newStatus, setNewStatus] = useState<ComplaintStatus>(complaint?.status || 'Assigned');
-  const [selectedDept, setSelectedDept] = useState(complaint?.department || 'Dept of Public Works & Roads');
+  const [newStatus, setNewStatus] = useState<ComplaintStatus>('Assigned');
+  const [selectedDept, setSelectedDept] = useState('Dept of Public Works & Roads');
   const [fieldNotes, setFieldNotes] = useState('');
   const [afterPhotoUrl, setAfterPhotoUrl] = useState('');
   const [isSubmittingModal, setIsSubmittingModal] = useState(false);
 
+  useEffect(() => {
+    if (complaint) {
+      setNewStatus(complaint.status);
+      setSelectedDept(complaint.department);
+    }
+  }, [complaint?.status, complaint?.department]);
+
   // Copy state & Action feedback
   const [copied, setCopied] = useState(false);
   const [actionNotice, setActionNotice] = useState<string | null>(null);
+
+  if (!mounted || isLoading) {
+    return (
+      <div className="min-h-screen py-16 px-4 flex flex-col items-center justify-center text-center">
+        <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-emerald-400 mb-4 animate-pulse">
+          <Loader2 className="w-6 h-6 animate-spin" />
+        </div>
+        <h2 className="text-sm font-semibold text-white mb-1">Loading Ticket Details...</h2>
+        <p className="text-xs text-zinc-400 font-mono">Synchronizing dispatch registry for {id}</p>
+      </div>
+    );
+  }
 
   if (!complaint) {
     return (

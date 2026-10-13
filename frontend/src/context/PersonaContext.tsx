@@ -2,25 +2,70 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User, DEMO_USERS } from '@/lib/types';
+import { loginUser, registerUser, logoutUser, fetchCurrentUser } from '@/lib/api';
 
 interface PersonaContextType {
   role: 'resident' | 'admin';
   currentUser: User;
+  isAuthenticated: boolean;
+  token: string | null;
   setRole: (role: 'resident' | 'admin') => void;
   toggleRole: () => void;
+  login: (email: string, password: string) => Promise<User>;
+  register: (name: string, email: string, password: string) => Promise<User>;
+  logout: () => void;
 }
 
 const PersonaContext = createContext<PersonaContextType | undefined>(undefined);
 
 export function PersonaProvider({ children }: { children: React.ReactNode }) {
-  const [role, setRoleState] = useState<'resident' | 'admin'>('resident');
+  const [role, setRoleState] = useState<'resident' | 'admin'>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('civicpulse_persona');
+      if (saved === 'resident' || saved === 'admin') {
+        return saved;
+      }
+    }
+    return 'resident';
+  });
+
+  const [token, setToken] = useState<string | null>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('civicpulse_token');
+    }
+    return null;
+  });
+
+  const [authProfile, setAuthProfile] = useState<User | null>(() => {
+    if (typeof window !== 'undefined') {
+      const rawUser = localStorage.getItem('civicpulse_user');
+      if (rawUser) {
+        try {
+          return JSON.parse(rawUser);
+        } catch {
+          return null;
+        }
+      }
+    }
+    return null;
+  });
 
   useEffect(() => {
-    const saved = localStorage.getItem('civicpulse_persona');
-    if (saved === 'resident' || saved === 'admin') {
-      setRoleState(saved);
+    // Validate session in background if token exists
+    if (token) {
+      fetchCurrentUser().then((user) => {
+        if (user) {
+          setAuthProfile(user);
+          setRoleState(user.role);
+        } else {
+          // Token expired or invalid
+          setToken(null);
+          setAuthProfile(null);
+          logoutUser();
+        }
+      });
     }
-  }, []);
+  }, [token]);
 
   const setRole = (newRole: 'resident' | 'admin') => {
     setRoleState(newRole);
@@ -34,10 +79,58 @@ export function PersonaProvider({ children }: { children: React.ReactNode }) {
     setRole(next);
   };
 
-  const currentUser = DEMO_USERS[role];
+  const login = async (email: string, password: string): Promise<User> => {
+    const result = await loginUser(email, password);
+    setToken(result.token);
+    setAuthProfile(result.user);
+    setRole(result.user.role);
+    return result.user;
+  };
+
+  const register = async (name: string, email: string, password: string): Promise<User> => {
+    const result = await registerUser(name, email, password);
+    setToken(result.token);
+    setAuthProfile(result.user);
+    setRole(result.user.role);
+    return result.user;
+  };
+
+  const logout = () => {
+    logoutUser();
+    setToken(null);
+    setAuthProfile(null);
+    setRoleState('resident');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('civicpulse_persona');
+      localStorage.removeItem('civicpulse_token');
+      localStorage.removeItem('civicpulse_user');
+    }
+  };
+
+  const isAuthenticated = Boolean(token && authProfile);
+  const effectiveRole: 'resident' | 'admin' = isAuthenticated && authProfile ? (authProfile.role === 'admin' ? 'admin' : 'resident') : 'resident';
+  
+  const currentUser: User = authProfile || {
+    id: 'guest',
+    name: 'Guest Resident',
+    email: '',
+    role: 'resident',
+  };
 
   return (
-    <PersonaContext.Provider value={{ role, currentUser, setRole, toggleRole }}>
+    <PersonaContext.Provider
+      value={{
+        role: effectiveRole,
+        currentUser,
+        isAuthenticated,
+        token,
+        setRole,
+        toggleRole,
+        login,
+        register,
+        logout,
+      }}
+    >
       {children}
     </PersonaContext.Provider>
   );

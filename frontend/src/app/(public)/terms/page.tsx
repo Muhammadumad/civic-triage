@@ -108,7 +108,7 @@ export default function TermsPage() {
               <span>72-Hour Reopen Protections</span>
             </h2>
             <p>
-              Residents who believe a completed ticket was insufficiently repaired may trigger a single "Reopen" action within 72 hours of closure. Reopened tickets require a brief reason statement and are elevated to municipal supervisory inspection.
+              Residents who believe a completed ticket was insufficiently repaired may trigger a single &ldquo;Reopen&rdquo; action within 72 hours of closure. Reopened tickets require a brief reason statement and are elevated to municipal supervisory inspection.
             </p>
           </section>
 
