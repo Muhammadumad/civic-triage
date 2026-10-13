@@ -169,8 +169,9 @@
   - Connected live to `GET /api/admin/complaints` and `GET /api/complaints`.
   - *Status:* Completed & verified.
 
-- [x] **Task 9.2: Interactive Cluster Map**
-  - Full-screen interactive Leaflet map with priority heatmaps and custom category pins.
+- [x] **Task 9.2: Interactive Cluster Map & Affected Area Telemetry**
+  - Full-screen interactive Leaflet map upgraded with dynamic affected hazard radiuses (220m high impact, 140m medium, 70m low), duplicate hotspot ripple halos, sensitive municipal safety corridors (hospitals & schools with +20 priority escalation alerts), auto-fit bounds, and layer controls.
+  - Upgraded public `CivicMapInner` with affected area hazard buffers and `LocationPickerMapInner` with real-time 150m impact coverage and live proximity warnings.
   - *Status:* Completed & verified.
 
 - [x] **Task 9.3: Detail & Action Panel**
