@@ -32,9 +32,10 @@
 ## Phase 2: Core API & File Uploads
 **Goal:** Allow residents to submit basic complaints with photos.
 
-- [x] **Task 2.1: Setup Multer for Image Uploads**
+- [x] **Task 2.1: Setup Multer for Image Uploads & Sample Assets**
   - Installed `multer`. Created `middleware/upload.js` (5 MB max, jpg/png/webp, fields `photo` and `evidence`).
-  - Statically serve `/uploads` via Express.
+  - Statically serve `/uploads` via Express with automatic fallback handling to prevent 404s for missing demo files.
+  - Added `backend/src/seed/downloadSampleImages.js` to ensure seeded complaint photos (`sample_pothole_1.jpg`, `sample_drain_1.jpg`, `sample_streetlight_1.jpg`, etc.) are pre-cached in `backend/uploads`.
   - *Status:* Completed.
 
 - [x] **Task 2.2: Basic Complaint Submission Endpoint**
