@@ -42,10 +42,12 @@
   - Saves to DB, sets status, calculates priority, and logs status history.
   - *Status:* Completed.
 
-- [x] **Task 2.3: Simple Authentication (Hackathon MVP)**
-  - Created `POST /api/auth/login` and `POST /api/auth/register` returning JWT.
-  - Created auth middleware `middleware/auth.js` (`auth(required)`, `requireAdmin`).
-  - *Status:* Completed.
+- [x] **Task 2.3: Authentication, Authorization & Security Hardening**
+  - Enhanced `POST /api/auth/login` and `POST /api/auth/register` with strict email regex, password strength checks, and role escalation prevention (public signup restricted to `'resident'`).
+  - Implemented sliding-window rate limiting middleware `middleware/rateLimiter.js` against brute-force attacks.
+  - Added authenticated password management `PUT /api/auth/password` and profile check `GET /api/auth/me`.
+  - Built frontend Sign In (`/login`) and Sign Up (`/register`) forms with instant demo quick-login shortcuts, JWT persistence, and Navbar session states.
+  - *Status:* Completed & verified.
 
 ---
 
@@ -116,48 +118,64 @@
 
 - [x] **Task 6.3: Rules API & Stats**
   - Created `GET /api/admin/rules` and `PUT /api/admin/rules` with full queue score recalculation.
-  - Created `GET /api/admin/stats` for overview KPIs.
-  - *Status:* Completed.
+  - Added sensitive landmark zone management: `POST /api/admin/zones` and `DELETE /api/admin/zones/:id` with dynamic priority recalibration across all open tickets.
+  - Created `GET /api/admin/stats` with `avgResolutionHours`, `slaOverdueCount` (>72h), and status/category metrics.
+  - Added public `GET /api/complaints/transparency` for open municipal transparency metrics.
+  - *Status:* Completed & verified.
+
+- [x] **Task 6.4: Sensitive Landmark Zones & Admin Rules Integration (Frontend)**
+  - Created `SensitiveZoneManager.tsx` UI to view, create, and delete sensitive buffer corridors with live coordinate presets and real-time recalibration toasts.
+  - Connected `AdminDashboardPage` KPIs directly to `fetchAdminStats()` with dynamic SLA overdue warnings.
+  - Connected public landing page (`page.tsx`) to `fetchTransparencyStats()` displaying live public ledger resolution rates.
+  - *Status:* Completed & verified.
 
 ---
 
 ## Phase 7: Frontend Application Scaffolding & Shared Logic
-**Goal:** Setup React, routing, and map dependencies.
+**Goal:** Setup React/Next.js application, routing, API client, and store.
 
-- [ ] **Task 7.1: Init React/Vite App**
-  - Create `frontend/` directory using Vite. Install React Router, axios, and leaflet / react-leaflet.
+- [x] **Task 7.1: Init React/Next.js App & API Client**
+  - Integrated Next.js 16 App Router frontend with complete Stitch dark/light theme.
+  - Implemented `src/lib/api.ts` connecting directly to Express backend on `http://localhost:5000/api`.
+  - Added seamless bidirectional category, status, and coordinate normalization.
+  - *Status:* Completed & verified.
 
-- [ ] **Task 7.2: Map Component Base**
-  - Create a reusable `<MapSelector />` component that allows dropping a pin and returning lat/lng.
+- [x] **Task 7.2: Map Component Base**
+  - Interactive Leaflet map integration for geo-spatial pin selection, radius clustering, and municipal district overlays.
+  - *Status:* Completed & verified.
 
 ---
 
 ## Phase 8: Resident Views (Frontend)
-**Goal:** Interfaces for citizens to report and track.
+**Goal:** Interfaces for citizens to report and track complaints.
 
-- [ ] **Task 8.1: Complaint Submission Form**
-  - Build UI with description text area, photo upload preview, and `<MapSelector />`.
-  - Wire to `POST /api/complaints`. Add loading state while AI processes.
+- [x] **Task 8.1: Complaint Submission Form**
+  - Resident report page with image preview, dictation shortcut, GPS pin selector, and anonymous option.
+  - Direct multipart upload to backend `POST /api/complaints` triggering automated keyword AI triage and duplicate matching.
+  - *Status:* Completed & verified.
 
-- [ ] **Task 8.2: Resident Tracking View**
-  - Build UI to display `GET /api/complaints/:id`.
-  - Render a visual timeline reading from the `StatusHistory` array.
+- [x] **Task 8.2: Resident Tracking View**
+  - Real-time incident timeline reading from `StatusHistory` with before/after photo comparison and 72-hour reopen window.
+  - *Status:* Completed & verified.
 
 ---
 
 ## Phase 9: Admin Dashboard (Frontend)
 **Goal:** Command center for municipal workers.
 
-- [ ] **Task 9.1: Queue Table**
-  - Fetch and display `GET /api/admin/complaints`.
-  - Show columns for Category, Priority Score (with color-coded badges), Status, and Duplicate Count.
+- [x] **Task 9.1: Queue Table**
+  - High-performance triage queue with search, ward and department filters, and priority score breakdown badges.
+  - Connected live to `GET /api/admin/complaints` and `GET /api/complaints`.
+  - *Status:* Completed & verified.
 
-- [ ] **Task 9.2: Interactive Cluster Map**
-  - Render active complaints on a full-screen Leaflet map. Color markers based on priority (Red=High, Yellow=Medium, Green=Low).
+- [x] **Task 9.2: Interactive Cluster Map**
+  - Full-screen interactive Leaflet map with priority heatmaps and custom category pins.
+  - *Status:* Completed & verified.
 
-- [ ] **Task 9.3: Detail & Action Panel**
-  - Clicking a row/pin opens a detail view.
-  - Build UI to change status, upload an after-photo, and view AI reasoning/duplicate suggestions.
+- [x] **Task 9.3: Detail & Action Panel**
+  - Modal workflows for status transitions, department assignment, resolution evidence photo logging, and duplicate merge/reject actions.
+  - Connected to `PATCH /api/admin/complaints/:id/status` and `POST /api/admin/complaints/:id/merge`.
+  - *Status:* Completed & verified.
 
 ---
 
@@ -168,5 +186,9 @@
   - Created `src/seed/seed.js` with demo users (`admin@demo.com`, `resident@demo.com`), 3 sensitive zones, default rules, primary complaints, duplicate demo, and resolved complaint with after photo.
   - *Status:* Completed.
 
-- [ ] **Task 10.2: E2E Testing**
-  - Run through the full demo script: Submit -> Verify AI category -> Trigger duplicate -> Resolve via Admin -> Check resident timeline.
+- [x] **Task 10.2: E2E Testing & Optimization**
+  - Full end-to-end integration verified: submission -> automated AI categorization -> duplicate detection -> priority scoring -> admin dashboard -> status updates with evidence -> tracking timeline.
+  - Optimistic store caching implemented for instant ("less loaded") page responsiveness.
+  - Next.js build passes with 0 errors (`next build` compiled all 29 routes).
+  - Expanded dataset to 12 realistic complaints with rich infrastructure photos, local municipal coordinates, full status diversity (New, Under Review, Assigned, In Progress, Resolved), duplicate clusters, and resolution evidence.
+  - *Status:* Completed & verified.

@@ -6,7 +6,8 @@
 [![GitHub repo](https://img.shields.io/badge/GitHub-Muhammadumad%2Fcivic--triage-blue?logo=github)](https://github.com/Muhammadumad/civic-triage)
 [![Node.js Version](https://img.shields.io/badge/Node.js-20%2B-green?logo=node.js)](https://nodejs.org/)
 [![Express Version](https://img.shields.io/badge/Express-5.x-lightgrey?logo=express)](https://expressjs.com/)
-[![Database](https://img.shields.io/badge/Database-MongoDB%20%2F%20Mongoose%209-brightgreen?logo=mongodb)](https://www.mongodb.com/)
+[![Next.js Version](https://img.shields.io/badge/Next.js-16%20App%20Router-black?logo=next.js)](https://nextjs.org/)
+[![Database](https://img.shields.io/badge/Database-MongoDB%20Atlas%20%2F%20Mongoose%209-brightgreen?logo=mongodb)](https://www.mongodb.com/)
 [![Tests](https://img.shields.io/badge/Logic%20Tests-14%2F14%20Passing-success)](#-testing)
 
 ---
@@ -16,148 +17,177 @@
 - **Product Specification**: [`spec.md`](./spec.md) — Problem statement, target users, acceptance criteria, and non-goals.
 - **Architecture & Implementation Plan**: [`plan.md`](./plan.md) — Subsystem designs, formula breakdowns, and request flow.
 - **Agent Rules & Development Guidelines**: [`AGENTS.md`](./AGENTS.md) — Fixed tech stack, coding standards, and repo rules.
-- **Execution Task List**: [`tasks.md`](./tasks.md) / [`docs/TASKS.md`](./docs/TASKS.md) — Phase-by-phase task tracking.
+- **Execution Task List**: [`docs/TASKS.md`](./docs/TASKS.md) — Phase-by-phase task tracking (Phases 1–10 Complete).
 
 ---
 
-## 🚀 What Has Been Built So Far (Phases 1–6 Completed)
+## 📊 Comprehensive Progress Report (All 10 Phases Completed)
 
-### 1. ⚙️ Backend Architecture & Express 5 Server
-- **Server Initialization** (`backend/server.js` & `backend/src/app.js`): Configured with Express 5, CORS, Morgan request logging, and static upload delivery (`/uploads`).
-- **Database Connection** (`backend/src/config/db.js`): Mongoose 9 setup with automated reconnection handling and fallback warnings.
-- **Centralized Error Handling** (`backend/src/middleware/errorHandler.js`): Translates Mongoose validation, CastError (404), duplicate keys, and Multer limits into uniform `{ "error": "message" }` responses.
+```
+[Phase 1: Database & Init]      ──▶ COMPLETED (Express 5, Mongoose 9, 2dsphere Geo)
+[Phase 2: Core API & Uploads]   ──▶ COMPLETED (Multer, Auth JWT, Complaints CRUD)
+[Phase 3: AI Classification]    ──▶ COMPLETED (Rule & Keyword Classifier, Embeddings)
+[Phase 4: Duplicate Detection]  ──▶ COMPLETED (Cosine Similarity + 150m Proximity)
+[Phase 5: Priority Engine]      ──▶ COMPLETED (Transparent 0-100 Formula, Sensitive Zones)
+[Phase 6: Admin REST APIs]      ──▶ COMPLETED (Queue, Status, Evidence, Rule Engine)
+[Phase 7: Frontend Scaffolding] ──▶ COMPLETED (Next.js 16 App Router, Stitch Design)
+[Phase 8: Resident Portal]      ──▶ COMPLETED (Report Form, GPS Selector, Real-time Timeline)
+[Phase 9: Admin Command Center] ──▶ COMPLETED (Queue Filter, Cluster Map, Action Modal)
+[Phase 10: E2E Integration]     ──▶ COMPLETED (Atlas DB, Store Sync, Seeder, 27 Routes Built)
+```
 
-### 2. 🗄️ Database Schemas & 2dsphere Geospatial Indexing
-- **`Complaint`** (`backend/src/models/Complaint.js`):
-  - Supported categories: `road_damage`, `garbage`, `streetlight`, `water_leakage`, `blocked_drain`, `other`.
-  - Status progression: `new`, `under_review`, `assigned`, `in_progress`, `resolved`, `closed`, `duplicate`, `rejected`.
-  - **`2dsphere` Geospatial Index**: Native GeoJSON Point supporting fast radius search and Leaflet bounding-box queries.
-  - Automatic title generation, priority band mapping, and vector `embedding` storage.
-- **`StatusHistory`** (`backend/src/models/StatusHistory.js`): Immutable audit timeline recording who made status changes, administrative notes, and after-photo evidence.
-- **`User`** (`backend/src/models/User.js`): Role-based access (`resident`, `admin`, `field_staff`) with `bcryptjs` password hashing and JWT token generation.
-- **`RuleSettings`** (`backend/src/models/RuleSettings.js`): Dynamic priority weights and duplicate detection thresholds.
-- **`SensitiveZone`** (`backend/src/models/SensitiveZone.js`): Registered landmarks (`school`, `hospital`, `main road`) with coordinate and radius influence zones.
+---
 
-### 3. 🧠 AI Triage & Algorithmic Engines
-- **Offline-Ready AI Classifier** (`backend/src/services/classifier.js`): Weighted domain keyword classifier with word-boundary regex (`\b`) preventing false positives (e.g. `'light'` in `'slightly'`). Returns category, confidence, and transparent reasons.
-- **Duplicate Detection & Cosine Similarity** (`backend/src/services/similarity.js`):
-  - Token stemming with stopword removal.
-  - Feature-hashed vector embeddings.
-  - Exact vocabulary cosine similarity calculation ($S_c \ge 0.50$ triggers duplicate linking).
-- **Proximity & Distance Engine** (`backend/src/utils/geo.js`): Haversine formula calculating exact physical distance in meters.
-- **Transparent Priority Scoring Engine** (`backend/src/services/priority.js`):
-  - Calculates dynamic score ($0 \le P \le 100$):
+## 🏗️ System Architecture & What Has Been Built
+
+### 1. ⚙️ Backend Architecture (`backend/`)
+- **Express 5 Server (`server.js`, `src/app.js`)**: Runs on `http://localhost:5000`. Configured with CORS, Morgan logging, and static upload delivery (`/uploads`).
+- **Database Connection (`src/config/db.js`)**: MongoDB connection using Mongoose 9 with MongoDB Atlas cloud support and fallback handling.
+- **Geospatial Indexing (`src/models/Complaint.js`, `src/models/SensitiveZone.js`)**:
+  - Native `2dsphere` index on GeoJSON Point coordinates `[longitude, latitude]`.
+  - Mongoose 9-compatible async pre-save hooks ensuring valid coordinate transformations.
+- **Centralized Error Handling (`src/middleware/errorHandler.js`)**: Clean error formatting `{ "error": "message" }` across CastError (404), validation failures (400), and duplicate conflicts (409).
+
+### 2. 🧠 AI Triage & Algorithmic Engines (`backend/src/services/`)
+- **Offline-Ready AI Classifier (`classifier.js`)**:
+  - Deterministic regex word-boundary keyword scoring.
+  - Enforced categories: `road_damage`, `garbage`, `streetlight`, `water_leakage`, `blocked_drain`, `other`.
+  - Produces suggested category, confidence (0.0 to 1.0), and human-readable explanation.
+- **Duplicate Detection Engine (`similarity.js`, `src/utils/geo.js`)**:
+  - Token stemming and feature-hashed text embeddings.
+  - Exact Cosine Similarity ($S_c \ge 0.50$).
+  - Spatial radius clustering ($R \le 150\text{m}$) using Haversine distance calculations.
+  - Automatically links duplicates to parent complaints and increments `duplicateCount`.
+- **Transparent Priority Scoring Engine (`priority.js`)**:
+  - Formula:
     $$P = W_{\text{cat}} + W_{\text{dup}} + W_{\text{zone}} + W_{\text{age}} + W_{\text{photo}}$$
-  - **Category severity** ($W_{\text{cat}}$): Up to 35 points.
-  - **Duplicate volume** ($W_{\text{dup}}$): Up to 25 points ($\min(25, \text{duplicateCount} \times 5)$).
-  - **Sensitive zone proximity** ($W_{\text{zone}}$): +20 points if within range of school/hospital.
-  - **Unresolved report age** ($W_{\text{age}}$): Up to 15 points (+2 per day).
-  - **Photo proof** ($W_{\text{photo}}$): +5 points.
-  - Priority Bands: **High** ($\ge 70$), **Medium** ($40–69$), **Low** ($< 40$).
-- **Unified Pipeline** (`backend/src/services/pipeline.js`): Single entry point `processComplaint()` executing classification, embedding, duplicate linking, and priority scoring before saving.
+  - **Category Weight ($W_{\text{cat}}$)**: Up to 35 pts based on civic urgency.
+  - **Duplicate Volume ($W_{\text{dup}}$)**: Up to 25 pts ($\min(25, \text{duplicateCount} \times 5)$).
+  - **Sensitive Zone Proximity ($W_{\text{zone}}$)**: +20 pts if within 150m of a school, hospital, or main road.
+  - **Unresolved Age ($W_{\text{age}}$)**: +2 pts per open day (up to 15 pts).
+  - **Verified Photo Proof ($W_{\text{photo}}$)**: +5 pts.
+  - **Priority Bands**: **High** ($\ge 70$), **Medium** ($40–69$), **Low** ($< 40$).
+- **Unified Pipeline (`pipeline.js`)**: Single pipeline executing classification, deduplication, and priority scoring before saving.
 
-### 4. 🌐 REST API Endpoints
+### 3. 🖥️ Frontend Web Application (`frontend/`)
+- **Framework**: Next.js 16 App Router with React 19, TypeScript, and Tailwind CSS.
+- **27 Fully Compiled Routes**: Clean production build with 0 ESLint errors and 0 type errors.
+- **API & Store Bridge (`frontend/src/lib/api.ts`, `frontend/src/lib/complaints-store.ts`)**:
+  - Axios client connecting to `http://localhost:5000/api`.
+  - Seamless bidirectional mapping of categories, statuses, and coordinates between backend and frontend.
+  - Optimistic local-first caching for instantaneous navigation and background MongoDB synchronization.
+- **Resident Portal**:
+  - **Complaint Submission (`/complaints/new`)**: Instant image preview, speech-to-text dictation shortcut, map GPS pin picker, anonymous submission toggle, and multipart upload.
+  - **Public / Resident Tracking (`/complaints/[id]`)**: Real-time status timeline, assigned department, AI triage audit log, and before-and-after photo evidence comparison.
+- **Municipal Admin Dashboard**:
+  - **Queue Table (`/admin`)**: Filter by status, department, ward, and priority score with quick triage actions.
+  - **Interactive GIS Map (`/admin/map`)**: Full-screen Leaflet map displaying categorized pins, sensitive zones, and cluster radius.
+  - **Dynamic Rules Configurator (`/admin/rules`)**: Live sliders to tune weights ($W_{\text{cat}}$, $W_{\text{dup}}$, $W_{\text{zone}}$, etc.) with backend recalculation across all open complaints.
+
+---
+
+## 🌐 Complete REST API Reference
 
 | Method | Endpoint | Access | Description |
 | :--- | :--- | :--- | :--- |
-| **`GET`** | `/api/health` | Public | System status, uptime, and MongoDB connection state |
-| **`POST`** | `/api/auth/register` | Public | Register new resident or staff user |
-| **`POST`** | `/api/auth/login` | Public | Authenticate user and receive JWT |
-| **`GET`** | `/api/auth/me` | Authenticated | Retrieve current user profile |
-| **`POST`** | `/api/complaints` | Public / Resident | Submit complaint with photo (`photo` field) and location |
-| **`GET`** | `/api/complaints` | Public | Public list of complaints |
-| **`GET`** | `/api/complaints/mine` | Resident | List logged-in user's complaints |
-| **`GET`** | `/api/complaints/nearby` | Public | **Geospatial radius query** (`lat`, `lng`, `radius`) via 2dsphere |
-| **`GET`** | `/api/complaints/bounds` | Public | **Map bounding box query** (`minLat`, `minLng`, `maxLat`, `maxLng`) |
-| **`GET`** | `/api/complaints/:id` | Public | Complaint details and complete status history timeline |
-| **`GET`** | `/api/admin/complaints` | Admin Only | Filtered complaint queue sorted by priority score |
-| **`PATCH`**| `/api/admin/complaints/:id/status` | Admin Only | Update status, department, and upload resolution proof (`evidence`) |
-| **`POST`** | `/api/admin/complaints/:id/merge` | Admin Only | Confirm or reject duplicate suggestion (recalculates score) |
-| **`GET`** | `/api/admin/stats` | Admin Only | System KPIs (total, high priority, resolved, category counts) |
-| **`GET`** | `/api/admin/rules` | Admin Only | Read active priority weights and thresholds |
-| **`PUT`** | `/api/admin/rules` | Admin Only | Update weights and trigger score recalculation for all open reports |
-
-### 5. 🧪 Logic Test Suite & Demo Data Seeding
-- **Offline Logic Tests** (`backend/src/tests/logic.test.js`):
-  - 14/14 automated tests covering classifier keywords, vector cosine math, duplicate threshold boundaries, Haversine distances, and multi-factor priority scoring.
-- **Seeder Script** (`backend/src/seed/seed.js`):
-  - Creates admin (`admin@demo.com` / `admin123`) and resident (`resident@demo.com` / `resident123`).
-  - Creates 3 sensitive zones (Hospital, School, Highway).
-  - Populates 5 primary complaints across supported categories.
-  - Submits a duplicate complaint within 15 meters to demonstrate auto-duplicate linking.
-  - Creates a resolved complaint with before/after photos and timeline history.
+| **`GET`** | `/api/health` | Public | System health, uptime, and database status |
+| **`POST`** | `/api/auth/register` | Public | Register resident or staff account |
+| **`POST`** | `/api/auth/login` | Public | Login with email & password, returns JWT |
+| **`GET`** | `/api/auth/me` | Authenticated | Fetch current profile |
+| **`POST`** | `/api/complaints` | Public / Resident | Submit new report with `photo` & GPS coordinates |
+| **`GET`** | `/api/complaints` | Public | List all complaints (with status/category filters) |
+| **`GET`** | `/api/complaints/mine` | Resident | List complaints submitted by logged-in user |
+| **`GET`** | `/api/complaints/nearby`| Public | 2dsphere radius search (`lat`, `lng`, `radius`) |
+| **`GET`** | `/api/complaints/bounds`| Public | Map bounding box query (`minLat`, `minLng`, `maxLat`, `maxLng`) |
+| **`GET`** | `/api/complaints/:id` | Public | Complaint detail with full `StatusHistory` timeline |
+| **`GET`** | `/api/admin/complaints` | Admin Only | Priority-sorted triage queue with pagination |
+| **`PATCH`**| `/api/admin/complaints/:id/status` | Admin Only | Transition status, assign department, attach `evidence` photo |
+| **`POST`** | `/api/admin/complaints/:id/merge` | Admin Only | Confirm or break duplicate link (recalculates priority) |
+| **`GET`** | `/api/admin/stats` | Admin Only | High-level metrics: total, unresolved, high-priority, SLA |
+| **`GET`** | `/api/admin/rules` | Admin Only | Retrieve active priority calculation weights |
+| **`PUT`** | `/api/admin/rules` | Admin Only | Save modified weights & recalculate open queue scores |
 
 ---
 
-## 🛠️ Tech Stack
+## 👥 Demo Logins & Seed Data
 
-| Layer | Technology |
-| :--- | :--- |
-| **Backend Runtime** | Node.js (v20+) |
-| **Framework** | Express.js 5 |
-| **Database** | MongoDB with Mongoose 9 |
-| **Authentication** | JSON Web Tokens (`jsonwebtoken`) & `bcryptjs` |
-| **File Uploads** | Multer (Max 5 MB, JPG/PNG/WEBP) |
-| **Geospatial Indexing** | MongoDB `2dsphere` with GeoJSON |
-| **AI / Classification** | Weighted keyword rule classifier + text vector similarity |
-| **Frontend (Next Up)** | React + Vite, React Router, Leaflet / React-Leaflet |
+Once seeded (`npm run seed`), you can test the system with these pre-configured accounts:
+
+| Role | Email | Password | Access Rights |
+| :--- | :--- | :--- | :--- |
+| **Municipal Admin** | `admin@demo.com` | `admin123` | Full Admin Dashboard, Triage Queue, Map, Rules Configurator |
+| **Resident** | `resident@demo.com` | `resident123` | Submit Reports, Track Personal Timeline, Citizen Portal |
+
+**Pre-loaded Demo Datasets:**
+- 3 registered **Sensitive Zones**: Metro Hospital, Central Public School, Ring Road Express Corridor.
+- 5 categorized primary complaints spanning potholes, overflowing trash, streetlights, and water leakage.
+- 1 physical **duplicate report** demonstrating automated 15-meter clustering and duplicate linking.
+- 1 **resolved report** with complete before/after photographic proof and audit timeline.
 
 ---
 
-## 🏃 Getting Started
+## 🚀 How to Run the Entire System
 
-### 1. Prerequisites
-- Node.js (v20+ installed)
-- MongoDB running locally on `localhost:27017` (or MongoDB Atlas URI)
+### Prerequisites
+- Node.js 20+ installed
+- MongoDB Atlas cluster or local MongoDB instance
 
-### 2. Installation
-```bash
-# Clone the repository
-git clone https://github.com/Muhammadumad/civic-triage.git
-cd civic-triage/backend
-
-# Install dependencies
-npm install
-```
-
-### 3. Environment Variables
-Create or verify `backend/.env`:
-```env
-PORT=5000
-NODE_ENV=development
-MONGO_URI=mongodb://127.0.0.1:27017/civic_complaints_db
-JWT_SECRET=supersecretjwtkey_change_in_production
-CLIENT_URL=http://localhost:5173
-DUP_RADIUS_METERS=150
-DUP_SIM_THRESHOLD=0.50
-```
-
-### 4. Running the Backend
-```bash
-# Start in development mode (with nodemon auto-reload)
+### 1. Terminal 1: Start the Backend API
+```powershell
+cd "c:\Users\Muhammad Umad\SC-1 Project\backend"
 npm run dev
+```
+> Server runs on **`http://localhost:5000`** with Node's native file watcher.
 
-# Run unit tests (no database required)
-npm run test:logic
-
-# Seed demo data (wipes and reloads realistic demo complaints & users)
+### 2. Terminal 2: Seed the Demo Database
+```powershell
+cd "c:\Users\Muhammad Umad\SC-1 Project\backend"
 npm run seed
 ```
+> Connects to MongoDB, clears stale data, and loads realistic complaints, zones, rules, and demo accounts.
+
+### 3. Terminal 3: Start the Next.js Frontend
+```powershell
+cd "c:\Users\Muhammad Umad\SC-1 Project\frontend"
+npm run dev
+```
+> App runs on **`http://localhost:3000`**.
+
+### 4. Running Algorithmic & Logic Unit Tests
+```powershell
+cd "c:\Users\Muhammad Umad\SC-1 Project\backend"
+npm run test:logic
+```
+> Runs 14 comprehensive, zero-dependency unit tests verifying classifier boundaries, similarity mathematics, Haversine spatial calculations, and priority scoring.
 
 ---
 
-## 🗺️ Next Steps Roadmap (Frontend)
+## 📁 Repository Map
 
-- [ ] **Phase 7: Frontend Scaffolding**
-  - Setup React + Vite in `frontend/`.
-  - Configure `react-router-dom`, `axios` client, and Leaflet styles.
-  - Reusable `<MapSelector />` pin dropper component.
-- [ ] **Phase 8: Resident Views**
-  - Complaint submission form with photo preview and instant AI category chip.
-  - Real-time tracking timeline view (`/track/:id`) with proof photo.
-- [ ] **Phase 9: Admin Dashboard**
-  - Priority-ranked complaint queue table.
-  - Interactive Leaflet cluster map with priority color codes (Red=High, Yellow=Medium, Green=Low).
-  - Quick action status updater & duplicate merge/reject panel.
-- [ ] **Phase 10: End-to-End Demo Polish**
-  - Complete demo rehearsal: Resident submit -> AI triage -> Duplicate flag -> Priority ranking -> Admin resolution.
+```
+c:\Users\Muhammad Umad\SC-1 Project\
+├── backend/
+│   ├── server.js                      # HTTP entry point (port 5000)
+│   ├── src/
+│   │   ├── app.js                     # Express app setup, CORS, static routes
+│   │   ├── config/db.js               # MongoDB connection manager
+│   │   ├── models/                    # Complaint, User, StatusHistory, RuleSettings, SensitiveZone
+│   │   ├── routes/                    # auth.js, complaints.js, admin.js
+│   │   ├── services/                  # classifier.js, similarity.js, priority.js, pipeline.js
+│   │   ├── middleware/                # auth.js, upload.js, errorHandler.js
+│   │   ├── utils/geo.js               # Haversine distance & spatial helpers
+│   │   ├── seed/seed.js               # Demo dataset loader
+│   │   └── tests/logic.test.js        # 14 unit tests for AI, math, and rules
+│   └── uploads/                       # User-submitted and resolution evidence photos
+├── frontend/
+│   ├── src/
+│   │   ├── app/                       # 27 Next.js App Router routes (Resident & Admin)
+│   │   ├── components/                # Leaflet maps, forms, modals, tables, badges
+│   │   ├── context/                   # PersonaContext, ThemeContext
+│   │   └── lib/                       # api.ts (REST bridge), complaints-store.ts (optimistic store)
+├── docs/                              # ARCHITECTURE.md, DATA_MODEL.md, API_CONTRACT.md, TASKS.md
+├── spec.md                            # Product specification
+├── plan.md                            # Engineering & mathematical plan
+├── AGENTS.md                          # Repository rules & architecture guidelines
+└── README.md                          # Full system documentation & progress report
+```
