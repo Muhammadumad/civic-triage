@@ -146,6 +146,70 @@ router.get('/', async (req, res, next) => {
 });
 
 /**
+ * @route   GET /api/complaints/nearby
+ * @desc    Find complaints within radius of coordinates using 2dsphere index
+ * @access  Public
+ */
+router.get('/nearby', async (req, res, next) => {
+  try {
+    const { lat, lng, radius = 5000, category, status } = req.query;
+
+    if (lat == null || lng == null || !isValidCoordinate(lat, lng)) {
+      return res.status(400).json({ error: 'Valid lat (-90 to 90) and lng (-180 to 180) are required.' });
+    }
+
+    const filter = {};
+    if (category) filter.category = category;
+    if (status) filter.status = status;
+
+    const complaints = await Complaint.findNearby(lat, lng, parseInt(radius, 10), filter)
+      .sort({ priorityScore: -1 })
+      .select('-embedding')
+      .limit(100);
+
+    res.status(200).json({
+      count: complaints.length,
+      radiusMeters: parseInt(radius, 10),
+      center: { lat: parseFloat(lat), lng: parseFloat(lng) },
+      complaints,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+/**
+ * @route   GET /api/complaints/bounds
+ * @desc    Find complaints within map viewport bounding box using 2dsphere index
+ * @access  Public
+ */
+router.get('/bounds', async (req, res, next) => {
+  try {
+    const { minLat, minLng, maxLat, maxLng, category, status } = req.query;
+
+    if (minLat == null || minLng == null || maxLat == null || maxLng == null) {
+      return res.status(400).json({ error: 'minLat, minLng, maxLat, and maxLng parameters are required.' });
+    }
+
+    const filter = {};
+    if (category) filter.category = category;
+    if (status) filter.status = status;
+
+    const complaints = await Complaint.findByBounds(minLat, minLng, maxLat, maxLng, filter)
+      .sort({ priorityScore: -1 })
+      .select('-embedding')
+      .limit(200);
+
+    res.status(200).json({
+      count: complaints.length,
+      complaints,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+/**
  * @route   GET /api/complaints/:id
  * @desc    Fetch single complaint details, duplicate info, and full timeline history
  * @access  Public

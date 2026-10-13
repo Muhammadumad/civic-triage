@@ -83,6 +83,15 @@ const complaintSchema = new mongoose.Schema(
         trim: true,
         default: 'Location specified on map',
       },
+      type: {
+        type: String,
+        enum: ['Point'],
+        default: 'Point',
+      },
+      coordinates: {
+        type: [Number], // [lng, lat]
+        default: [0, 0],
+      },
       geo: {
         type: {
           type: String,
@@ -160,15 +169,48 @@ const complaintSchema = new mongoose.Schema(
   }
 );
 
+// 2dsphere geospatial indexes for map exploration and proximity duplicate detection
 complaintSchema.index({ 'location.geo': '2dsphere' });
+complaintSchema.index({ 'location': '2dsphere' });
 complaintSchema.index({ category: 1, status: 1 });
 complaintSchema.index({ createdAt: -1 });
 
+// Static helper to find complaints within a radius (meters) using 2dsphere index
+complaintSchema.statics.findNearby = function (lat, lng, radiusMeters = 5000, extraFilter = {}) {
+  const radiusRadians = radiusMeters / 6378100;
+  return this.find({
+    ...extraFilter,
+    'location.geo': {
+      $geoWithin: {
+        $centerSphere: [[Number(lng), Number(lat)], radiusRadians],
+      },
+    },
+  });
+};
+
+// Static helper to find complaints inside viewport bounding box for Leaflet maps
+complaintSchema.statics.findByBounds = function (minLat, minLng, maxLat, maxLng, extraFilter = {}) {
+  return this.find({
+    ...extraFilter,
+    'location.geo': {
+      $geoWithin: {
+        $box: [
+          [Number(minLng), Number(minLat)],
+          [Number(maxLng), Number(maxLat)],
+        ],
+      },
+    },
+  });
+};
+
 complaintSchema.pre('save', function (next) {
   if (this.location && this.location.lat != null && this.location.lng != null) {
+    const coords = [Number(this.location.lng), Number(this.location.lat)];
+    this.location.type = 'Point';
+    this.location.coordinates = coords;
     this.location.geo = {
       type: 'Point',
-      coordinates: [this.location.lng, this.location.lat],
+      coordinates: coords,
     };
   }
 
