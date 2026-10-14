@@ -1,0 +1,10 @@
+{
+  "name": "civic-triage",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Smart Civic Complaint Triage System",
+  "scripts": {
+    "build": "cd backend && npm install",
+    "start": "node backend/server.js"
+  }
+}
