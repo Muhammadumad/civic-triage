@@ -271,6 +271,42 @@ export default function ComplaintTrackingClient({ id }: { id: string }) {
           </div>
         </div>
 
+        {/* AI Multimodal Triage Provenance */}
+        {complaint.aiProvenance && (
+          <div className="bg-[#161922] border border-cyan-500/30 rounded-xl p-5 shadow-xl relative overflow-hidden space-y-3">
+            <div className="flex items-center justify-between pb-2 border-b border-white/[0.06]">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-cyan-400" />
+                <h3 className="text-sm font-bold text-white">AI Vision & Automated Triage Analysis</h3>
+              </div>
+              <span className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 font-semibold">
+                {complaint.aiProvenance.modelVersion}
+              </span>
+            </div>
+            <div className="text-xs text-zinc-300 leading-relaxed">
+              <span className="font-semibold text-zinc-100">Visual Assessment: </span>
+              {complaint.aiProvenance.classificationReason}
+            </div>
+            {complaint.aiProvenance.visualFeatures && complaint.aiProvenance.visualFeatures.length > 0 && (
+              <div className="space-y-1.5 pt-1">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400 block font-semibold">
+                  Field Dispatch Action Recommendation:
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  {complaint.aiProvenance.visualFeatures.map((feat, i) => (
+                    <span
+                      key={i}
+                      className="text-xs px-2.5 py-1 rounded-lg bg-black/40 border border-white/10 text-zinc-200"
+                    >
+                      {feat}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Priority Score Breakdown Card with Visual Bar */}
         <div className="bg-[#11131A] border border-white/[0.08] rounded-xl p-6 shadow-xl space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-white/[0.06]">
