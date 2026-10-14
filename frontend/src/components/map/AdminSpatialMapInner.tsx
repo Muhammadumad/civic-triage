@@ -31,8 +31,15 @@ export default function AdminSpatialMapInner({
       if (!isMounted || !mapContainerRef.current) return;
 
       if (mapInstanceRef.current) {
-        mapInstanceRef.current.remove();
+        try {
+          mapInstanceRef.current.off();
+          mapInstanceRef.current.remove();
+        } catch (_) {}
         mapInstanceRef.current = null;
+      }
+
+      if (mapContainerRef.current) {
+        delete (mapContainerRef.current as any)._leaflet_id;
       }
 
       // Initialize map
@@ -272,7 +279,10 @@ export default function AdminSpatialMapInner({
     return () => {
       isMounted = false;
       if (mapInstanceRef.current) {
-        mapInstanceRef.current.remove();
+        try {
+          mapInstanceRef.current.off();
+          mapInstanceRef.current.remove();
+        } catch (_) {}
         mapInstanceRef.current = null;
       }
     };

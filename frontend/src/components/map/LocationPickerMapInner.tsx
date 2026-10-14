@@ -90,8 +90,15 @@ export default function LocationPickerMapInner({
       if (!isMounted || !mapContainerRef.current) return;
 
       if (mapRef.current) {
-        mapRef.current.remove();
+        try {
+          mapRef.current.off();
+          mapRef.current.remove();
+        } catch (_) {}
         mapRef.current = null;
+      }
+
+      if (mapContainerRef.current) {
+        delete (mapContainerRef.current as any)._leaflet_id;
       }
 
       const map = L.map(mapContainerRef.current, {
@@ -171,32 +178,37 @@ export default function LocationPickerMapInner({
       }).addTo(map);
       markerRef.current = marker;
 
-      const updatePos = (newLat: number, newLng: number) => {
-        marker.setLatLng([newLat, newLng]);
-        impactCircle.setLatLng([newLat, newLng]);
-        setCurrentCoords({ lat: newLat, lng: newLng });
-        reverseGeocode(newLat, newLng);
-      };
-
       marker.on('drag', (e: any) => {
+        if (!e?.target) return;
         const p = e.target.getLatLng();
-        impactCircle.setLatLng([p.lat, p.lng]);
+        if (p && impactCircle) impactCircle.setLatLng(p);
       });
 
       marker.on('dragend', (e: any) => {
+        if (!e?.target) return;
         const p = e.target.getLatLng();
-        updatePos(p.lat, p.lng);
+        if (p && impactCircle) impactCircle.setLatLng(p);
+        setCurrentCoords({ lat: p.lat, lng: p.lng });
+        reverseGeocode(p.lat, p.lng);
       });
 
       map.on('click', (e: any) => {
-        updatePos(e.latlng.lat, e.latlng.lng);
+        if (!e?.latlng) return;
+        const { lat: clickLat, lng: clickLng } = e.latlng;
+        marker.setLatLng([clickLat, clickLng]);
+        if (impactCircle) impactCircle.setLatLng([clickLat, clickLng]);
+        setCurrentCoords({ lat: clickLat, lng: clickLng });
+        reverseGeocode(clickLat, clickLng);
       });
     });
 
     return () => {
       isMounted = false;
       if (mapRef.current) {
-        mapRef.current.remove();
+        try {
+          mapRef.current.off();
+          mapRef.current.remove();
+        } catch (_) {}
         mapRef.current = null;
       }
     };

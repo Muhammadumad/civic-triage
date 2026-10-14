@@ -37,8 +37,15 @@ export default function CivicMapInner({
       if (!isMounted || !mapContainerRef.current) return;
 
       if (mapInstanceRef.current) {
-        mapInstanceRef.current.remove();
+        try {
+          mapInstanceRef.current.off();
+          mapInstanceRef.current.remove();
+        } catch (_) {}
         mapInstanceRef.current = null;
+      }
+
+      if (mapContainerRef.current) {
+        delete (mapContainerRef.current as any)._leaflet_id;
       }
 
       // Initialize Map
