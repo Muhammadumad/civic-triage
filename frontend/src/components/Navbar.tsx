@@ -211,14 +211,6 @@ export function Navbar() {
                 </Link>
               </div>
             )}
-
-            <Link
-              href="/complaints/new"
-              className="flex items-center gap-2 px-3.5 py-2 rounded-lg bg-emerald-500 text-slate-950 font-semibold text-xs tracking-wide hover:bg-emerald-400 transition-all duration-200 shadow-[0_0_18px_rgba(16,185,129,0.3)] hover:shadow-[0_0_22px_rgba(16,185,129,0.45)] hover:scale-105 active:scale-95"
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Submit Issue</span>
-            </Link>
           </div>
 
           {/* Mobile: ThemeToggle + hamburger (Mobile Only) */}
@@ -312,15 +304,6 @@ export function Navbar() {
                 </Link>
               </div>
             )}
-
-            <Link
-              href="/complaints/new"
-              onClick={() => setMobileMenuOpen(false)}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-emerald-500 text-slate-950 font-semibold text-sm hover:bg-emerald-400 transition-colors shadow-[0_0_18px_rgba(16,185,129,0.3)]"
-            >
-              <Sparkles className="w-4 h-4" />
-              <span>Submit Civic Report</span>
-            </Link>
           </div>
         </div>
       )}

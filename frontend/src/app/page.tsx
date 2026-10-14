@@ -83,11 +83,11 @@ export default function HomePage() {
     : complaints.filter(c => c.category === activeCategoryFilter);
 
   return (
-    <div className="flex flex-col min-h-screen bg-[var(--canvas-base)] text-[var(--text-primary)] transition-colors duration-300">
+    <div className="flex flex-col min-h-screen w-full overflow-hidden bg-[var(--canvas-base)] text-[var(--text-primary)] transition-colors duration-300">
       {/* ======================================================== */}
       {/* SECTION 1: HERO SECTION                                  */}
       {/* ======================================================== */}
-      <section className="relative overflow-hidden pt-12 pb-20 border-b border-[var(--border-subtle)]">
+      <section className="relative overflow-hidden pt-12 pb-20 border-b border-[var(--border-subtle)] bg-civic-grid">
         {/* Ambient glow backgrounds */}
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[360px] bg-emerald-500/10 blur-[140px] rounded-full pointer-events-none animate-pulse-glow" />
         <div className="absolute top-1/3 left-1/4 w-[360px] h-[260px] bg-cyan-500/10 blur-[120px] rounded-full pointer-events-none" />
@@ -102,15 +102,15 @@ export default function HomePage() {
 
             {/* Headline with Fade-in Animation */}
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.12] animate-fade-in-up">
-              Your Neighborhood’s Voice, <br className="hidden sm:inline" />
+              Civic Complaint Triage, <br className="hidden sm:inline" />
               <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">
-                Automated for Faster Action.
+                Engineered for Swift Action.
               </span>
             </h1>
 
             {/* Subtitle with Staggered Fade-in */}
             <p className="mt-6 text-lg sm:text-xl text-[var(--text-muted)] max-w-2xl leading-relaxed animate-fade-in-up delay-150">
-              Report potholes, broken streetlights, overflowing bins, and water leaks. AI categorizes and deduplicates complaints instantly so municipal teams can fix them faster.
+              Report road hazards, sanitation backlogs, streetlight outages, and water leaks. Our deterministic scoring and spatial deduplication route work orders to municipal crews in minutes.
             </p>
 
             {/* Action Row & Interactive Track Search */}

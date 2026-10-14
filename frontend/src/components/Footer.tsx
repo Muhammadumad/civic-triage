@@ -23,9 +23,9 @@ export function Footer() {
   }
 
   return (
-    <footer className="mt-auto border-t border-[var(--border-subtle)] bg-[var(--canvas-base)] backdrop-blur-md transition-colors duration-300">
+    <footer className="mt-auto border-t border-[var(--border-subtle)] bg-[var(--canvas-base)] backdrop-blur-md transition-colors duration-300 w-full overflow-hidden">
       {/* Upper service standards badge row */}
-      <div className="border-b border-[var(--border-subtle)] bg-[var(--surface-card)] transition-colors duration-300">
+      <div className="border-b border-[var(--border-subtle)] bg-[var(--surface-card)] transition-colors duration-300 w-full overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div className="flex items-start gap-3">

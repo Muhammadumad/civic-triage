@@ -297,25 +297,33 @@ html.light .glass-nav {
 }
 
 /* ======================================================== */
-/* 5. SCROLLBAR & MAP THEME ADAPTATION                      */
+/* 5. ZERO-SCROLLBAR ARCHITECTURE & THEME ADAPTATION         */
 /* ======================================================== */
 
-::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
+/* Hide scrollbars globally on all elements */
+* {
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important; /* IE/Edge */
 }
 
-::-webkit-scrollbar-track {
-  background: var(--canvas-base);
+*::-webkit-scrollbar {
+  display: none !important;
+  width: 0px !important;
+  height: 0px !important;
 }
 
-::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.25);
-  border-radius: 9999px;
+html, body {
+  overflow-x: hidden !important;
+  max-width: 100vw;
+  scrollbar-width: none !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: var(--brand-primary);
+/* Subtle civic grid pattern overlay */
+.bg-civic-grid {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 0);
+  background-size: 24px 24px;
 }
 
 /* Leaflet Container Adaptations */
