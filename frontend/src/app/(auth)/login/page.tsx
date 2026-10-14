@@ -51,7 +51,7 @@ export default function LoginPage() {
       }, 700);
     } catch (err: any) {
       if (err.message === 'Failed to fetch' || err.name === 'TypeError') {
-        setError('Cannot connect to the backend server (http://localhost:5000). Please ensure your backend is running (`npm run dev` in the backend folder).');
+        setError('Cannot connect to the backend server. The cloud server may be starting up (takes ~30s on free tier). You can click below to continue in Demo Mode.');
       } else {
         setError(err.message || 'Authentication failed. Please verify your credentials.');
       }
@@ -69,34 +69,55 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md space-y-6">
-        {/* Brand Header */}
-        <div className="text-center space-y-2">
+        {/* Top Return Row */}
+        <div className="flex items-center justify-start">
           <Link
             href="/"
-            className="inline-flex items-center gap-1.5 text-xs text-zinc-400 hover:text-emerald-400 transition-colors mb-2"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-xs text-zinc-400 hover:text-white hover:bg-white/10 transition-all group"
           >
-            <ArrowLeft className="w-3.5 h-3.5" />
+            <ArrowLeft className="w-3.5 h-3.5 text-emerald-400 group-hover:-translate-x-0.5 transition-transform" />
             <span>Return to Home</span>
           </Link>
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 mx-auto shadow-[0_0_24px_rgba(16,185,129,0.2)]">
-            <Lock className="w-6 h-6" />
-          </div>
-          <h1 className="text-2xl font-bold tracking-tight text-white">
-            Sign In to CivicPulse
-          </h1>
-          <p className="text-sm text-zinc-400">
-            Access your civic complaint portal or municipal triage command center
-          </p>
         </div>
 
-
+        {/* Brand Header */}
+        <div className="flex flex-col items-center text-center space-y-3">
+          <div className="flex items-center justify-center w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 shadow-[0_0_24px_rgba(16,185,129,0.2)]">
+            <Lock className="w-7 h-7" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight text-white">
+              Sign In to CivicPulse
+            </h1>
+            <p className="text-sm text-zinc-400 mt-1">
+              Access your civic complaint portal or municipal triage command center
+            </p>
+          </div>
+        </div>
 
         {/* Main Form Card */}
         <div className="glass-panel p-6 sm:p-8 rounded-2xl border border-white/10 shadow-2xl relative">
           {error && (
-            <div className="mb-5 flex items-start gap-2.5 p-3.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs animate-in fade-in">
-              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-              <div className="flex-1">{error}</div>
+            <div className="mb-5 p-3.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs space-y-2.5 animate-in fade-in">
+              <div className="flex items-start gap-2.5">
+                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-red-400" />
+                <div className="flex-1 leading-relaxed">{error}</div>
+              </div>
+              <div className="pt-2 border-t border-red-500/20 flex flex-wrap items-center justify-between gap-2">
+                <span className="text-[11px] text-zinc-400">Want to test right now?</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleFillDemo('admin@demo.com', 'admin123');
+                    setTimeout(() => {
+                      document.querySelector<HTMLButtonElement>('button[type="submit"]')?.click();
+                    }, 50);
+                  }}
+                  className="text-[11px] font-bold text-emerald-400 hover:text-emerald-300 underline"
+                >
+                  Continue as Demo Admin →
+                </button>
+              </div>
             </div>
           )}
 
