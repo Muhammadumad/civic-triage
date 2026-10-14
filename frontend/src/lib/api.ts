@@ -297,9 +297,9 @@ export function normalizeBackendComplaint(raw: any): Complaint {
     aiProvenance: {
       suggestedCategory: aiCategory,
       confidence: typeof raw.aiConfidence === 'number' ? (raw.aiConfidence <= 1 ? raw.aiConfidence : raw.aiConfidence / 100) : 0.94,
-      classificationReason: raw.classificationReason || 'AI classifier matched civic keywords and visual vectors.',
-      modelVersion: 'CivicPulse-Triage-v2.6',
-      visualFeatures: ['surface anomaly', 'public right-of-way'],
+      classificationReason: raw.aiReason || raw.classificationReason || 'AI classifier analyzed civic keywords and visual vectors.',
+      modelVersion: 'Gemini 3.5 Flash-Lite (Multimodal Vision)',
+      visualFeatures: raw.recommendedAction ? [raw.recommendedAction] : ['surface anomaly', 'public right-of-way'],
     },
     suspectedDuplicates: Array.isArray(raw.suspectedDuplicates) ? raw.suspectedDuplicates : undefined,
   };
