@@ -55,8 +55,9 @@
 ## Phase 3: AI Pipeline Integration
 **Goal:** Auto-categorize and embed complaint descriptions.
 
-- [x] **Task 3.1: LLM Classification Service**
-  - Created `services/classifier.js` with weighted keyword scoring and fallback reasoning.
+- [x] **Task 3.1: LLM Classification & Gemini Multimodal Vision Service**
+  - Created `services/geminiService.js` powered by Google Gemini 3.5 Flash-Lite for multimodal photo inspection, visual hazard descriptions, and department action recommendations.
+  - Built fail-safe architecture: seamlessly falls back to `services/classifier.js` (local keyword classifier) if offline or without API key.
   - Enforced categories: `road_damage`, `garbage`, `streetlight`, `water_leakage`, `blocked_drain`, `other`.
   - *Status:* Completed & verified.
 
