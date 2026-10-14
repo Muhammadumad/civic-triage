@@ -82,8 +82,12 @@ export function Navbar() {
           {/* Logo & Brand */}
             <div className="flex min-w-0 flex-1 items-center gap-8">
             <Link href="/" className="flex items-center gap-2.5 group">
-              <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500/20 to-emerald-950/40 border border-emerald-500/30 group-hover:border-emerald-400/60 shadow-[0_0_16px_rgba(16,185,129,0.22)] transition-all duration-300">
-                <Activity className="w-5 h-5 text-emerald-400 group-hover:scale-110 transition-transform duration-200" />
+              <div className="relative flex items-center justify-center w-10 h-10 rounded-xl overflow-hidden border border-emerald-500/40 group-hover:border-emerald-400/70 shadow-[0_0_16px_rgba(16,185,129,0.3)] transition-all duration-300 bg-slate-950">
+                <img
+                  src="/civicpulse-logo.png"
+                  alt="CivicPulse Logo"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-200"
+                />
                 <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
