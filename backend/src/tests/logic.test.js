@@ -161,6 +161,18 @@ test('Priority: Score reaches High band (>=70) when duplicates increase', () => 
   assert.strictEqual(result.priorityBand, 'High');
 });
 
+// ==================== 5. Gemini Service Fallback Tests ====================
+const { VALID_CATEGORIES } = require('../services/geminiService');
+test('Gemini: Service validates allowed categories enum', () => {
+  assert.strictEqual(VALID_CATEGORIES.length, 6);
+  assert(VALID_CATEGORIES.includes('road_damage'));
+  assert(VALID_CATEGORIES.includes('garbage'));
+  assert(VALID_CATEGORIES.includes('streetlight'));
+  assert(VALID_CATEGORIES.includes('water_leakage'));
+  assert(VALID_CATEGORIES.includes('blocked_drain'));
+  assert(VALID_CATEGORIES.includes('other'));
+});
+
 console.log(`\nResults: ${passed} passed, ${failed} failed.`);
 if (failed > 0) {
   process.exit(1);

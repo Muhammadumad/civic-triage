@@ -65,6 +65,14 @@ const complaintSchema = new mongoose.Schema(
       max: 1,
       default: null,
     },
+    aiReason: {
+      type: String,
+      default: '',
+    },
+    recommendedAction: {
+      type: String,
+      default: '',
+    },
     photoUrl: {
       type: String,
       default: null,

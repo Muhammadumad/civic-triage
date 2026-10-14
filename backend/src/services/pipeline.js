@@ -1,7 +1,9 @@
+const path = require('path');
 const { Complaint } = require('../models/Complaint');
 const RuleSettings = require('../models/RuleSettings');
 const { SensitiveZone } = require('../models/SensitiveZone');
 const { classifyComplaint } = require('./classifier');
+const { analyzeComplaintWithGemini } = require('./geminiService');
 const { generateEmbedding, calculateTextSimilarity, calculateCosineSimilarity } = require('./similarity');
 const { calculatePriority } = require('./priority');
 const { calculateDistanceMeters } = require('../utils/geo');
@@ -31,11 +33,29 @@ const processComplaint = async (inputData) => {
 
   const sensitiveZones = await SensitiveZone.find({ active: true }).catch(() => []);
 
-  // 2. AI Classification
-  const aiResult = await classifyComplaint(description, photoUrl);
+  // 2. Multimodal AI Inspection (Gemini LLM with deterministic local fallback)
+  let localPhotoPath = null;
+  if (photoUrl && photoUrl.startsWith('/uploads/')) {
+    const filename = photoUrl.replace('/uploads/', '');
+    localPhotoPath = path.resolve(process.cwd(), process.env.UPLOAD_DIR || 'uploads', filename);
+  }
+
+  let aiResult = await analyzeComplaintWithGemini({
+    title,
+    description,
+    photoPath: localPhotoPath,
+  });
+
+  if (!aiResult) {
+    // Deterministic keyword classifier fallback
+    aiResult = await classifyComplaint(description, photoUrl);
+  }
+
   const aiCategory = aiResult.category;
   const aiConfidence = aiResult.confidence;
   const aiReason = aiResult.reason;
+  const recommendedDepartment = aiResult.recommendedDepartment || null;
+  const recommendedAction = aiResult.recommendedAction || null;
 
   // If resident manually selected category, keep their choice; otherwise use AI suggestion
   const finalCategory = userCategory || aiCategory;
@@ -126,6 +146,9 @@ const processComplaint = async (inputData) => {
       priorityReasons: priorityCalculation.priorityReasons,
       duplicateOf,
       duplicateCount: 0,
+      department: recommendedDepartment || 'General',
+      aiReason: aiReason || '',
+      recommendedAction: recommendedAction || '',
       resident,
       residentContact,
     },
