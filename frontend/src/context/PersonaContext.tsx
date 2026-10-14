@@ -53,15 +53,30 @@ export function PersonaProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Validate session in background if token exists
     if (token) {
+      if (token.startsWith('demo_token_')) {
+        const raw = typeof window !== 'undefined' ? localStorage.getItem('civicpulse_user') : null;
+        if (raw) {
+          try {
+            const u = JSON.parse(raw);
+            setAuthProfile(u);
+            setRoleState(u.role);
+            return;
+          } catch {}
+        }
+      }
+
       fetchCurrentUser().then((user) => {
         if (user) {
           setAuthProfile(user);
           setRoleState(user.role);
         } else {
-          // Token expired or invalid
-          setToken(null);
-          setAuthProfile(null);
-          logoutUser();
+          // If token was rejected and no local fallback exists, clear session
+          const storedUser = typeof window !== 'undefined' ? localStorage.getItem('civicpulse_user') : null;
+          if (!storedUser) {
+            setToken(null);
+            setAuthProfile(null);
+            logoutUser();
+          }
         }
       });
     }

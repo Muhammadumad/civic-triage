@@ -188,6 +188,19 @@ export async function fetchCurrentUser(): Promise<User | null> {
   const token = typeof window !== 'undefined' ? localStorage.getItem('civicpulse_token') : cachedAuthToken;
   if (!token) return null;
 
+  // Preserve demo/offline tokens and resident profile
+  if (token.startsWith('demo_token_')) {
+    if (typeof window !== 'undefined') {
+      const raw = localStorage.getItem('civicpulse_user');
+      if (raw) {
+        try {
+          return JSON.parse(raw);
+        } catch {}
+      }
+    }
+    return null;
+  }
+
   try {
     const res = await fetch(`${API_BASE_URL}/api/auth/me`, {
       headers: {
@@ -198,10 +211,27 @@ export async function fetchCurrentUser(): Promise<User | null> {
 
     if (res.ok) {
       const data = await res.json();
+      if (typeof window !== 'undefined' && data.user) {
+        localStorage.setItem('civicpulse_user', JSON.stringify(data.user));
+      }
       return data.user;
     }
+
+    // Only clear if token was definitively rejected (401 / 403)
+    if (res.status === 401 || res.status === 403) {
+      return null;
+    }
   } catch (err) {
-    console.warn('[CivicPulse API] Failed to fetch current user:', err);
+    console.warn('[CivicPulse API] Failed to fetch current user (backend waking up or offline):', err);
+    // On network failure, preserve cached user so the resident/admin session remains active
+    if (typeof window !== 'undefined') {
+      const raw = localStorage.getItem('civicpulse_user');
+      if (raw) {
+        try {
+          return JSON.parse(raw);
+        } catch {}
+      }
+    }
   }
   return null;
 }

@@ -18,6 +18,10 @@ import {
   LogIn,
   LogOut,
   User as UserIcon,
+  HelpCircle,
+  Mail,
+  Info,
+  ShieldCheck,
 } from 'lucide-react';
 
 export function Navbar() {
@@ -47,6 +51,21 @@ export function Navbar() {
       href: '/complaints',
       icon: FileText,
     },
+    {
+      name: 'Contact',
+      href: '/contact',
+      icon: Mail,
+    },
+    {
+      name: 'FAQ',
+      href: '/faq',
+      icon: HelpCircle,
+    },
+    {
+      name: 'About',
+      href: '/about',
+      icon: Info,
+    },
   ];
 
   const adminLinks = [
@@ -67,9 +86,14 @@ export function Navbar() {
       icon: SlidersHorizontal,
     },
     {
-      name: 'My Reports',
+      name: 'All Reports',
       href: '/complaints',
       icon: FileText,
+    },
+    {
+      name: 'Contact',
+      href: '/contact',
+      icon: Mail,
     },
   ];
 
@@ -140,28 +164,52 @@ export function Navbar() {
             <ThemeToggle />
 
             {mounted && isAuthenticated ? (
-              <div className="flex items-center gap-2 pl-1 border-l border-white/10">
-                <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-zinc-300">
-                  <UserIcon className="w-3.5 h-3.5 text-emerald-400" />
-                  <span className="max-w-[100px] truncate">{currentUser.name.split(' ')[0]}</span>
+              <div className="flex items-center gap-2 pl-2 border-l border-white/10">
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.06] border border-white/10 shadow-inner">
+                  <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-bold uppercase shadow-sm">
+                    {currentUser.name ? currentUser.name.charAt(0) : <UserIcon className="w-3.5 h-3.5" />}
+                  </div>
+                  <div className="flex flex-col text-left">
+                    <span className="text-xs font-semibold text-white leading-tight max-w-[130px] truncate">
+                      {currentUser.name || 'Resident'}
+                    </span>
+                    <div className="flex items-center gap-1.5">
+                      <span className="relative flex h-1.5 w-1.5">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
+                      </span>
+                      <span className="text-[10px] text-emerald-400 font-medium">
+                        {role === 'admin' ? 'Municipal Admin' : 'Verified Resident'}
+                      </span>
+                    </div>
+                  </div>
                 </div>
                 <button
                   type="button"
                   onClick={logout}
                   title="Sign out of account"
-                  className="p-2 rounded-lg text-zinc-400 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                  className="p-2 rounded-xl text-zinc-400 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                  aria-label="Sign out"
                 >
                   <LogOut className="w-4 h-4" />
                 </button>
               </div>
             ) : (
-              <Link
-                href="/login"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 transition-colors"
-              >
-                <LogIn className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Sign In</span>
-              </Link>
+              <div className="flex items-center gap-2">
+                <Link
+                  href="/login"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 transition-colors"
+                >
+                  <LogIn className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Sign In</span>
+                </Link>
+                <Link
+                  href="/register"
+                  className="hidden lg:flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 transition-colors"
+                >
+                  <span>Register</span>
+                </Link>
+              </div>
             )}
 
             <Link
@@ -219,10 +267,20 @@ export function Navbar() {
           })}
           <div className="pt-2 space-y-2">
             {mounted && isAuthenticated ? (
-              <div className="flex items-center justify-between p-2.5 rounded-lg bg-white/5 border border-white/10 text-xs">
-                <div className="flex items-center gap-2 text-zinc-300">
-                  <UserIcon className="w-4 h-4 text-emerald-400" />
-                  <span>{currentUser.name} ({currentUser.role})</span>
+              <div className="p-3 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-bold uppercase">
+                    {currentUser.name ? currentUser.name.charAt(0) : <UserIcon className="w-4 h-4" />}
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-semibold text-white">{currentUser.name}</span>
+                    <div className="flex items-center gap-1.5">
+                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
+                      <span className="text-xs text-emerald-400 font-medium">
+                        {role === 'admin' ? 'Municipal Admin' : 'Verified Resident'}
+                      </span>
+                    </div>
+                  </div>
                 </div>
                 <button
                   type="button"
@@ -230,20 +288,29 @@ export function Navbar() {
                     logout();
                     setMobileMenuOpen(false);
                   }}
-                  className="text-red-400 hover:text-red-300 font-medium"
+                  className="px-2.5 py-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 text-xs font-medium transition-colors"
                 >
                   Sign Out
                 </button>
               </div>
             ) : (
-              <Link
-                href="/login"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-white/10 hover:bg-white/15 text-white font-medium text-sm transition-colors border border-white/15"
-              >
-                <LogIn className="w-4 h-4 text-emerald-400" />
-                <span>Sign In to Account</span>
-              </Link>
+              <div className="grid grid-cols-2 gap-2">
+                <Link
+                  href="/login"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-white/10 hover:bg-white/15 text-white font-medium text-xs transition-colors border border-white/15"
+                >
+                  <LogIn className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Sign In</span>
+                </Link>
+                <Link
+                  href="/register"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 font-medium text-xs transition-colors border border-emerald-500/30"
+                >
+                  <span>Register</span>
+                </Link>
+              </div>
             )}
 
             <Link
