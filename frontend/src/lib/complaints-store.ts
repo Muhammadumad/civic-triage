@@ -254,14 +254,15 @@ export function useComplaintsStore() {
   }, []);
 
   const updateStatusWithEvidence = useCallback(
-    (
+    async (
       id: string,
       newStatus: any,
       department: string,
       note: string,
       afterPhotoUrl?: string,
       evidenceFile?: File | null
-    ) => {
+    ): Promise<Complaint | null> => {
+      let resultComplaint: Complaint | null = null;
       const existing = getStoredComplaints();
       const updated = existing.map((c) => {
         if (c.id === id) {
@@ -270,7 +271,7 @@ export function useComplaintsStore() {
             status: newStatus,
             note: note || `Status transitioned to ${newStatus}.`,
             evidencePhotoUrl: afterPhotoUrl,
-            changedBy: 'Marcus Vance (City Admin)',
+            changedBy: 'Municipal Operations Dispatch',
             changedAt: new Date().toISOString(),
           };
           const resEvidence =
@@ -283,27 +284,41 @@ export function useComplaintsStore() {
                 }
               : c.resolutionEvidence;
 
-          return {
+          const updatedC: Complaint = {
             ...c,
             status: newStatus,
             department: department || c.department,
             resolutionEvidence: resEvidence,
-            history: [...(c.history || []), historyEntry],
+            history: [...(c.history || []).filter((h) => h.status !== newStatus), historyEntry],
           };
+          resultComplaint = updatedC;
+          return updatedC;
         }
         return c;
       });
       saveStoredComplaints(updated);
       setComplaints(updated);
 
-      // Call backend status update
-      apiUpdateStatus(id, {
-        status: newStatus,
-        department,
-        note,
-        evidenceFile: evidenceFile || null,
-        afterPhotoUrl,
-      }).catch((err) => console.warn('Backend status update notice:', err));
+      // Call backend status update to persist in MongoDB and StatusHistory collection
+      try {
+        const backendUpdated = await apiUpdateStatus(id, {
+          status: newStatus,
+          department,
+          note,
+          evidenceFile: evidenceFile || null,
+          afterPhotoUrl,
+        });
+        if (backendUpdated) {
+          const current = getStoredComplaints();
+          const refreshed = current.map((c) => (c.id === id ? backendUpdated : c));
+          saveStoredComplaints(refreshed);
+          setComplaints(refreshed);
+          return backendUpdated;
+        }
+      } catch (err) {
+        console.warn('Backend status update notice:', err);
+      }
+      return resultComplaint;
     },
     []
   );

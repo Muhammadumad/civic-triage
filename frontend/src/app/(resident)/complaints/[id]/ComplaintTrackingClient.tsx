@@ -66,16 +66,39 @@ export default function ComplaintTrackingClient({ id }: { id: string }) {
     if (existing) {
       setFetchedComplaint(existing);
       setIsLoading(false);
-    } else {
-      setIsLoading(true);
-      fetchComplaintById(id)
-        .then((data) => {
-          setFetchedComplaint(data);
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
     }
+
+    let isCancelled = false;
+    const fetchLatest = async () => {
+      try {
+        const latest = await fetchComplaintById(id);
+        if (!isCancelled && latest) {
+          setFetchedComplaint(latest);
+        }
+      } catch (err) {
+        console.warn('Live tracking sync notice:', err);
+      } finally {
+        if (!isCancelled) setIsLoading(false);
+      }
+    };
+
+    fetchLatest();
+
+    // Auto-poll every 5 seconds for live lifecycle updates
+    const pollInterval = setInterval(() => {
+      fetchLatest();
+    }, 5000);
+
+    const handleStorageUpdate = () => {
+      fetchLatest();
+    };
+    window.addEventListener('civicpulse_complaints_updated', handleStorageUpdate);
+
+    return () => {
+      isCancelled = true;
+      clearInterval(pollInterval);
+      window.removeEventListener('civicpulse_complaints_updated', handleStorageUpdate);
+    };
   }, [id, getComplaintById]);
 
   // Tooltip & Copy state
@@ -130,11 +153,14 @@ export default function ComplaintTrackingClient({ id }: { id: string }) {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const currentStepIdx = WORKFLOW_STEPS.indexOf(complaint.status);
+  const normalizeStatus = (s?: string) => (s || '').toLowerCase().replace(/[\s_]+/g, '');
+  const stepsOrder = ['new', 'underreview', 'assigned', 'inprogress', 'resolved'];
+  const currentStatusNorm = normalizeStatus(complaint.status);
+  const currentStepIdx = stepsOrder.indexOf(currentStatusNorm);
 
   // 72-hour reopen window logic
-  const isResolved = complaint.status === 'Resolved';
-  const resolvedHistory = (complaint.history || []).find((h) => h.status === 'Resolved');
+  const isResolved = currentStatusNorm === 'resolved';
+  const resolvedHistory = (complaint.history || []).find((h) => normalizeStatus(h.status) === 'resolved');
   const resolvedTime = resolvedHistory ? new Date(resolvedHistory.changedAt).getTime() : 0;
   const isWithin72Hours = resolvedTime ? Date.now() - resolvedTime < 72 * 60 * 60 * 1000 : true;
 
@@ -421,13 +447,38 @@ export default function ComplaintTrackingClient({ id }: { id: string }) {
 
         {/* Resolution Stepper Rail */}
         <div className="bg-[#11131A] border border-white/[0.08] rounded-xl p-6 shadow-xl space-y-6">
-          <h2 className="text-base font-bold text-white">Lifecycle Resolution Stepper</h2>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <h2 className="text-base font-bold text-white">Lifecycle Resolution Stepper</h2>
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 text-[10px] font-mono">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                <span>Live Sync Active</span>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={async () => {
+                const refreshed = await fetchComplaintById(id);
+                if (refreshed) setFetchedComplaint(refreshed);
+              }}
+              className="flex items-center gap-1 text-[11px] font-mono text-zinc-400 hover:text-white px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
+              title="Poll latest updates from municipal dispatch"
+            >
+              <RotateCcw className="w-3 h-3 text-emerald-400" />
+              <span>Sync Now</span>
+            </button>
+          </div>
 
           <div className="relative pl-6 space-y-6 before:absolute before:left-2.5 before:top-3 before:bottom-3 before:w-0.5 before:bg-white/[0.08]">
             {WORKFLOW_STEPS.map((step, idx) => {
-              const isPast = currentStepIdx > idx;
-              const isCurrent = currentStepIdx === idx;
-              const histMatch = (complaint.history || []).find((h) => h.status === step);
+              const stepNorm = normalizeStatus(step);
+              const stepIdxInOrder = stepsOrder.indexOf(stepNorm);
+              const isPast = currentStepIdx > stepIdxInOrder;
+              const isCurrent = currentStepIdx === stepIdxInOrder;
+              const histMatch = (complaint.history || []).find(
+                (h) => normalizeStatus(h.status) === stepNorm
+              );
 
               return (
                 <div key={step} className="relative flex items-start gap-4">
@@ -450,17 +501,24 @@ export default function ComplaintTrackingClient({ id }: { id: string }) {
 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2">
-                      <p className={`text-sm font-bold ${isCurrent ? 'text-emerald-400' : isPast ? 'text-white' : 'text-zinc-500'}`}>
-                        {idx + 1}. {step}
-                      </p>
+                      <div className="flex items-center gap-2">
+                        <p className={`text-sm font-bold ${isCurrent ? 'text-emerald-400' : isPast ? 'text-white' : 'text-zinc-500'}`}>
+                          {idx + 1}. {step}
+                        </p>
+                        {isCurrent && (
+                          <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">
+                            Current Stage
+                          </span>
+                        )}
+                      </div>
                       {histMatch && (
-                        <span className="font-mono text-[11px] text-zinc-500">
+                        <span className="font-mono text-[11px] text-zinc-400">
                           {formatRelativeTime(histMatch.changedAt)}
                         </span>
                       )}
                     </div>
                     {histMatch?.note && (
-                      <p className="text-xs text-zinc-400 mt-1 leading-relaxed">
+                      <p className="text-xs text-zinc-300 mt-1 leading-relaxed bg-[#161922] p-2 rounded-lg border border-white/[0.04]">
                         {histMatch.note}
                       </p>
                     )}

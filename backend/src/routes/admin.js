@@ -80,10 +80,16 @@ router.patch('/complaints/:id/status', uploadEvidence, async (req, res, next) =>
       return res.status(404).json({ error: 'Complaint not found.' });
     }
 
-    if (status) complaint.status = status;
+    if (status) {
+      // Normalize to standard backend lowercase/snake_case
+      const normalizedStatus = status.toLowerCase().replace(/\s+/g, '_');
+      complaint.status = normalizedStatus;
+    }
     if (department) complaint.department = department;
 
-    const evidencePhotoUrl = req.file ? `/uploads/${req.file.filename}` : null;
+    const evidencePhotoUrl = req.file
+      ? `/uploads/${req.file.filename}`
+      : (req.body.afterPhotoUrl || req.body.evidencePhotoUrl || null);
     if (evidencePhotoUrl) {
       complaint.resolvedEvidencePhotoUrl = evidencePhotoUrl;
     }
@@ -102,9 +108,12 @@ router.patch('/complaints/:id/status', uploadEvidence, async (req, res, next) =>
       },
     });
 
+    const timeline = await StatusHistory.find({ complaintId: complaint._id }).sort({ changedAt: 1 });
+
     res.status(200).json({
       complaint,
       statusUpdate: historyRecord,
+      timeline,
     });
   } catch (err) {
     next(err);

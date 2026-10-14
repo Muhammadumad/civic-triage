@@ -174,12 +174,20 @@ export function logoutUser(): void {
   }
 }
 
+let cachedAdminToken: string | null = null;
+
 export async function getAdminAuthToken(): Promise<string | null> {
   if (typeof window !== 'undefined') {
     const stored = localStorage.getItem('civicpulse_token');
-    if (stored) return stored;
+    const storedUser = localStorage.getItem('civicpulse_user');
+    if (stored && storedUser) {
+      try {
+        const u = JSON.parse(storedUser);
+        if (u.role === 'admin') return stored;
+      } catch (_) {}
+    }
   }
-  if (cachedAuthToken) return cachedAuthToken;
+  if (cachedAdminToken) return cachedAdminToken;
 
   try {
     const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
@@ -190,15 +198,12 @@ export async function getAdminAuthToken(): Promise<string | null> {
     if (res.ok) {
       const data = await res.json();
       if (data.token) {
-        cachedAuthToken = data.token;
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('civicpulse_token', data.token);
-        }
+        cachedAdminToken = data.token;
         return data.token;
       }
     }
   } catch (err) {
-    console.warn('[CivicPulse API] Silent auth attempt failed:', err);
+    console.warn('[CivicPulse API] Silent admin auth attempt failed:', err);
   }
   return null;
 }
@@ -444,6 +449,7 @@ export async function updateComplaintStatus(
   formData.append('status', mapFrontendStatus(params.status));
   if (params.note) formData.append('note', params.note);
   if (params.department) formData.append('department', params.department);
+  if (params.afterPhotoUrl) formData.append('afterPhotoUrl', params.afterPhotoUrl);
   if (params.evidenceFile) {
     formData.append('evidence', params.evidenceFile);
   }
@@ -465,7 +471,8 @@ export async function updateComplaintStatus(
   }
 
   const data = await res.json();
-  return normalizeBackendComplaint(data.complaint);
+  const combined = { ...data.complaint, timeline: data.timeline };
+  return normalizeBackendComplaint(combined);
 }
 
 export async function mergeDuplicate(

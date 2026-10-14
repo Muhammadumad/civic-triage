@@ -61,16 +61,14 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
     if (existing) {
       setFetchedComplaint(existing);
       setIsLoading(false);
-    } else {
-      setIsLoading(true);
-      fetchComplaintById(id)
-        .then((data) => {
-          setFetchedComplaint(data);
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
     }
+    fetchComplaintById(id)
+      .then((data) => {
+        if (data) setFetchedComplaint(data);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }, [id, getComplaintById]);
 
   // Status & Evidence Modal
@@ -150,21 +148,49 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
     showNotification(`Suspected duplicate ${duplicateId} marked as separate incident.`);
   };
 
-  const handleModalSubmit = (e: React.FormEvent) => {
+  const handleQuickTransition = async (targetStatus: ComplaintStatus) => {
+    setIsSubmittingModal(true);
+    try {
+      const updated = await updateStatusWithEvidence(
+        complaint.id,
+        targetStatus,
+        complaint.department,
+        `Dispatcher advanced status to ${targetStatus} via Lifecycle Controller.`
+      );
+      if (updated) {
+        setFetchedComplaint(updated);
+      }
+      showNotification(`Ticket advanced: ${complaint.status} → ${targetStatus}`);
+    } catch (err) {
+      console.error(err);
+      showNotification(`Status updated locally.`);
+    } finally {
+      setIsSubmittingModal(false);
+    }
+  };
+
+  const handleModalSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmittingModal(true);
-    setTimeout(() => {
-      updateStatusWithEvidence(
+    try {
+      const updated = await updateStatusWithEvidence(
         complaint.id,
         newStatus,
         selectedDept,
         fieldNotes || `Administrative status change to ${newStatus}.`,
         afterPhotoUrl || undefined
       );
-      setIsSubmittingModal(false);
+      if (updated) {
+        setFetchedComplaint(updated);
+      }
       setIsModalOpen(false);
       showNotification(`Ticket updated to ${newStatus} with official evidence logged.`);
-    }, 600);
+    } catch (err) {
+      console.error(err);
+      showNotification(`Status updated locally.`);
+    } finally {
+      setIsSubmittingModal(false);
+    }
   };
 
   // Mathematical Breakdown variables
@@ -290,6 +316,101 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
               Citizen Photo
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Lifecycle Dispatch Controller */}
+      <div className="p-6 rounded-2xl glass-card border border-[var(--border-subtle)] space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[var(--border-subtle)]">
+          <div className="flex items-center gap-2">
+            <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 dark:text-emerald-400">
+              <Sliders className="w-4 h-4" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-[var(--text-primary)]">
+                Admin Lifecycle Resolution Controller
+              </h3>
+              <p className="text-[11px] text-[var(--text-secondary)]">
+                Control and advance the municipal ticket resolution pipeline in real-time
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => {
+              setNewStatus(complaint.status);
+              setSelectedDept(complaint.department);
+              setIsModalOpen(true);
+            }}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-xs font-semibold text-[var(--text-primary)] border border-[var(--border-subtle)] transition-colors self-start sm:self-auto"
+          >
+            <Camera className="w-3.5 h-3.5 text-emerald-500" />
+            <span>Attach Evidence & Dispatch Notes</span>
+          </button>
+        </div>
+
+        {/* 5-Step Stepper Rail for Admin Control */}
+        <div className="grid grid-cols-1 sm:grid-cols-5 gap-3 pt-1">
+          {[
+            { key: 'New' as ComplaintStatus, label: '1. New', sub: 'Initial Citizen Filing' },
+            { key: 'Under Review' as ComplaintStatus, label: '2. Under Review', sub: 'Triage & Verification' },
+            { key: 'Assigned' as ComplaintStatus, label: '3. Assigned', sub: 'Dispatched to Crew' },
+            { key: 'In Progress' as ComplaintStatus, label: '4. In Progress', sub: 'Work Underway' },
+            { key: 'Resolved' as ComplaintStatus, label: '5. Resolved', sub: 'Site Repaired' },
+          ].map((st) => {
+            const isCurrent =
+              complaint.status.toLowerCase().replace(/[\s_]+/g, '') ===
+              st.key.toLowerCase().replace(/[\s_]+/g, '');
+            const stepsOrder = ['new', 'underreview', 'assigned', 'inprogress', 'resolved'];
+            const currentIdx = stepsOrder.indexOf(
+              complaint.status.toLowerCase().replace(/[\s_]+/g, '')
+            );
+            const thisIdx = stepsOrder.indexOf(
+              st.key.toLowerCase().replace(/[\s_]+/g, '')
+            );
+            const isPast = currentIdx > thisIdx;
+
+            return (
+              <div
+                key={st.key}
+                className={`p-3.5 rounded-xl border transition-all flex flex-col justify-between gap-3 ${
+                  isCurrent
+                    ? 'bg-emerald-500/10 border-emerald-500/40 shadow-lg shadow-emerald-500/10'
+                    : isPast
+                    ? 'bg-black/5 dark:bg-white/[0.02] border-[var(--border-subtle)] opacity-80'
+                    : 'bg-black/5 dark:bg-white/[0.02] border-[var(--border-subtle)]'
+                }`}
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs font-bold text-[var(--text-primary)]">{st.label}</span>
+                    {isCurrent ? (
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+                    ) : isPast ? (
+                      <Check className="w-3.5 h-3.5 text-emerald-500" />
+                    ) : null}
+                  </div>
+                  <p className="text-[11px] text-[var(--text-secondary)]">{st.sub}</p>
+                </div>
+
+                {isCurrent ? (
+                  <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 py-1 text-center bg-emerald-500/10 rounded-lg">
+                    Active Stage
+                  </span>
+                ) : (
+                  <button
+                    type="button"
+                    disabled={isSubmittingModal}
+                    onClick={() => handleQuickTransition(st.key)}
+                    className="text-[11px] font-semibold py-1.5 px-2 rounded-lg bg-black/5 dark:bg-white/5 hover:bg-emerald-500 hover:text-slate-950 text-[var(--text-primary)] transition-all border border-[var(--border-subtle)] disabled:opacity-50"
+                  >
+                    Set to {st.key}
+                  </button>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
 
