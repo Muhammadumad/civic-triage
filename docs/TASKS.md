@@ -239,3 +239,23 @@
   - Added pre-hydration theme initialization script in `layout.tsx` to prevent theme flicker on page load.
   - Verified across all pages in browser in both day and dark modes; `next build` and `npm run test:logic` pass with 0 errors.
   - *Status:* Completed & verified.
+
+- [x] **Task 10.9: Unified Single-Project Vercel Deployment Setup**
+  - Created api/index.js bridge exporting Express (backend/src/app) as a Vercel serverless function with cached MongoDB connection handling for warm starts.
+  - Created vercel.json routing /api/(.*) and /uploads/(.*) to the serverless function while serving the Next.js app on all other routes.
+  - Updated root package.json to unify all dependencies, with npm run build delegating cleanly to the Next.js frontend.
+  - Updated backend/src/config/db.js with global connection caching for serverless environments.
+  - Updated backend/src/middleware/upload.js, backend/src/app.js, and backend/src/services/pipeline.js to support /tmp/uploads on Vercel ephemeral filesystem.
+  - Updated frontend/src/lib/api.ts to use relative /api paths when deployed on Vercel without requiring a separate NEXT_PUBLIC_API_URL.
+  - Configured turbopack.root in frontend/next.config.ts.
+  - Verified: npm run build and npm run test:logic pass from root with 0 errors.
+  - *Status:* Completed & verified.
+
+- [x] **Task 10.10: Fix JSON Parsing Error & Add Local Dev Proxy Rewrites**
+  - Resolved `Unexpected token '<', "<!DOCTYPE "... is not valid JSON`: in local development, `fetch('/api/auth/login')` was hitting Next.js (port 3000) which served the 404 HTML document instead of routing to Express (port 5000).
+  - Added `async rewrites()` to `frontend/next.config.ts` to automatically proxy `/api/:path*` and `/uploads/:path*` to `http://localhost:5000` during local dev while respecting Vercel's serverless router in production.
+  - Implemented safe JSON parser `parseJsonSafe(res)` across all API functions in `frontend/src/lib/api.ts`, preventing unhandled SyntaxErrors on HTML/non-JSON error pages.
+  - Added resilient offline fallback for demo accounts (`admin@demo.com` / `admin123` and `resident@demo.com` / `resident123`) in `loginUser`, and wired "Continue as Demo Admin" to authenticate directly into the Command Center.
+  - Verified: `npm run build` and `npm run test:logic` pass with 0 errors.
+  - *Status:* Completed & verified.
+

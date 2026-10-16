@@ -48,10 +48,15 @@ export default function HomePage() {
   const router = useRouter();
   const { role } = usePersona();
   const { complaints } = useComplaintsStore();
+  const [mounted, setMounted] = useState(false);
   const [selectedComplaint, setSelectedComplaint] = useState<Complaint | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategoryFilter, setActiveCategoryFilter] = useState<string>('All');
   const [transparency, setTransparency] = useState<TransparencyStats | null>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (complaints.length > 0 && !selectedComplaint) {
@@ -149,7 +154,7 @@ export default function HomePage() {
                 </button>
               </form>
 
-              {role === 'admin' ? (
+              {mounted && role === 'admin' ? (
                 <Link
                   href="/admin"
                   className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-lg bg-[var(--surface-elevated)] hover:bg-[var(--surface-card)] text-[var(--text-primary)] border border-[var(--border-subtle)] font-medium text-sm transition-all hover:scale-105"

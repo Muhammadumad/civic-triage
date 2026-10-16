@@ -66,6 +66,31 @@ export default function LoginPage() {
     setError(null);
   };
 
+  const handleDirectDemoLogin = async (demoEmail: string, demoPass: string) => {
+    setEmail(demoEmail);
+    setPassword(demoPass);
+    setError(null);
+    setLoading(true);
+    try {
+      const user = await login(demoEmail, demoPass);
+      setSuccess(true);
+      setTimeout(() => {
+        const searchRedirect = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('redirect') : null;
+        if (searchRedirect && (user.role === 'admin' || !searchRedirect.startsWith('/admin'))) {
+          router.push(searchRedirect);
+        } else if (user.role === 'admin') {
+          router.push('/admin');
+        } else {
+          router.push('/complaints');
+        }
+      }, 400);
+    } catch (err: any) {
+      setError(err.message || 'Demo authentication failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md space-y-6">
@@ -107,12 +132,7 @@ export default function LoginPage() {
                 <span className="text-[11px] text-[var(--text-muted)]">Want to test right now?</span>
                 <button
                   type="button"
-                  onClick={() => {
-                    handleFillDemo('admin@demo.com', 'admin123');
-                    setTimeout(() => {
-                      document.querySelector<HTMLButtonElement>('button[type="submit"]')?.click();
-                    }, 50);
-                  }}
+                  onClick={() => handleDirectDemoLogin('admin@demo.com', 'admin123')}
                   className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 hover:underline"
                 >
                   Continue as Demo Admin →

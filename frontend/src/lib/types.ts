@@ -204,6 +204,7 @@ export interface User {
   name: string;
   email: string;
   role: 'resident' | 'admin';
+  _id?: string;
 }
 
 // Token Configuration Objects matching CivicPulse v1 Design System
