@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { CivicPulseLogo } from '@/components/CivicPulseLogo';
 import { usePersona } from '@/context/PersonaContext';
 import {
   PlusCircle,
@@ -133,9 +134,7 @@ export function Navbar() {
               href="/"
               className="flex items-center gap-3 pr-6 border-r border-[var(--border-subtle)] group"
             >
-              <div className="w-8 h-8 bg-[var(--text-primary)] text-[var(--canvas-base)] flex items-center justify-center font-mono text-xs font-semibold tracking-tighter group-hover:bg-[var(--brand-primary)] group-hover:text-white transition-colors">
-                CP
-              </div>
+              <CivicPulseLogo size="md" />
               <div className="flex flex-col">
                 <div className="flex items-baseline gap-2">
                   <span className="font-editorial text-2xl tracking-tight text-[var(--text-primary)] leading-none">

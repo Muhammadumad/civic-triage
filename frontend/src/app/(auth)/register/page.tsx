@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { usePersona } from '@/context/PersonaContext';
+import { CivicPulseLogo } from '@/components/CivicPulseLogo';
 import { 
   UserPlus, 
   Mail, 
@@ -90,10 +91,13 @@ export default function RegisterPage() {
         <div className="bg-[var(--surface-card)] border border-[var(--border-subtle)]">
           {/* Brand Header */}
           <div className="p-6 sm:p-8 border-b border-[var(--border-subtle)] bg-[var(--surface-elevated)]">
-            <div className="flex items-center justify-between mb-3">
-              <span className="font-mono text-[10px] uppercase tracking-widest text-[var(--brand-primary)] font-semibold">
-                CITIZEN REGISTRATION
-              </span>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2.5">
+                <CivicPulseLogo size="sm" />
+                <span className="font-mono text-[10px] uppercase tracking-widest text-[var(--brand-primary)] font-semibold">
+                  CITIZEN REGISTRATION
+                </span>
+              </div>
               <UserPlus className="w-4 h-4 text-[var(--text-muted)]" />
             </div>
             <h1 className="font-editorial text-3xl text-[var(--text-primary)]">

@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ArrowUpRight, Globe2 } from 'lucide-react';
+import { CivicPulseLogo } from '@/components/CivicPulseLogo';
 
 export function Footer() {
   const pathname = usePathname();
@@ -79,9 +80,7 @@ export function Footer() {
           {/* Brand Col (5 cols) */}
           <div className="md:col-span-5 space-y-4 pr-0 md:pr-8">
             <div className="flex items-center gap-3">
-              <div className="w-7 h-7 bg-[var(--text-primary)] text-[var(--canvas-base)] flex items-center justify-center font-mono text-xs font-bold">
-                CP
-              </div>
+              <CivicPulseLogo size="sm" />
               <span className="font-editorial text-2xl tracking-tight text-[var(--text-primary)]">
                 CivicPulse Municipal Ledger
               </span>
