@@ -13,6 +13,8 @@ uploads/
 */uploads/
 
 # Build outputs
+.next/
+*/.next/
 dist/
 build/
 */dist/

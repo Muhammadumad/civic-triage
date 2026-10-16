@@ -5,7 +5,7 @@
   "description": "Smart Civic Complaint Triage System - Unified Vercel Full-Stack App",
   "scripts": {
     "dev": "npm --prefix frontend run dev",
-    "build": "npm --prefix frontend run build",
+    "build": "npm --prefix frontend run build && node scripts/prepare-vercel.js",
     "start": "npm --prefix frontend run start",
     "test:logic": "node backend/src/tests/logic.test.js",
     "seed": "node backend/src/seed/seed.js"
