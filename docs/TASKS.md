@@ -56,9 +56,11 @@
 **Goal:** Auto-categorize and embed complaint descriptions.
 
 - [x] **Task 3.1: LLM Classification & Gemini Multimodal Vision Service**
-  - Created `services/geminiService.js` powered by Google Gemini 3.5 Flash-Lite for multimodal photo inspection, visual hazard descriptions, and department action recommendations.
-  - Built fail-safe architecture: seamlessly falls back to `services/classifier.js` (local keyword classifier) if offline or without API key.
+  - Created `services/geminiService.js` powered by Google Gemini multimodal models (`gemini-3.8-flash`, `gemini-3.6-flash`, `gemini-flash-latest`, `gemini-3.5-flash-lite`) for photo inspection, visual hazard descriptions, and department action recommendations.
+  - Built fail-safe architecture: robust key normalization (handles surrounding quotes/whitespace from cloud deployment dashboards and supports `GOOGLE_API_KEY` / `GEMINI_API_KEY`), per-model timeouts, multi-model failover against 503 load spikes, and seamless fallback to `services/classifier.js` (local keyword classifier).
   - Enforced categories: `road_damage`, `garbage`, `streetlight`, `water_leakage`, `blocked_drain`, `other`.
+  - Added health diagnostics reporting in `/api/health`.
+  - Resolved production image reading: enabled remote URL fetching and local buffer loading in `geminiService.js`, connected `/api/complaints/inspect` directly into the resident reporting form (`new/page.tsx`), and prioritized high-availability flash models (`gemini-3.5-flash-lite`, `gemini-3.6-flash`) against 503 load spikes.
   - *Status:* Completed & verified.
 
 - [x] **Task 3.2: Text Embedding Service**
