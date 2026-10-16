@@ -34,20 +34,25 @@ const processComplaint = async (inputData) => {
   const sensitiveZones = await SensitiveZone.find({ active: true }).catch(() => []);
 
   // 2. Multimodal AI Inspection (Gemini LLM with deterministic local fallback)
-  let localPhotoPath = null;
-  if (photoUrl && photoUrl.startsWith('/uploads/')) {
-    const filename = photoUrl.replace('/uploads/', '');
-    const standardPath = path.resolve(process.cwd(), process.env.UPLOAD_DIR || 'uploads', filename);
-    const tmpPath = path.join(require('os').tmpdir(), 'uploads', filename);
-    const fs = require('fs');
+  let localPhotoPath = inputData.photoPath || null;
+  if (!localPhotoPath && photoUrl) {
+    if (photoUrl.startsWith('/uploads/') || photoUrl.startsWith('uploads/')) {
+      const filename = photoUrl.replace(/^\/?uploads\//, '');
+      const standardPath = path.resolve(process.cwd(), process.env.UPLOAD_DIR || 'uploads', filename);
+      const tmpPath = path.join(require('os').tmpdir(), 'uploads', filename);
+      const fs = require('fs');
 
-    if (fs.existsSync(standardPath)) {
-      localPhotoPath = standardPath;
-    } else if (fs.existsSync(tmpPath)) {
-      localPhotoPath = tmpPath;
+      if (fs.existsSync(standardPath)) {
+        localPhotoPath = standardPath;
+      } else if (fs.existsSync(tmpPath)) {
+        localPhotoPath = tmpPath;
+      } else {
+        localPhotoPath = standardPath;
+      }
     } else {
-      localPhotoPath = standardPath;
+      localPhotoPath = photoUrl; // remote URL or data URI
     }
+  }
   }
 
   let aiResult = await analyzeComplaintWithGemini({

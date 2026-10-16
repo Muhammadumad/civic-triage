@@ -162,7 +162,7 @@ test('Priority: Score reaches High band (>=70) when duplicates increase', () => 
 });
 
 // ==================== 5. Gemini Service Fallback Tests ====================
-const { VALID_CATEGORIES } = require('../services/geminiService');
+const { VALID_CATEGORIES, getGeminiApiKey, getCandidateModels } = require('../services/geminiService');
 test('Gemini: Service validates allowed categories enum', () => {
   assert.strictEqual(VALID_CATEGORIES.length, 6);
   assert(VALID_CATEGORIES.includes('road_damage'));
@@ -171,6 +171,29 @@ test('Gemini: Service validates allowed categories enum', () => {
   assert(VALID_CATEGORIES.includes('water_leakage'));
   assert(VALID_CATEGORIES.includes('blocked_drain'));
   assert(VALID_CATEGORIES.includes('other'));
+});
+
+test('Gemini: Cleans environment variables with surrounding quotes or whitespace', () => {
+  const origKey = process.env.GEMINI_API_KEY;
+  try {
+    process.env.GEMINI_API_KEY = ' "AIzaSySampleKey12345" \n';
+    assert.strictEqual(getGeminiApiKey(), 'AIzaSySampleKey12345');
+
+    process.env.GEMINI_API_KEY = "'AIzaSySampleKeySingleQuotes'";
+    assert.strictEqual(getGeminiApiKey(), 'AIzaSySampleKeySingleQuotes');
+
+    process.env.GEMINI_API_KEY = 'your_gemini_api_key_here';
+    assert.strictEqual(getGeminiApiKey(), null);
+  } finally {
+    process.env.GEMINI_API_KEY = origKey;
+  }
+});
+
+test('Gemini: Candidate models includes latest flash models', () => {
+  const models = getCandidateModels();
+  assert(models.includes('gemini-3.8-flash'));
+  assert(models.includes('gemini-3.6-flash'));
+  assert(models.includes('gemini-flash-latest'));
 });
 
 console.log(`\nResults: ${passed} passed, ${failed} failed.`);

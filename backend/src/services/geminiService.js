@@ -11,19 +11,135 @@ const VALID_CATEGORIES = [
   'other',
 ];
 
-const CANDIDATE_MODELS = ['gemini-3.5-flash-lite', 'gemini-3.8-flash'];
+const DEFAULT_CANDIDATE_MODELS = [
+  'gemini-3.5-flash-lite',
+  'gemini-3.6-flash',
+  'gemini-3.5-flash',
+  'gemini-flash-lite-latest',
+  'gemini-3.8-flash',
+  'gemini-flash-latest',
+];
 
 let aiClient = null;
+let activeApiKey = null;
 
-function getAIClient() {
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey || apiKey === 'your_gemini_api_key_here') {
+/**
+ * Cleanly extracts and normalizes the Gemini API key from environment variables.
+ * Handles common production environment issues like surrounding quotes, whitespace,
+ * or alternate variable names (e.g. GOOGLE_API_KEY).
+ */
+function getGeminiApiKey() {
+  const rawKey =
+    process.env.GEMINI_API_KEY ||
+    process.env.GOOGLE_API_KEY ||
+    process.env.GOOGLE_GENAI_API_KEY ||
+    '';
+
+  if (!rawKey || typeof rawKey !== 'string') {
     return null;
   }
-  if (!aiClient) {
+
+  // Strip leading and trailing quotes (common when copy-pasting into production envs) and trim
+  const cleanKey = rawKey.trim().replace(/^['"]+|['"]+$/g, '').trim();
+
+  if (
+    !cleanKey ||
+    cleanKey === 'your_gemini_api_key_here' ||
+    cleanKey === 'undefined' ||
+    cleanKey === 'null'
+  ) {
+    return null;
+  }
+
+  return cleanKey;
+}
+
+/**
+ * Returns prioritized list of Gemini models to attempt.
+ */
+function getCandidateModels() {
+  const customModel = (process.env.GEMINI_MODEL || '').trim().replace(/^['"]+|['"]+$/g, '');
+  const list = [customModel, ...DEFAULT_CANDIDATE_MODELS].filter(Boolean);
+  return Array.from(new Set(list));
+}
+
+/**
+ * Lazily creates or refreshes the Google GenAI client.
+ */
+function getAIClient() {
+  const apiKey = getGeminiApiKey();
+  if (!apiKey) {
+    return null;
+  }
+
+  if (!aiClient || activeApiKey !== apiKey) {
     aiClient = new GoogleGenAI({ apiKey });
+    activeApiKey = apiKey;
   }
   return aiClient;
+}
+
+/**
+ * Executes a promise with an enforced timeout.
+ */
+function withTimeout(promise, ms = 7000) {
+  let timer;
+  const timeoutPromise = new Promise((_, reject) => {
+    timer = setTimeout(() => {
+      reject(new Error(`Request timed out after ${ms}ms`));
+    }, ms);
+  });
+  return Promise.race([promise, timeoutPromise]).finally(() => {
+    clearTimeout(timer);
+  });
+}
+
+/**
+ * Resolves local path or remote URL into an inline image part for Gemini.
+ */
+async function loadImagePart(photoPath) {
+  if (!photoPath || typeof photoPath !== 'string') return null;
+
+  try {
+    let mimeType = 'image/jpeg';
+    let base64Data = null;
+
+    if (photoPath.startsWith('http://') || photoPath.startsWith('https://')) {
+      const res = await withTimeout(fetch(photoPath), 5000);
+      if (!res.ok) return null;
+      const contentType = res.headers.get('content-type') || '';
+      mimeType = contentType.includes('png') ? 'image/png' : contentType.includes('webp') ? 'image/webp' : 'image/jpeg';
+      const arrayBuf = await res.arrayBuffer();
+      base64Data = Buffer.from(arrayBuf).toString('base64');
+    } else if (photoPath.startsWith('data:image/')) {
+      const matches = photoPath.match(/^data:([^;]+);base64,(.+)$/);
+      if (matches) {
+        mimeType = matches[1];
+        base64Data = matches[2];
+      }
+    } else {
+      let resolved = photoPath;
+      if (!fs.existsSync(resolved)) {
+        const uploadDir = path.resolve(process.cwd(), process.env.UPLOAD_DIR || 'uploads');
+        const candidate = path.join(uploadDir, path.basename(photoPath));
+        if (fs.existsSync(candidate)) {
+          resolved = candidate;
+        } else {
+          return null;
+        }
+      }
+      const ext = path.extname(resolved).toLowerCase();
+      mimeType = ext === '.png' ? 'image/png' : ext === '.webp' ? 'image/webp' : 'image/jpeg';
+      base64Data = fs.readFileSync(resolved).toString('base64');
+    }
+
+    if (base64Data) {
+      return { inlineData: { mimeType, data: base64Data } };
+    }
+  } catch (err) {
+    console.warn('[Gemini AI] Could not attach image buffer:', err.message);
+  }
+  return null;
 }
 
 /**
@@ -39,22 +155,10 @@ async function analyzeComplaintWithGemini({ title, description, photoPath }) {
   try {
     const contents = [];
 
-    // Optional multimodal image inspection
-    if (photoPath && fs.existsSync(photoPath)) {
-      try {
-        const ext = path.extname(photoPath).toLowerCase();
-        const mimeType = ext === '.png' ? 'image/png' : ext === '.webp' ? 'image/webp' : 'image/jpeg';
-        const imageBuffer = fs.readFileSync(photoPath);
-
-        contents.push({
-          inlineData: {
-            mimeType,
-            data: imageBuffer.toString('base64'),
-          },
-        });
-      } catch (imgErr) {
-        console.warn('[Gemini AI] Could not attach image buffer:', imgErr.message);
-      }
+    // Multimodal image inspection (supports local disk files and remote URLs)
+    const imagePart = await loadImagePart(photoPath);
+    if (imagePart) {
+      contents.push(imagePart);
     }
 
     const promptText = `You are an automated civic triage specialist inspecting a municipal complaint.
@@ -79,31 +183,40 @@ Return valid JSON in this exact structure:
 
     contents.push({ text: promptText });
 
-    // Try candidate models
+    // Try candidate models with graceful failover
     let responseText = null;
+    let successfulModel = null;
     let lastError = null;
 
-    for (const model of CANDIDATE_MODELS) {
+    const candidateModels = getCandidateModels();
+
+    for (const model of candidateModels) {
       try {
-        const response = await client.models.generateContent({
-          model,
-          contents,
-          config: {
-            responseMimeType: 'application/json',
-          },
-        });
+        const response = await withTimeout(
+          client.models.generateContent({
+            model,
+            contents,
+            config: {
+              responseMimeType: 'application/json',
+            },
+          }),
+          7000
+        );
+
         if (response && response.text) {
           responseText = response.text;
+          successfulModel = model;
           break;
         }
       } catch (err) {
         lastError = err;
+        // Continue to next candidate model on 503/404/rate-limit
       }
     }
 
     if (!responseText) {
       if (lastError) {
-        console.warn('[Gemini AI] LLM call failed, engaging local classifier fallback:', lastError.message);
+        console.warn('[Gemini AI] LLM call failed across models, engaging local classifier fallback:', lastError.message);
       }
       return null;
     }
@@ -121,7 +234,7 @@ Return valid JSON in this exact structure:
       recommendedDepartment: parsed.recommendedDepartment || null,
       recommendedAction: parsed.recommendedAction || null,
       isLLM: true,
-      modelUsed: 'gemini-3.5-flash-lite',
+      modelUsed: successfulModel || candidateModels[0],
     };
   } catch (err) {
     console.warn('[Gemini AI] Inspection failed, engaging local classifier fallback:', err.message);
@@ -129,6 +242,7 @@ Return valid JSON in this exact structure:
   }
 }
 
+/**
 /**
  * Pre-submission multimodal analysis of an uploaded image to auto-populate complaint form
  */
@@ -182,15 +296,19 @@ Return JSON in this format:
     ];
 
     let responseText = null;
-    for (const model of CANDIDATE_MODELS) {
+    const candidateModels = getCandidateModels();
+    for (const model of candidateModels) {
       try {
-        const response = await client.models.generateContent({
-          model,
-          contents,
-          config: {
-            responseMimeType: 'application/json',
-          },
-        });
+        const response = await withTimeout(
+          client.models.generateContent({
+            model,
+            contents,
+            config: {
+              responseMimeType: 'application/json',
+            },
+          }),
+          7000
+        );
         if (response && response.text) {
           responseText = response.text;
           break;
@@ -226,8 +344,41 @@ Return JSON in this format:
   }
 }
 
+/**
+ * Diagnostics check for production health monitoring.
+ */
+async function checkGeminiStatus() {
+  const apiKey = getGeminiApiKey();
+  if (!apiKey) {
+    return {
+      configured: false,
+      status: 'offline_fallback',
+      message: 'No GEMINI_API_KEY detected. Running on local keyword classifier.',
+    };
+  }
+
+  const client = getAIClient();
+  if (!client) {
+    return {
+      configured: false,
+      status: 'error',
+      message: 'Client initialization failed.',
+    };
+  }
+
+  return {
+    configured: true,
+    status: 'ready',
+    activeModels: getCandidateModels(),
+    keyMasked: apiKey.length > 8 ? `${apiKey.slice(0, 4)}...${apiKey.slice(-4)}` : '****',
+  };
+}
+
 module.exports = {
   analyzeComplaintWithGemini,
   analyzeImageWithGemini,
+  checkGeminiStatus,
+  getGeminiApiKey,
+  getCandidateModels,
   VALID_CATEGORIES,
 };

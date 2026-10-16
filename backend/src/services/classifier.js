@@ -1,3 +1,5 @@
+const path = require('path');
+
 const CATEGORY_DEFINITIONS = {
   road_damage: {
     specific: ['pothole', 'potholes', 'crater', 'asphalt', 'pavement', 'sinkhole', 'broken road', 'road damage'],
@@ -74,46 +76,31 @@ const classifyByKeywords = (text = '') => {
   };
 };
 
+const { analyzeComplaintWithGemini } = require('./geminiService');
+
 const classifyComplaintWithLLM = async (text = '', imageUrl = null) => {
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) return null;
-
   try {
-    const prompt = `You are a municipal civic triage assistant. Classify this complaint description into exactly one of: road_damage, garbage, streetlight, water_leakage, blocked_drain, other.
-Description: "${text}"
-Return ONLY strict JSON:
-{"category": "road_damage|garbage|streetlight|water_leakage|blocked_drain|other", "confidence": 0.85, "reason": "concise reason"}`;
+    let photoPath = null;
+    if (imageUrl && typeof imageUrl === 'string' && imageUrl.startsWith('/uploads/')) {
+      const filename = imageUrl.replace('/uploads/', '');
+      photoPath = path.resolve(process.cwd(), process.env.UPLOAD_DIR || 'uploads', filename);
+    }
 
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { responseMimeType: 'application/json' },
-        }),
-        signal: AbortSignal.timeout(3000),
-      }
-    );
+    const aiResult = await analyzeComplaintWithGemini({
+      title: '',
+      description: text,
+      photoPath,
+    });
 
-    if (res.ok) {
-      const data = await res.json();
-      const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-      if (rawText) {
-        const parsed = JSON.parse(rawText);
-        const validCategories = ['road_damage', 'garbage', 'streetlight', 'water_leakage', 'blocked_drain', 'other'];
-        if (validCategories.includes(parsed.category)) {
-          return {
-            category: parsed.category,
-            confidence: Number(parsed.confidence) || 0.88,
-            reason: parsed.reason || 'Classified by Gemini AI Vision/Text model',
-          };
-        }
-      }
+    if (aiResult && aiResult.category) {
+      return {
+        category: aiResult.category,
+        confidence: aiResult.confidence,
+        reason: aiResult.reason || 'Classified by Gemini AI Vision/Text model',
+      };
     }
   } catch (err) {
-    // Silent graceful fallback
+    // Graceful silent fallback to keywords
   }
   return null;
 };

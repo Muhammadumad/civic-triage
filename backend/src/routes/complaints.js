@@ -81,7 +81,8 @@ router.post('/', auth(false), uploadPhoto, async (req, res, next) => {
       return res.status(400).json({ error: 'Valid latitude (-90 to 90) and longitude (-180 to 180) are required.' });
     }
 
-    const photoUrl = req.file ? `/uploads/${req.file.filename}` : null;
+    const photoUrl = req.file ? `/uploads/${req.file.filename}` : (req.body.photoUrl || null);
+    const photoPath = req.file ? req.file.path : (req.body.photoUrl || null);
     const resident = req.user ? req.user._id : null;
     const residentContact = {
       name: contactName || (req.user ? req.user.name : 'Anonymous Resident'),
@@ -94,6 +95,7 @@ router.post('/', auth(false), uploadPhoto, async (req, res, next) => {
       title,
       description: description.trim(),
       photoUrl,
+      photoPath,
       lat: parseFloat(lat),
       lng: parseFloat(lng),
       address: address || 'Location specified on map',
@@ -141,6 +143,38 @@ router.post('/', auth(false), uploadPhoto, async (req, res, next) => {
       isDuplicate: Boolean(duplicateMatch),
       duplicateDetails: duplicateMatch || null,
       trackingUrl: `/track/${complaint._id}`,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+/**
+ * @route   POST /api/complaints/inspect
+ * @desc    Real-time multimodal inspection using Gemini AI with fallback
+ * @access  Public
+ */
+router.post('/inspect', uploadPhoto, async (req, res, next) => {
+  try {
+    const { title = '', description = '', photoUrl = '' } = req.body;
+    let localPhotoPath = req.file ? req.file.path : (photoUrl || null);
+
+    const { analyzeComplaintWithGemini } = require('../services/geminiService');
+    const { classifyComplaint } = require('../services/classifier');
+
+    let aiResult = await analyzeComplaintWithGemini({
+      title,
+      description,
+      photoPath: localPhotoPath,
+    });
+
+    if (!aiResult) {
+      aiResult = await classifyComplaint(description || title, req.file ? `/uploads/${req.file.filename}` : (photoUrl || null));
+    }
+
+    res.status(200).json({
+      success: true,
+      analysis: aiResult,
     });
   } catch (err) {
     next(err);
