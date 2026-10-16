@@ -2,10 +2,37 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-const uploadDir = path.resolve(process.cwd(), process.env.UPLOAD_DIR || 'uploads');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
+const os = require('os');
+
+function getUploadDir() {
+  if (process.env.VERCEL) {
+    const tmpUploads = path.join(os.tmpdir(), 'uploads');
+    if (!fs.existsSync(tmpUploads)) {
+      try {
+        fs.mkdirSync(tmpUploads, { recursive: true });
+      } catch (_) {}
+    }
+    return tmpUploads;
+  }
+
+  const localDir = path.resolve(process.cwd(), process.env.UPLOAD_DIR || 'uploads');
+  try {
+    if (!fs.existsSync(localDir)) {
+      fs.mkdirSync(localDir, { recursive: true });
+    }
+    return localDir;
+  } catch (err) {
+    const tmpUploads = path.join(os.tmpdir(), 'uploads');
+    if (!fs.existsSync(tmpUploads)) {
+      try {
+        fs.mkdirSync(tmpUploads, { recursive: true });
+      } catch (_) {}
+    }
+    return tmpUploads;
+  }
 }
+
+const uploadDir = getUploadDir();
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {

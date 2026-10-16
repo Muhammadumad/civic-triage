@@ -37,7 +37,17 @@ const processComplaint = async (inputData) => {
   let localPhotoPath = null;
   if (photoUrl && photoUrl.startsWith('/uploads/')) {
     const filename = photoUrl.replace('/uploads/', '');
-    localPhotoPath = path.resolve(process.cwd(), process.env.UPLOAD_DIR || 'uploads', filename);
+    const standardPath = path.resolve(process.cwd(), process.env.UPLOAD_DIR || 'uploads', filename);
+    const tmpPath = path.join(require('os').tmpdir(), 'uploads', filename);
+    const fs = require('fs');
+
+    if (fs.existsSync(standardPath)) {
+      localPhotoPath = standardPath;
+    } else if (fs.existsSync(tmpPath)) {
+      localPhotoPath = tmpPath;
+    } else {
+      localPhotoPath = standardPath;
+    }
   }
 
   let aiResult = await analyzeComplaintWithGemini({

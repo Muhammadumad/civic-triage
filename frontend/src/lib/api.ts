@@ -8,8 +8,16 @@ import {
   User,
 } from './types';
 
-export const API_BASE_URL =
-  (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000').replace(/\/+$/, '');
+export const API_BASE_URL = (() => {
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL.replace(/\/+$/, '');
+  }
+  // When running in production on Vercel as a unified single app, use relative paths
+  if (typeof window !== 'undefined') {
+    return '';
+  }
+  return process.env.VERCEL ? '' : 'http://localhost:5000';
+})();
 
 const CATEGORY_MAP_TO_FE: Record<string, ComplaintCategory> = {
   road_damage: 'Road Damage',

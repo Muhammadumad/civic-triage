@@ -27,12 +27,16 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Static serving for uploaded photos
-const uploadDir = path.resolve(process.cwd(), process.env.UPLOAD_DIR || 'uploads');
-app.use('/uploads', express.static(uploadDir));
+const localUploadDir = path.resolve(process.cwd(), process.env.UPLOAD_DIR || 'uploads');
+const tmpUploadDir = path.join(require('os').tmpdir(), 'uploads');
+
+app.use('/uploads', express.static(localUploadDir));
+app.use('/uploads', express.static(tmpUploadDir));
+
 app.use('/uploads', (req, res) => {
-  const fallback = path.join(uploadDir, 'sample_pothole_1.jpg');
-  if (fs.existsSync(fallback)) {
-    return res.sendFile(fallback);
+  const localFallback = path.join(localUploadDir, 'sample_pothole_1.jpg');
+  if (fs.existsSync(localFallback)) {
+    return res.sendFile(localFallback);
   }
   res.status(404).json({ error: 'Photo not found' });
 });

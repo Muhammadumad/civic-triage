@@ -1,25 +1,48 @@
 const mongoose = require('mongoose');
 
+let cached = global.mongoose;
+
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
+}
+
 /**
- * Connect to MongoDB with robust connection management and logging
+ * Connect to MongoDB with robust connection management, serverless caching, and logging
  */
 const connectDB = async () => {
-  try {
-    const conn = await mongoose.connect(
-      process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/civic_complaints_db',
-      {
-        serverSelectionTimeoutMS: 15000,
-      }
-    );
-    console.log(`[MongoDB] Connected successfully: ${conn.connection.host}/${conn.connection.name}`);
-  } catch (error) {
-    console.error(`[MongoDB] Connection error: ${error.message}`);
-    if (process.env.NODE_ENV === 'production') {
-      process.exit(1);
-    } else {
-      console.warn('[MongoDB] Running in offline/fallback mode. Ensure MongoDB is running locally or specify a valid MONGO_URI in .env');
-    }
+  if (cached.conn) {
+    return cached.conn;
   }
+
+  if (!cached.promise) {
+    const opts = {
+      serverSelectionTimeoutMS: 15000,
+      bufferCommands: false,
+    };
+
+    const mongoUri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/civic_complaints_db';
+
+    cached.promise = mongoose.connect(mongoUri, opts).then((mongooseInstance) => {
+      console.log(`[MongoDB] Connected successfully: ${mongooseInstance.connection.host}/${mongooseInstance.connection.name}`);
+      return mongooseInstance;
+    }).catch((error) => {
+      cached.promise = null;
+      console.error(`[MongoDB] Connection error: ${error.message}`);
+      if (process.env.NODE_ENV === 'production' && !process.env.VERCEL) {
+        process.exit(1);
+      }
+      throw error;
+    });
+  }
+
+  try {
+    cached.conn = await cached.promise;
+  } catch (e) {
+    cached.promise = null;
+    throw e;
+  }
+
+  return cached.conn;
 };
 
 mongoose.connection.on('disconnected', () => {
