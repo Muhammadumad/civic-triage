@@ -9,14 +9,18 @@ import {
 } from './types';
 
 export const API_BASE_URL = (() => {
+  // Client-side in browser: use relative paths so Vercel public rewrites handle routing
+  if (typeof window !== 'undefined') {
+    return process.env.NEXT_PUBLIC_API_URL ? process.env.NEXT_PUBLIC_API_URL.replace(/\/+$/, '') : '';
+  }
+  // Server-side: use the Vercel internal service binding BACKEND_URL if present
+  if (process.env.BACKEND_URL) {
+    return process.env.BACKEND_URL.replace(/\/+$/, '');
+  }
   if (process.env.NEXT_PUBLIC_API_URL) {
     return process.env.NEXT_PUBLIC_API_URL.replace(/\/+$/, '');
   }
-  // When running in production on Vercel as a unified single app, use relative paths
-  if (typeof window !== 'undefined') {
-    return '';
-  }
-  return process.env.VERCEL ? '' : 'http://localhost:5000';
+  return 'http://localhost:5000';
 })();
 
 const CATEGORY_MAP_TO_FE: Record<string, ComplaintCategory> = {

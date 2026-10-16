@@ -8,8 +8,20 @@ const complaintsRoutes = require('./routes/complaints');
 const adminRoutes = require('./routes/admin');
 const healthRoutes = require('./routes/healthRoutes');
 const { notFound, errorHandler } = require('./middleware/errorHandler');
+const connectDB = require('./config/db');
 
 const app = express();
+
+// Ensure DB connection for incoming requests
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    console.error('[DB Connect Error]:', err.message);
+    next();
+  }
+});
 
 app.use(
   cors({
