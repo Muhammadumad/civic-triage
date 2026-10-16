@@ -53,7 +53,6 @@ const processComplaint = async (inputData) => {
       localPhotoPath = photoUrl; // remote URL or data URI
     }
   }
-  }
 
   let aiResult = await analyzeComplaintWithGemini({
     title,
