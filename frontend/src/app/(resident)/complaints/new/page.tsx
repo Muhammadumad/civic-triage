@@ -11,7 +11,7 @@ import {
 } from '@/lib/types';
 import { LocationPickerMap } from '@/components/map';
 import { useComplaintsStore } from '@/lib/complaints-store';
-import { analyzeComplaintPhoto } from '@/lib/api';
+import { analyzeComplaintPhoto, inspectComplaintWithAI } from '@/lib/api';
 import { 
   Camera, 
   Sparkles, 
@@ -60,6 +60,8 @@ export default function NewComplaintPage() {
   const [selectedCategory, setSelectedCategory] = useState<ComplaintCategory>('Road Damage');
   const [aiSuggestedCategory, setAiSuggestedCategory] = useState<ComplaintCategory>('Road Damage');
   const [aiConfidence, setAiConfidence] = useState(0.968);
+  const [aiReason, setAiReason] = useState('Deep asphalt crater with exposed substrate gravel.');
+  const [aiAction, setAiAction] = useState('Dispatch asphalt cold-patch crew with safety barriers.');
   const [isManualOverride, setIsManualOverride] = useState(false);
 
   // Map Location state
@@ -129,12 +131,32 @@ export default function NewComplaintPage() {
       }
       if (result.visualHazardSummary) {
         setAiVisualHazard(result.visualHazardSummary);
+        setAiReason(result.visualHazardSummary);
       }
       setAiModelUsed(result.isLLM ? 'Gemini 3.5 Flash-Lite (Vision)' : 'Civic Heuristics Fallback');
       setIsAiVisionReady(true);
     } catch (err) {
-      console.warn('[Vision AI] Visual analysis notice:', err);
-      // Keep existing inputs if backend fails
+      console.warn('[Vision AI] Primary analysis fallback:', err);
+      try {
+        const inspectRes = await inspectComplaintWithAI({
+          title,
+          description,
+          photoFile: file,
+        });
+        if (inspectRes) {
+          setAiSuggestedCategory(inspectRes.category);
+          if (!isManualOverride) setSelectedCategory(inspectRes.category);
+          if (typeof inspectRes.confidence === 'number') setAiConfidence(inspectRes.confidence);
+          if (inspectRes.visualHazardSummary) {
+            setAiVisualHazard(inspectRes.visualHazardSummary);
+            setAiReason(inspectRes.visualHazardSummary);
+          }
+          if (inspectRes.recommendedAction) setAiAction(inspectRes.recommendedAction);
+          setAiModelUsed(inspectRes.isLLM ? 'Gemini 3.5 Flash-Lite (Vision)' : 'Civic Heuristics Fallback');
+        }
+      } catch (innerErr) {
+        console.warn('[Vision AI] Secondary inspect notice:', innerErr);
+      }
       setIsAiVisionReady(true);
     } finally {
       setIsAnalyzingPhoto(false);
@@ -245,9 +267,9 @@ export default function NewComplaintPage() {
       aiProvenance: {
         suggestedCategory: aiSuggestedCategory,
         confidence: aiConfidence,
-        classificationReason: 'Asphalt fracture detected with 96.8% confidence',
-        modelVersion: 'VisionTransformer-Civic-v3',
-        visualFeatures: ['pothole', 'fracture', 'cracked road'],
+        classificationReason: aiReason || 'Multimodal AI analyzed photographic evidence and municipal telemetry.',
+        modelVersion: aiModelUsed,
+        visualFeatures: aiAction ? [aiAction] : ['surface anomaly', 'public right-of-way'],
       },
     };
 

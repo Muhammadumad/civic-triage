@@ -596,6 +596,49 @@ export async function fetchMyComplaints(): Promise<Complaint[]> {
   }
 }
 
+export async function inspectComplaintWithAI(payload: {
+  title?: string;
+  description?: string;
+  photoFile?: File | null;
+}): Promise<{
+  category: ComplaintCategory;
+  confidence: number;
+  reason: string;
+  visualHazardSummary?: string;
+  recommendedDepartment?: string;
+  recommendedAction?: string;
+  isLLM: boolean;
+} | null> {
+  try {
+    const formData = new FormData();
+    if (payload.title) formData.append('title', payload.title);
+    if (payload.description) formData.append('description', payload.description);
+    if (payload.photoFile) formData.append('photo', payload.photoFile);
+
+    const res = await fetch(`${API_BASE_URL}/api/complaints/inspect`, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (!data.analysis) return null;
+
+    return {
+      category: mapBackendCategory(data.analysis.category),
+      confidence: data.analysis.confidence || 0.95,
+      reason: data.analysis.reason || 'Analyzed via Gemini multimodal AI',
+      visualHazardSummary: data.analysis.visualHazardSummary,
+      recommendedDepartment: data.analysis.recommendedDepartment,
+      recommendedAction: data.analysis.recommendedAction,
+      isLLM: Boolean(data.analysis.isLLM),
+    };
+  } catch (err) {
+    console.warn('[CivicPulse API] Gemini inspect call failed, using client fallback:', err);
+    return null;
+  }
+}
+
 export async function updateComplaintStatus(
   id: string,
   params: {
