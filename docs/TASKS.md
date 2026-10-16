@@ -195,3 +195,11 @@
   - Next.js build passes with 0 errors (`next build` compiled all 29 routes).
   - Expanded dataset to 12 realistic complaints with rich infrastructure photos, local municipal coordinates, full status diversity (New, Under Review, Assigned, In Progress, Resolved), duplicate clusters, and resolution evidence.
   - *Status:* Completed & verified.
+
+- [x] **Task 10.3: Wire All Remaining Backend API Endpoints**
+  - Added 4 missing API client functions in `lib/api.ts`: `fetchAdminComplaints` (server-side paginated admin queue), `fetchNearbyComplaints` (2dsphere radius), `fetchBoundsComplaints` (viewport bounding box), `changePassword` (authenticated password update).
+  - Admin dashboard (`admin/page.tsx`) now calls `GET /api/admin/complaints` with server-side search & pagination instead of filtering `GET /api/complaints` client-side.
+  - Added pagination controls (Previous/Next) to the admin triage table.
+  - All 19 backend endpoints now have corresponding frontend API client functions.
+  - `npm run build` passes with 0 errors.
+  - *Status:* Completed & verified.

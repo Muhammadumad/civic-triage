@@ -538,6 +538,31 @@ export default function AdminDashboardPage() {
             </tbody>
           </table>
         </div>
+
+        {/* Pagination Controls */}
+        {pagination.totalPages > 1 && (
+          <div className="px-6 py-3 border-t border-[var(--border-subtle)] flex items-center justify-between text-xs">
+            <span className="text-[var(--text-secondary)]">
+              Page {pagination.page} of {pagination.totalPages} ({pagination.total} total tickets)
+            </span>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage <= 1}
+                className="px-3 py-1.5 rounded-lg bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-primary)] font-medium disabled:opacity-40 disabled:cursor-not-allowed hover:border-emerald-500/40 transition-colors"
+              >
+                Previous
+              </button>
+              <button
+                onClick={() => setCurrentPage((p) => Math.min(pagination.totalPages, p + 1))}
+                disabled={currentPage >= pagination.totalPages}
+                className="px-3 py-1.5 rounded-lg bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-primary)] font-medium disabled:opacity-40 disabled:cursor-not-allowed hover:border-emerald-500/40 transition-colors"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
