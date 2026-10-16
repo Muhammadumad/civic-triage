@@ -11,6 +11,7 @@ import {
 } from '@/lib/types';
 import { LocationPickerMap } from '@/components/map';
 import { useComplaintsStore } from '@/lib/complaints-store';
+import { analyzeComplaintPhoto } from '@/lib/api';
 import { 
   Camera, 
   Sparkles, 
@@ -48,6 +49,8 @@ export default function NewComplaintPage() {
   const [photoUrl, setPhotoUrl] = useState<string>('https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80');
   const [isAnalyzingPhoto, setIsAnalyzingPhoto] = useState(false);
   const [isAiVisionReady, setIsAiVisionReady] = useState(true);
+  const [aiVisualHazard, setAiVisualHazard] = useState<string>('Deep asphalt crater with loose aggregate in active traffic lane.');
+  const [aiModelUsed, setAiModelUsed] = useState<string>('Gemini 3.5 Flash-Lite (Vision)');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -86,7 +89,7 @@ export default function NewComplaintPage() {
     reader.onload = (e) => {
       const result = e.target?.result as string;
       setPhotoUrl(result);
-      triggerAiVisionAnalysis(file.name);
+      triggerAiVisionAnalysis(file);
     };
     reader.readAsDataURL(file);
   };
@@ -104,40 +107,38 @@ export default function NewComplaintPage() {
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
-  const triggerAiVisionAnalysis = (fileName: string) => {
+  const triggerAiVisionAnalysis = async (file: File) => {
     setIsAnalyzingPhoto(true);
     setIsAiVisionReady(false);
 
-    setTimeout(() => {
-      setIsAnalyzingPhoto(false);
-      setIsAiVisionReady(true);
+    try {
+      const result = await analyzeComplaintPhoto(file);
 
-      const lower = fileName.toLowerCase();
-      let detected: ComplaintCategory = 'Road Damage';
-      let suggestedTitle = 'Severe Road Surface Deformation';
-
-      if (lower.includes('water') || lower.includes('leak') || lower.includes('pipe')) {
-        detected = 'Water Leakage';
-        suggestedTitle = 'Ruptured Water Main Pipeline';
-      } else if (lower.includes('garbage') || lower.includes('trash') || lower.includes('waste')) {
-        detected = 'Garbage';
-        suggestedTitle = 'Accumulated Waste and Litter Obstruction';
-      } else if (lower.includes('light') || lower.includes('lamp') || lower.includes('dark')) {
-        detected = 'Streetlights';
-        suggestedTitle = 'Outage on High-Pedestrian Luminaire';
-      } else if (lower.includes('drain') || lower.includes('flood') || lower.includes('clog')) {
-        detected = 'Blocked Drains';
-        suggestedTitle = 'Stormwater Catch Basin Blockage';
-      }
-
-      setAiSuggestedCategory(detected);
+      setAiSuggestedCategory(result.category);
       if (!isManualOverride) {
-        setSelectedCategory(detected);
+        setSelectedCategory(result.category);
       }
-      if (!title) {
-        setTitle(suggestedTitle);
+      if (result.title) {
+        setTitle(result.title);
       }
-    }, 1100);
+      if (result.description) {
+        setDescription(result.description);
+      }
+      if (typeof result.confidence === 'number') {
+        setAiConfidence(result.confidence);
+      }
+      if (result.visualHazardSummary) {
+        setAiVisualHazard(result.visualHazardSummary);
+      }
+      setAiModelUsed(result.isLLM ? 'Gemini 3.5 Flash-Lite (Vision)' : 'Civic Heuristics Fallback');
+      setIsAiVisionReady(true);
+    } catch (err) {
+      console.warn('[Vision AI] Visual analysis notice:', err);
+      // Keep existing inputs if backend fails
+      setIsAiVisionReady(true);
+    } finally {
+      setIsAnalyzingPhoto(false);
+    }
   };
 
   // Mic shortcut speech dictation toggle
@@ -348,21 +349,30 @@ export default function NewComplaintPage() {
                     <div className="p-4 rounded-xl bg-[var(--surface-card)]/95 backdrop-blur-xl border border-[var(--border-strong)] shadow-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                       <div className="flex items-center gap-3">
                         <div className="w-9 h-9 rounded-lg bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center shrink-0">
-                          <Sparkles className="w-4 h-4 text-emerald-500 dark:text-emerald-400 animate-spin" style={{ animationDuration: '8s' }} />
+                          {isAnalyzingPhoto ? (
+                            <Loader2 className="w-4 h-4 text-emerald-500 dark:text-emerald-400 animate-spin" />
+                          ) : (
+                            <Sparkles className="w-4 h-4 text-emerald-500 dark:text-emerald-400 animate-spin" style={{ animationDuration: '8s' }} />
+                          )}
                         </div>
                         <div>
                           <div className="flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse" />
-                            <span className="text-sm font-bold text-[var(--text-primary)]">AI Vision Classifier: Asphalt Fracture</span>
+                            <span className={`w-2 h-2 rounded-full ${isAnalyzingPhoto ? 'bg-amber-400 animate-ping' : 'bg-emerald-500 dark:bg-emerald-400 animate-pulse'}`} />
+                            <span className="text-sm font-bold text-[var(--text-primary)]">
+                              {isAnalyzingPhoto ? 'Inspecting image with Gemini Vision...' : `AI Detected: ${aiSuggestedCategory}`}
+                            </span>
                           </div>
                           <p className="font-mono text-xs text-[var(--text-muted)] mt-0.5">
-                            Class: Severe Pothole • Depth Est: 7.2cm • Safety Weight: 0.94
+                            {isAnalyzingPhoto ? 'Extracting visual infrastructure hazards and telemetry...' : aiVisualHazard}
                           </p>
                         </div>
                       </div>
-                      <div className="self-start sm:self-auto">
+                      <div className="self-start sm:self-auto flex items-center gap-2">
+                        <span className="font-mono text-[10px] text-[var(--text-muted)] hidden md:inline">
+                          {aiModelUsed}
+                        </span>
                         <span className="font-mono text-xs text-emerald-600 dark:text-emerald-400 font-bold px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-                          96.8% Confidence
+                          {Math.round(aiConfidence * 100)}% Confidence
                         </span>
                       </div>
                     </div>

@@ -203,3 +203,26 @@
   - All 19 backend endpoints now have corresponding frontend API client functions.
   - `npm run build` passes with 0 errors.
   - *Status:* Completed & verified.
+
+- [x] **Task 10.4: Connect Gemini Multimodal Vision to Auto-Fill Complaint Form**
+  - Connected `gemini-3.5-flash-lite` via `@google/genai` on backend (`analyzeImageWithGemini`).
+  - Added `POST /api/complaints/analyze` endpoint accepting photographic telemetry (`uploadPhoto` Multer middleware) and returning category, title, description, confidence, and visual hazard summary with graceful keyword fallback.
+  - Added `analyzeComplaintPhoto` client in `frontend/src/lib/api.ts`.
+  - Replaced mock filename check in `frontend/src/app/(resident)/complaints/new/page.tsx` with live Gemini vision inspection that dynamically auto-populates Title, Description, Category pill, and HUD scan telemetry banner upon image upload or replacement.
+  - Verified logic tests pass (`npm run test:logic` -> 15/15) and frontend build succeeds (`npm run build` -> 0 errors).
+  - *Status:* Completed & verified.
+
+- [x] **Task 10.5: Fix Next.js 16 Instant Navigation Dropped Segment Warning**
+  - In `frontend/src/app/(admin)/admin/layout.tsx`, refactored authorization guard: replaced early-return conditional drop of `{children}` with an overlay pattern (`fixed inset-0 z-50` loader overlay while `children` remains in the tree with CSS visibility toggle).
+  - Preserves the `/admin` segment during static prerendering, partial prefetching, and Turbopack instant-navigation validation.
+  - Verified with `next build`: all routes render clean with 0 warnings or dropped segments.
+  - *Status:* Completed & verified.
+
+- [x] **Task 10.6: Resolve Instant Shell URL Data with Suspense Streaming**
+  - Next.js 16 flagged `await params` in `complaints/[id]/page.tsx` and `admin/complaints/[id]/page.tsx` for blocking instant shell navigation.
+  - Refactored both root route wrappers to render `<Suspense fallback={<Loader />}>` streaming shells around inner async content components (`ComplaintContent` and `AdminComplaintContent`).
+  - Verified: `next build` now generates optimal Partial Prerenders (`◐`) without warnings or blocking navigation.
+  - *Status:* Completed & verified.
+
+
+

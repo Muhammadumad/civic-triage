@@ -39,22 +39,25 @@ export default function AdminLayout({
     router.replace(`/login?redirect=${encodeURIComponent(pathname)}`);
   }, [router, pathname]);
 
-  if (isAuthorized === null || isAuthorized === false) {
-    return (
-      <div className="min-h-[75vh] flex flex-col items-center justify-center text-center px-4">
-        <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-emerald-400 mb-4 shadow-xl">
-          <Loader2 className="w-6 h-6 animate-spin" />
+  return (
+    <>
+      {isAuthorized !== true && (
+        <div className="fixed inset-0 z-50 bg-[var(--canvas-base)] flex flex-col items-center justify-center text-center px-4">
+          <div className="w-14 h-14 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] flex items-center justify-center text-emerald-500 mb-4 shadow-xl">
+            <Loader2 className="w-6 h-6 animate-spin" />
+          </div>
+          <h2 className="text-sm font-bold text-[var(--text-primary)] mb-1 flex items-center justify-center gap-1.5">
+            <ShieldAlert className="w-4 h-4 text-emerald-500" />
+            <span>Verifying Dispatcher Credentials</span>
+          </h2>
+          <p className="text-xs text-[var(--text-secondary)]">
+            Securing municipal administrative console session...
+          </p>
         </div>
-        <h2 className="text-sm font-bold text-white mb-1 flex items-center justify-center gap-1.5">
-          <ShieldAlert className="w-4 h-4 text-emerald-400" />
-          <span>Verifying Dispatcher Credentials</span>
-        </h2>
-        <p className="text-xs text-zinc-400">
-          Securing municipal administrative console session...
-        </p>
+      )}
+      <div className={isAuthorized === true ? 'contents' : 'invisible'}>
+        {children}
       </div>
-    );
-  }
-
-  return <>{children}</>;
+    </>
+  );
 }

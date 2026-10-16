@@ -420,6 +420,45 @@ export async function createComplaint(payload: {
   return normalizeBackendComplaint(created);
 }
 
+export interface ImageAnalysisResult {
+  photoUrl: string;
+  category: ComplaintCategory;
+  title: string;
+  description: string;
+  confidence: number;
+  visualHazardSummary?: string | null;
+  recommendedDepartment?: string | null;
+  isLLM: boolean;
+}
+
+export async function analyzeComplaintPhoto(file: File): Promise<ImageAnalysisResult> {
+  const formData = new FormData();
+  formData.append('photo', file);
+
+  const res = await fetch(`${API_BASE_URL}/api/complaints/analyze`, {
+    method: 'POST',
+    headers: { Accept: 'application/json' },
+    body: formData,
+  });
+
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => ({}));
+    throw new Error(errBody.error || `Visual triage failed: ${res.status}`);
+  }
+
+  const data = await res.json();
+  return {
+    photoUrl: resolveMediaUrl(data.photoUrl),
+    category: mapBackendCategory(data.category),
+    title: data.title || 'Civic Infrastructure Incident',
+    description: data.description || '',
+    confidence: typeof data.confidence === 'number' ? (data.confidence <= 1 ? data.confidence : data.confidence / 100) : 0.95,
+    visualHazardSummary: data.visualHazardSummary || null,
+    recommendedDepartment: data.recommendedDepartment || null,
+    isLLM: Boolean(data.isLLM),
+  };
+}
+
 export async function fetchMyComplaints(): Promise<Complaint[]> {
   const token = typeof window !== 'undefined' ? localStorage.getItem('civicpulse_token') : cachedAuthToken;
   if (!token) return [];

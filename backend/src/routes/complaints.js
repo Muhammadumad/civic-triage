@@ -7,8 +7,51 @@ const { auth } = require('../middleware/auth');
 const { processComplaint } = require('../services/pipeline');
 const { calculatePriority } = require('../services/priority');
 const { isValidCoordinate } = require('../utils/geo');
+const { analyzeImageWithGemini } = require('../services/geminiService');
+const { classifyComplaint } = require('../services/classifier');
 
 const router = express.Router();
+
+/**
+ * @route   POST /api/complaints/analyze
+ * @desc    Analyze uploaded photo with Gemini AI vision to auto-fill form (category, title, description)
+ * @access  Public
+ */
+router.post('/analyze', uploadPhoto, async (req, res, next) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'Image file is required for AI visual analysis.' });
+    }
+
+    const photoUrl = `/uploads/${req.file.filename}`;
+    const photoPath = req.file.path;
+
+    // Run multimodal Gemini vision
+    let analysis = await analyzeImageWithGemini({ photoPath });
+
+    if (!analysis) {
+      // Graceful fallback to keyword classifier if Gemini is unavailable
+      const fallback = await classifyComplaint(req.file.originalname.replace(/[-_.]/g, ' '));
+      analysis = {
+        category: fallback.category || 'other',
+        title: 'Municipal Civic Incident',
+        description: `Visual evidence submitted for ${fallback.category || 'civic'} triage.`,
+        confidence: fallback.confidence || 0.75,
+        visualHazardSummary: fallback.reason || 'Classified by civic heuristics',
+        recommendedDepartment: 'Dept of Public Works & Roads',
+        isLLM: false,
+      };
+    }
+
+    res.status(200).json({
+      success: true,
+      photoUrl,
+      ...analysis,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
 
 /**
  * @route   POST /api/complaints
