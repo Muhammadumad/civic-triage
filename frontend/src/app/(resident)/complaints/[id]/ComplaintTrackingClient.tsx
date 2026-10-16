@@ -110,12 +110,12 @@ export default function ComplaintTrackingClient({ id }: { id: string }) {
 
   if (!mounted || isLoading) {
     return (
-      <div className="min-h-screen py-16 px-4 flex flex-col items-center justify-center text-center bg-[#090A0F] text-white">
-        <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-emerald-400 mb-4 animate-pulse">
+      <div className="min-h-screen py-16 px-4 flex flex-col items-center justify-center text-center bg-[var(--canvas-base)] text-[var(--text-primary)]">
+        <div className="w-14 h-14 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] flex items-center justify-center text-emerald-500 dark:text-emerald-400 mb-4 animate-pulse">
           <Loader2 className="w-6 h-6 animate-spin" />
         </div>
-        <h2 className="text-sm font-semibold text-white mb-1">Loading Incident Tracking Record...</h2>
-        <p className="text-xs text-zinc-400 font-mono">Synchronizing incident status for {id}</p>
+        <h2 className="text-sm font-semibold text-[var(--text-primary)] mb-1">Loading Incident Tracking Record...</h2>
+        <p className="text-xs text-[var(--text-muted)] font-mono">Synchronizing incident status for {id}</p>
       </div>
     );
   }
@@ -297,30 +297,30 @@ export default function ComplaintTrackingClient({ id }: { id: string }) {
 
         {/* AI Multimodal Triage Provenance */}
         {complaint.aiProvenance && (
-          <div className="bg-[#161922] border border-cyan-500/30 rounded-xl p-5 shadow-xl relative overflow-hidden space-y-3">
-            <div className="flex items-center justify-between pb-2 border-b border-white/[0.06]">
+          <div className="bg-[var(--surface-card)] border border-cyan-500/30 rounded-xl p-5 shadow-xl relative overflow-hidden space-y-3">
+            <div className="flex items-center justify-between pb-2 border-b border-[var(--border-subtle)]">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-cyan-400" />
-                <h3 className="text-sm font-bold text-white">AI Vision & Automated Triage Analysis</h3>
+                <Sparkles className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
+                <h3 className="text-sm font-bold text-[var(--text-primary)]">AI Vision & Automated Triage Analysis</h3>
               </div>
-              <span className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 font-semibold">
+              <span className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 border border-cyan-500/30 font-semibold">
                 {complaint.aiProvenance.modelVersion}
               </span>
             </div>
-            <div className="text-xs text-zinc-300 leading-relaxed">
-              <span className="font-semibold text-zinc-100">Visual Assessment: </span>
+            <div className="text-xs text-[var(--text-secondary)] leading-relaxed">
+              <span className="font-semibold text-[var(--text-primary)]">Visual Assessment: </span>
               {complaint.aiProvenance.classificationReason}
             </div>
             {complaint.aiProvenance.visualFeatures && complaint.aiProvenance.visualFeatures.length > 0 && (
               <div className="space-y-1.5 pt-1">
-                <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400 block font-semibold">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-[var(--text-muted)] block font-semibold">
                   Field Dispatch Action Recommendation:
                 </span>
                 <div className="flex flex-wrap gap-2">
                   {complaint.aiProvenance.visualFeatures.map((feat, i) => (
                     <span
                       key={i}
-                      className="text-xs px-2.5 py-1 rounded-lg bg-black/40 border border-white/10 text-zinc-200"
+                      className="text-xs px-2.5 py-1 rounded-lg bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-primary)] font-medium"
                     >
                       {feat}
                     </span>
@@ -395,7 +395,7 @@ export default function ComplaintTrackingClient({ id }: { id: string }) {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* Before Photo */}
             <div className="flex flex-col bg-[var(--surface-elevated)] rounded-xl overflow-hidden border border-[var(--border-subtle)]">
-              <div className="relative h-48 w-full bg-zinc-900 overflow-hidden">
+              <div className="relative h-48 w-full bg-[var(--surface-sunken)] overflow-hidden">
                 <img
                   src={complaint.photoUrl}
                   alt="Initial citizen report"
@@ -419,7 +419,7 @@ export default function ComplaintTrackingClient({ id }: { id: string }) {
 
             {/* After Photo / Resolution Proof */}
             <div className="flex flex-col bg-[var(--surface-elevated)] rounded-xl overflow-hidden border border-[var(--border-subtle)]">
-              <div className="relative h-48 w-full bg-zinc-900 overflow-hidden">
+              <div className="relative h-48 w-full bg-[var(--surface-sunken)] overflow-hidden">
                 <img
                   src={
                     complaint.resolutionEvidence?.afterPhotoUrl ||

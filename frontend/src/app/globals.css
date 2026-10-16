@@ -183,6 +183,14 @@ html.light .glass-nav {
   transition: all 0.25s ease;
 }
 
+html.light .glass-card {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+html.light .glass-panel {
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.06), 0 2px 6px -1px rgba(0, 0, 0, 0.04);
+}
+
 .glass-card:hover {
   background: var(--surface-elevated);
   border-color: var(--border-strong);
@@ -299,9 +307,14 @@ html.light .glass-nav {
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
-.hover-lift:hover {
+html.dark .hover-lift:hover {
   transform: translateY(-3px);
   box-shadow: 0 12px 30px -6px rgba(0, 0, 0, 0.3);
+}
+
+html.light .hover-lift:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 24px -4px rgba(0, 0, 0, 0.08);
 }
 
 /* ======================================================== */
@@ -329,8 +342,13 @@ html, body {
 }
 
 /* Subtle civic grid pattern overlay */
-.bg-civic-grid {
+html.dark .bg-civic-grid {
   background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+html.light .bg-civic-grid {
+  background-image: radial-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 0);
   background-size: 24px 24px;
 }
 

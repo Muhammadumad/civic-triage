@@ -103,18 +103,18 @@ export default function HelpCenterPage() {
 
       {/* Search Input */}
       <div className="relative">
-        <Search className="w-5 h-5 text-zinc-400 absolute left-4 top-3.5" />
+        <Search className="w-5 h-5 text-[var(--text-muted)] absolute left-4 top-3.5" />
         <input
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search questions by keyword (e.g. duplicate, 72 hours, priority score, after photo)..."
-          className="w-full pl-12 pr-4 py-3 rounded-2xl bg-[#090A0F] border border-white/10 text-white placeholder-zinc-500 text-sm focus:outline-none focus:border-emerald-500 transition-colors shadow-lg"
+          className="w-full pl-12 pr-4 py-3 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] text-[var(--text-primary)] placeholder-[var(--text-muted)] text-sm focus:outline-none focus:border-emerald-500 transition-colors shadow-md"
         />
         {searchQuery && (
           <button
             onClick={() => setSearchQuery('')}
-            className="absolute right-4 top-3.5 text-xs text-zinc-400 hover:text-white"
+            className="absolute right-4 top-3.5 text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)]"
           >
             Clear
           </button>
@@ -178,10 +178,10 @@ export default function HelpCenterPage() {
             );
           })
         ) : (
-          <div className="p-12 rounded-2xl glass-panel border border-white/10 text-center space-y-2">
-            <HelpCircle className="w-8 h-8 text-zinc-500 mx-auto" />
-            <h4 className="text-sm font-bold text-white">No Matching Questions Found</h4>
-            <p className="text-xs text-zinc-400 max-w-sm mx-auto">
+          <div className="p-12 rounded-2xl glass-panel border border-[var(--border-subtle)] text-center space-y-2">
+            <HelpCircle className="w-8 h-8 text-[var(--text-muted)] mx-auto" />
+            <h4 className="text-sm font-bold text-[var(--text-primary)]">No Matching Questions Found</h4>
+            <p className="text-xs text-[var(--text-muted)] max-w-sm mx-auto">
               Try adjusting your search terms or reach out through our Contact Directory.
             </p>
           </div>
@@ -189,14 +189,14 @@ export default function HelpCenterPage() {
       </div>
 
       {/* Still need help callout */}
-      <div className="p-6 rounded-2xl glass-panel border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+      <div className="p-6 rounded-2xl glass-panel border border-[var(--border-subtle)] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
         <div>
-          <span className="font-bold text-white block">Need direct municipal assistance?</span>
-          <span className="text-zinc-400">Our customer relations desk is available during business hours.</span>
+          <span className="font-bold text-[var(--text-primary)] block">Need direct municipal assistance?</span>
+          <span className="text-[var(--text-muted)]">Our customer relations desk is available during business hours.</span>
         </div>
         <Link
           href="/contact"
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white font-semibold transition-colors"
+          className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold transition-colors shadow-sm"
         >
           <span>Contact Directory</span>
           <ArrowRight className="w-3.5 h-3.5" />

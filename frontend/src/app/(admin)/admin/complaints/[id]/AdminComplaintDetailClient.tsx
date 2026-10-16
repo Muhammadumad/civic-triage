@@ -90,12 +90,12 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
 
   if (!mounted || isLoading) {
     return (
-      <div className="min-h-screen py-16 px-4 flex flex-col items-center justify-center text-center">
-        <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-emerald-400 mb-4 animate-pulse">
+      <div className="min-h-screen py-16 px-4 flex flex-col items-center justify-center text-center bg-[var(--canvas-base)] text-[var(--text-primary)]">
+        <div className="w-14 h-14 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] flex items-center justify-center text-emerald-500 dark:text-emerald-400 mb-4 animate-pulse">
           <Loader2 className="w-6 h-6 animate-spin" />
         </div>
-        <h2 className="text-sm font-semibold text-white mb-1">Loading Ticket Details...</h2>
-        <p className="text-xs text-zinc-400 font-mono">Synchronizing dispatch registry for {id}</p>
+        <h2 className="text-sm font-semibold text-[var(--text-primary)] mb-1">Loading Ticket Details...</h2>
+        <p className="text-xs text-[var(--text-muted)] font-mono">Synchronizing dispatch registry for {id}</p>
       </div>
     );
   }

@@ -106,7 +106,7 @@ export function Navbar() {
           {/* Logo & Brand */}
           <div className="flex min-w-0 items-center gap-8">
             <Link href="/" className="flex items-center gap-2.5 group">
-              <div className="relative flex items-center justify-center w-10 h-10 rounded-xl overflow-hidden border border-emerald-500/40 group-hover:border-emerald-400/70 shadow-[0_0_16px_rgba(16,185,129,0.3)] transition-all duration-300 bg-slate-950">
+              <div className="relative flex items-center justify-center w-10 h-10 rounded-xl overflow-hidden border border-emerald-500/40 group-hover:border-emerald-400/70 shadow-[0_0_16px_rgba(16,185,129,0.3)] transition-all duration-300 bg-[var(--surface-card)]">
                 <img
                   src="/civicpulse-logo.png"
                   alt="CivicPulse Logo"
@@ -259,16 +259,16 @@ export function Navbar() {
           })}
           <div className="pt-2 space-y-2">
             {mounted && isAuthenticated ? (
-              <div className="p-3 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between">
+              <div className="p-3 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
-                  <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-bold uppercase">
+                  <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 text-xs font-bold uppercase">
                     {currentUser.name ? currentUser.name.charAt(0) : <UserIcon className="w-4 h-4" />}
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-sm font-semibold text-white">{currentUser.name}</span>
+                    <span className="text-sm font-semibold text-[var(--text-primary)]">{currentUser.name}</span>
                     <div className="flex items-center gap-1.5">
-                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
-                      <span className="text-xs text-emerald-400 font-medium">
+                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                      <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">
                         {role === 'admin' ? 'Municipal Admin' : 'Verified Resident'}
                       </span>
                     </div>
@@ -280,7 +280,7 @@ export function Navbar() {
                     logout();
                     setMobileMenuOpen(false);
                   }}
-                  className="px-2.5 py-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 text-xs font-medium transition-colors"
+                  className="px-2.5 py-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 text-xs font-semibold transition-colors"
                 >
                   Sign Out
                 </button>
@@ -290,15 +290,15 @@ export function Navbar() {
                 <Link
                   href="/login"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-white/10 hover:bg-white/15 text-white font-medium text-xs transition-colors border border-white/15"
+                  className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 text-[var(--text-primary)] font-semibold text-xs transition-colors border border-[var(--border-subtle)]"
                 >
-                  <LogIn className="w-3.5 h-3.5 text-emerald-400" />
+                  <LogIn className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" />
                   <span>Sign In</span>
                 </Link>
                 <Link
                   href="/register"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 font-medium text-xs transition-colors border border-emerald-500/30"
+                  className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 font-semibold text-xs transition-colors border border-emerald-500/30"
                 >
                   <span>Register</span>
                 </Link>

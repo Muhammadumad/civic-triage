@@ -204,12 +204,26 @@ export default function LocationPickerMapInner({
 
     return () => {
       isMounted = false;
-      if (mapRef.current) {
+      if (markerRef.current) {
         try {
-          mapRef.current.off();
-          mapRef.current.remove();
+          markerRef.current.remove();
         } catch (_) {}
+        markerRef.current = null;
+      }
+      if (circleRef.current) {
+        try {
+          circleRef.current.remove();
+        } catch (_) {}
+        circleRef.current = null;
+      }
+      if (mapRef.current) {
+        const m = mapRef.current;
         mapRef.current = null;
+        try {
+          m.off();
+          m.stop();
+          m.remove();
+        } catch (_) {}
       }
     };
   }, []);
@@ -239,14 +253,14 @@ export default function LocationPickerMapInner({
   };
 
   return (
-    <div className="relative rounded-2xl overflow-hidden border border-white/[0.08] shadow-lg">
+    <div className="relative rounded-2xl overflow-hidden border border-[var(--border-subtle)] shadow-lg">
       <div ref={mapContainerRef} style={{ height, width: '100%' }} className="relative z-0" />
 
       {/* Top Floating Controls */}
       <div className="absolute top-3 left-3 right-3 z-10 flex items-center justify-between pointer-events-none gap-2">
-        <div className="pointer-events-auto flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#090A0F]/85 backdrop-blur-md border border-white/10 text-xs shadow-md">
-          <Compass className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-          <span className="font-mono text-zinc-300">
+        <div className="pointer-events-auto flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[var(--surface-card)]/90 backdrop-blur-md border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] shadow-md">
+          <Compass className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400 shrink-0" />
+          <span className="font-mono text-[var(--text-secondary)]">
             {currentCoords.lat.toFixed(5)}°, {currentCoords.lng.toFixed(5)}°
           </span>
         </div>
@@ -276,18 +290,18 @@ export default function LocationPickerMapInner({
 
       {/* Bottom Reverse-geocoded Address overlay with Affected Radius indicator */}
       <div className="absolute bottom-3 left-3 right-3 z-10 pointer-events-auto">
-        <div className="flex items-center gap-2.5 p-3 rounded-xl bg-[#090A0F]/90 backdrop-blur-md border border-white/10 text-xs shadow-xl">
-          <div className="w-6 h-6 rounded-lg bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
+        <div className="flex items-center gap-2.5 p-3 rounded-xl bg-[var(--surface-card)]/90 backdrop-blur-md border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] shadow-xl">
+          <div className="w-6 h-6 rounded-lg bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
             <MapPin className="w-3.5 h-3.5" />
           </div>
           <div className="flex-1 min-w-0">
-            <div className="text-[10px] text-zinc-400 uppercase tracking-wider font-semibold flex items-center justify-between">
+            <div className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider font-semibold flex items-center justify-between">
               <span>Incident Coordinates & Affected Buffer</span>
-              <span className="text-emerald-400 font-normal">150m impact perimeter</span>
+              <span className="text-emerald-600 dark:text-emerald-400 font-normal">150m impact perimeter</span>
             </div>
-            <div className="text-white font-medium truncate mt-0.5">{address}</div>
+            <div className="text-[var(--text-primary)] font-medium truncate mt-0.5">{address}</div>
           </div>
-          <span className="text-[10px] text-zinc-400 hidden sm:inline-block border-l border-white/10 pl-2">
+          <span className="text-[10px] text-[var(--text-muted)] hidden sm:inline-block border-l border-[var(--border-subtle)] pl-2">
             Drag pin to adjust
           </span>
         </div>

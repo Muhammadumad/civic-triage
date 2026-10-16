@@ -198,14 +198,14 @@ export default function AboutPage() {
                 </div>
                 <div>
                   <span className="text-xs font-mono text-[var(--text-muted)] uppercase">STAGE 02</span>
-                  <h3 className="text-base font-bold text-white mt-0.5">AI Classification</h3>
+                  <h3 className="text-base font-bold text-[var(--text-primary)] mt-0.5">AI Classification</h3>
                 </div>
-                <p className="text-xs text-zinc-400 leading-relaxed">
+                <p className="text-xs text-[var(--text-muted)] leading-relaxed">
                   Fast multi-modal classification against 5 standard categories with visible confidence ratings and full operator manual override capability.
                 </p>
                 <div className="mt-auto pt-2">
-                  <div className="bg-[#161922] p-3 rounded text-xs font-mono text-zinc-300 flex flex-col gap-1 border border-white/[0.06]">
-                    <span className="font-bold text-cyan-400">Specs:</span>
+                  <div className="bg-[var(--surface-elevated)] p-3 rounded text-xs font-mono text-[var(--text-secondary)] flex flex-col gap-1 border border-[var(--border-subtle)]">
+                    <span className="font-bold text-cyan-600 dark:text-cyan-400">Specs:</span>
                     <span>• Edge vision inference</span>
                     <span>• Risk scoring matrix</span>
                     <span>• 5 Municipal buckets</span>
@@ -219,18 +219,18 @@ export default function AboutPage() {
                   <div className="w-8 h-8 rounded-lg bg-emerald-500 text-zinc-950 flex items-center justify-center font-mono font-bold text-sm shrink-0">
                     3
                   </div>
-                  <div className="h-0.5 bg-white/[0.1] flex-1 hidden md:block" />
+                  <div className="h-0.5 bg-[var(--border-subtle)] flex-1 hidden md:block" />
                 </div>
                 <div>
-                  <span className="text-xs font-mono text-zinc-400 uppercase">STAGE 03</span>
-                  <h3 className="text-base font-bold text-white mt-0.5">Deduplication</h3>
+                  <span className="text-xs font-mono text-[var(--text-muted)] uppercase">STAGE 03</span>
+                  <h3 className="text-base font-bold text-[var(--text-primary)] mt-0.5">Deduplication</h3>
                 </div>
-                <p className="text-xs text-zinc-400 leading-relaxed">
+                <p className="text-xs text-[var(--text-muted)] leading-relaxed">
                   Cosine similarity on embeddings combined with 50-meter proximity checks links nearby matching reports into a single consolidated master ticket.
                 </p>
                 <div className="mt-auto pt-2">
-                  <div className="bg-[#161922] p-3 rounded text-xs font-mono text-zinc-300 flex flex-col gap-1 border border-white/[0.06]">
-                    <span className="font-bold text-emerald-400">Specs:</span>
+                  <div className="bg-[var(--surface-elevated)] p-3 rounded text-xs font-mono text-[var(--text-secondary)] flex flex-col gap-1 border border-[var(--border-subtle)]">
+                    <span className="font-bold text-emerald-600 dark:text-emerald-400">Specs:</span>
                     <span>• Geo-hash spatial indexing</span>
                     <span>• Parent-child bundling</span>
                     <span>• Resident sync updates</span>
@@ -247,15 +247,15 @@ export default function AboutPage() {
                   <div className="h-0.5 bg-transparent flex-1 hidden md:block" />
                 </div>
                 <div>
-                  <span className="text-xs font-mono text-zinc-400 uppercase">STAGE 04</span>
-                  <h3 className="text-base font-bold text-white mt-0.5">Priority & Dispatch</h3>
+                  <span className="text-xs font-mono text-[var(--text-muted)] uppercase">STAGE 04</span>
+                  <h3 className="text-base font-bold text-[var(--text-primary)] mt-0.5">Priority & Dispatch</h3>
                 </div>
-                <p className="text-xs text-zinc-400 leading-relaxed">
+                <p className="text-xs text-[var(--text-muted)] leading-relaxed">
                   Calculates a 0–100 urgency score with complete factor breakdowns, routing tickets directly to Roads, Sanitation, Water, or Electrical work orders.
                 </p>
                 <div className="mt-auto pt-2">
-                  <div className="bg-[#161922] p-3 rounded text-xs font-mono text-zinc-300 flex flex-col gap-1 border border-white/[0.06]">
-                    <span className="font-bold text-amber-400">Specs:</span>
+                  <div className="bg-[var(--surface-elevated)] p-3 rounded text-xs font-mono text-[var(--text-secondary)] flex flex-col gap-1 border border-[var(--border-subtle)]">
+                    <span className="font-bold text-amber-600 dark:text-amber-400">Specs:</span>
                     <span>• Dynamic Ward SLA timers</span>
                     <span>• Field tablet sync</span>
                     <span>• Public queue broadcast</span>
@@ -265,26 +265,26 @@ export default function AboutPage() {
             </div>
 
             {/* Real-Time Pipeline Metric Row */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 bg-[#161922] p-4 rounded-xl border border-white/[0.08]">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 bg-[var(--surface-elevated)] p-4 rounded-xl border border-[var(--border-subtle)]">
               <div className="flex flex-col">
-                <span className="text-xs font-mono text-zinc-400 uppercase">Median Ingest Time</span>
-                <span className="text-2xl font-bold text-white mt-0.5 font-mono">1.4s</span>
-                <span className="text-xs font-mono text-emerald-400">99.4th percentile</span>
+                <span className="text-xs font-mono text-[var(--text-muted)] uppercase">Median Ingest Time</span>
+                <span className="text-2xl font-bold text-[var(--text-primary)] mt-0.5 font-mono">1.4s</span>
+                <span className="text-xs font-mono text-emerald-600 dark:text-emerald-400">99.4th percentile</span>
               </div>
               <div className="flex flex-col">
-                <span className="text-xs font-mono text-zinc-400 uppercase">Auto-Dedup Rate</span>
-                <span className="text-2xl font-bold text-white mt-0.5 font-mono">41.2%</span>
-                <span className="text-xs font-mono text-zinc-400">Reduced duplicate trips</span>
+                <span className="text-xs font-mono text-[var(--text-muted)] uppercase">Auto-Dedup Rate</span>
+                <span className="text-2xl font-bold text-[var(--text-primary)] mt-0.5 font-mono">41.2%</span>
+                <span className="text-xs font-mono text-[var(--text-muted)]">Reduced duplicate trips</span>
               </div>
               <div className="flex flex-col">
-                <span className="text-xs font-mono text-zinc-400 uppercase">Classification Accuracy</span>
-                <span className="text-2xl font-bold text-white mt-0.5 font-mono">97.8%</span>
-                <span className="text-xs font-mono text-zinc-400">Auditor verified</span>
+                <span className="text-xs font-mono text-[var(--text-muted)] uppercase">Classification Accuracy</span>
+                <span className="text-2xl font-bold text-[var(--text-primary)] mt-0.5 font-mono">97.8%</span>
+                <span className="text-xs font-mono text-[var(--text-muted)]">Auditor verified</span>
               </div>
               <div className="flex flex-col">
-                <span className="text-xs font-mono text-zinc-400 uppercase">SLA Compliance Rate</span>
-                <span className="text-2xl font-bold text-white mt-0.5 font-mono">94.6%</span>
-                <span className="text-xs font-mono text-emerald-400">All 5 city wards</span>
+                <span className="text-xs font-mono text-[var(--text-muted)] uppercase">SLA Compliance Rate</span>
+                <span className="text-2xl font-bold text-[var(--text-primary)] mt-0.5 font-mono">94.6%</span>
+                <span className="text-xs font-mono text-emerald-600 dark:text-emerald-400">All 5 city wards</span>
               </div>
             </div>
           </div>
@@ -295,8 +295,8 @@ export default function AboutPage() {
         {/* ======================================================== */}
         <section className="flex flex-col gap-6">
           <div className="flex flex-col gap-1">
-            <h2 className="text-2xl font-bold text-white tracking-tight">Department Jurisdiction Directory</h2>
-            <p className="text-sm text-zinc-400">
+            <h2 className="text-2xl font-bold text-[var(--text-primary)] tracking-tight">Department Jurisdiction Directory</h2>
+            <p className="text-sm text-[var(--text-muted)]">
               Standard municipal routing pipelines and operational responsibilities.
             </p>
           </div>

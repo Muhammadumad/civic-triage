@@ -194,9 +194,22 @@ export default function CivicMapInner({
 
     return () => {
       isMounted = false;
+      if (markersRef.current) {
+        markersRef.current.forEach((m) => {
+          try {
+            m.remove();
+          } catch (_) {}
+        });
+        markersRef.current.clear();
+      }
       if (mapInstanceRef.current) {
-        mapInstanceRef.current.remove();
+        const m = mapInstanceRef.current;
         mapInstanceRef.current = null;
+        try {
+          m.off();
+          m.stop();
+          m.remove();
+        } catch (_) {}
       }
     };
   }, [complaints, center, zoom, selectedId, onSelectComplaint, sensitiveZones, showAffectedAreas]);
@@ -204,7 +217,7 @@ export default function CivicMapInner({
   return (
     <div 
       style={{ height, width: '100%' }}
-      className="rounded-2xl overflow-hidden border border-white/[0.08] shadow-2xl relative z-0"
+      className="rounded-2xl overflow-hidden border border-[var(--border-subtle)] shadow-2xl relative z-0"
     >
       <div ref={mapContainerRef} className="w-full h-full z-0" />
 

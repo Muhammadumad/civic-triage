@@ -14,7 +14,7 @@ export function ThemeToggle() {
 
   if (!mounted) {
     return (
-      <div className="w-8 h-8 rounded-lg bg-white/[0.05] border border-white/10 animate-pulse" />
+      <div className="w-8 h-8 rounded-lg bg-black/5 dark:bg-white/[0.05] border border-[var(--border-subtle)] animate-pulse" />
     );
   }
 

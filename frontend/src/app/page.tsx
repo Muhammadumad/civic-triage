@@ -221,7 +221,7 @@ export default function HomePage() {
       {/* ======================================================== */}
       {/* SECTION 2: HOW IT WORKS                                   */}
       {/* ======================================================== */}
-      <section className="py-20 border-b border-white/[0.08] bg-[#090A0F]/60">
+      <section className="py-20 border-b border-[var(--border-subtle)] bg-[var(--surface-sunken)]/60">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-2xl mb-12">
             <h2 className="text-2xl sm:text-3xl font-bold text-[var(--text-primary)] tracking-tight">
@@ -463,7 +463,7 @@ export default function HomePage() {
                 <span className="text-sm font-semibold text-[var(--text-primary)]">Visual Evidence & Computer Vision Verification</span>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {/* Before Image with Bounding Box Overlay */}
-                  <div className="relative rounded-lg overflow-hidden border border-[var(--border-subtle)] bg-zinc-900 flex flex-col">
+                  <div className="relative rounded-lg overflow-hidden border border-[var(--border-subtle)] bg-[var(--surface-sunken)] flex flex-col">
                     <div className="relative aspect-video">
                       <img 
                         className="w-full h-full object-cover" 
@@ -487,7 +487,7 @@ export default function HomePage() {
                   </div>
 
                   {/* After Image */}
-                  <div className="relative rounded-lg overflow-hidden border border-[var(--border-subtle)] bg-zinc-900 flex flex-col">
+                  <div className="relative rounded-lg overflow-hidden border border-[var(--border-subtle)] bg-[var(--surface-sunken)] flex flex-col">
                     <div className="relative aspect-video">
                       <img 
                         className="w-full h-full object-cover" 

@@ -279,11 +279,13 @@ export default function AdminSpatialMapInner({
     return () => {
       isMounted = false;
       if (mapInstanceRef.current) {
-        try {
-          mapInstanceRef.current.off();
-          mapInstanceRef.current.remove();
-        } catch (_) {}
+        const m = mapInstanceRef.current;
         mapInstanceRef.current = null;
+        try {
+          m.off();
+          m.stop();
+          m.remove();
+        } catch (_) {}
       }
     };
   }, [complaints, selectedPriorityFilter, sensitiveZones, showAffectedBuffers, showSensitiveZones, showHotspotClusters]);

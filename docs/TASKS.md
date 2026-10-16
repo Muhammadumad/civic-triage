@@ -224,5 +224,18 @@
   - Verified: `next build` now generates optimal Partial Prerenders (`◐`) without warnings or blocking navigation.
   - *Status:* Completed & verified.
 
+- [x] **Task 10.7: Fix Leaflet `_leaflet_pos` Runtime TypeError on Fast Navigation**
+  - Leaflet threw `Cannot read properties of undefined (reading '_leaflet_pos')` when components unmounted during in-flight pan/zoom CSS transform animations or drag operations.
+  - Hardened map cleanups in `LocationPickerMapInner.tsx`, `CivicMapInner.tsx`, and `AdminSpatialMapInner.tsx`:
+    - Disengaged pending map animations with `map.stop()`.
+    - Explicitly detached all pins and impact circles before tearing down the map container.
+    - Set map instance references to null before invoking `.remove()`.
+  - Verified with `next build`: 0 errors.
+  - *Status:* Completed & verified.
 
-
+- [x] **Task 10.8: Day (Light) Mode UI Contrast & Theme Token Harmonization**
+  - Eliminated hardcoded dark backgrounds (`#090A0F`, `#161922`, `bg-zinc-900`) and unadapted styles (`text-white`, `border-white`) across `page.tsx`, `login/page.tsx`, `register/page.tsx`, `about/page.tsx`, `faq/page.tsx`, `ComplaintTrackingClient.tsx`, `AdminComplaintDetailClient.tsx`, `Navbar.tsx`, and map HUD overlays.
+  - Refined Stitch v2 design tokens in `globals.css` with light-mode card elevations, shadows, and subtle civic grid overlays.
+  - Added pre-hydration theme initialization script in `layout.tsx` to prevent theme flicker on page load.
+  - Verified across all pages in browser in both day and dark modes; `next build` and `npm run test:logic` pass with 0 errors.
+  - *Status:* Completed & verified.

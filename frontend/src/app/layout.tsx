@@ -35,12 +35,17 @@ export default function RootLayout({
     <html lang="en" className="dark" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('civicpulse_theme');if(t==='light'){document.documentElement.classList.remove('dark');document.documentElement.classList.add('light');}else if(t==='dark'){document.documentElement.classList.remove('light');document.documentElement.classList.add('dark');}}catch(e){}})();`,
+          }}
+        />
       </head>
       <body className="min-h-screen flex flex-col bg-[var(--canvas-base)] text-[var(--text-primary)] selection:bg-emerald-500/30 selection:text-emerald-200 antialiased transition-colors duration-300">
         <ThemeProvider>
           <PersonaProvider>
             {/* Top Navigation */}
-            <Suspense fallback={<header className="h-16 w-full glass-nav border-b border-white/[0.08]" />}>
+            <Suspense fallback={<header className="h-16 w-full glass-nav border-b border-[var(--border-subtle)]" />}>
               <Navbar />
             </Suspense>
 
