@@ -162,65 +162,65 @@ export default function AdminDashboardPage() {
   return (
     <div className="min-h-screen py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8 animate-fade-in">
       {/* Top Header & Navigation Switcher */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[var(--border-subtle)] pb-6">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-500 dark:text-emerald-400 text-xs font-semibold mb-2 animate-float">
+          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-sm bg-[var(--accent-primary-subtle)] border border-[var(--accent-primary-border)] text-[var(--accent-primary)] text-xs font-mono uppercase tracking-wider font-bold mb-2">
             <Sliders className="w-3.5 h-3.5" />
             <span>Municipal Dispatch Command Center</span>
           </div>
-          <h1 className="text-3xl font-extrabold text-[var(--text-primary)] tracking-tight">
-            High-Density Triage & Dispatch Console
+          <h1 className="font-editorial text-4xl sm:text-5xl text-[var(--text-primary)] tracking-tight">
+            High-Density Triage & <span className="italic text-[var(--accent-primary)]">Dispatch Console.</span>
           </h1>
           <p className="text-sm text-[var(--text-secondary)] mt-1 max-w-2xl leading-relaxed">
-            Multi-modal incident queue, AI priority scoring telemetry, automated duplicate resolution, and emergency crew routing.
+            Multi-modal incident queue, priority scoring telemetry, automated duplicate resolution, and departmental crew routing.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           <Link
             href="/admin/map"
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[var(--surface-elevated)] hover:opacity-90 text-[var(--text-primary)] border border-[var(--border-subtle)] text-xs font-semibold transition-all hover:border-emerald-500/40 shadow-sm hover-lift"
+            className="stitch-btn-secondary flex items-center gap-2 px-4 py-2.5 rounded-sm text-xs"
           >
-            <Compass className="w-4 h-4 text-emerald-500 dark:text-emerald-400" />
+            <Compass className="w-4 h-4 text-[var(--accent-primary)]" />
             <span>Open Spatial Priority Map</span>
             <ExternalLink className="w-3 h-3 text-[var(--text-secondary)]" />
           </Link>
         </div>
       </div>
 
-      {/* 1. 4 Metric Summary KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      {/* 1. 4 Metric Summary KPI Strip (Exposed 1px Grid) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 border border-[var(--border-subtle)] bg-[var(--surface-card)] divide-y sm:divide-y-0 sm:divide-x divide-[var(--border-subtle)] rounded-md overflow-hidden tabular-nums">
         {/* KPI 1 */}
-        <div className="p-5 rounded-2xl glass-card border border-[var(--border-subtle)] relative overflow-hidden hover-lift transition-all">
-          <div className="flex items-center justify-between text-xs text-[var(--text-secondary)]">
-            <span className="font-semibold uppercase tracking-wider text-[11px]">Total Complaints</span>
-            <div className="p-2 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-[var(--text-primary)]">
+        <div className="p-5 flex flex-col justify-between">
+          <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
+            <span className="font-mono uppercase tracking-wider text-[11px]">Total Complaints</span>
+            <div className="p-1.5 rounded-sm bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-primary)]">
               <Layers className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-3xl font-extrabold text-[var(--text-primary)] mt-3 font-mono" suppressHydrationWarning>
+          <div className="font-editorial text-4xl text-[var(--text-primary)] mt-3" suppressHydrationWarning>
             {kpis.total}
           </div>
-          <div className="text-xs text-emerald-600 dark:text-emerald-400 mt-2 flex items-center gap-1 font-medium">
-            <span>Live Sync Across All 10 Wards</span>
+          <div className="text-xs font-mono text-[var(--status-resolved)] mt-2 flex items-center gap-1">
+            <span>Live Sync Across All Wards</span>
           </div>
         </div>
 
         {/* KPI 2 */}
-        <div className="p-5 rounded-2xl glass-card border border-[var(--border-subtle)] relative overflow-hidden hover-lift transition-all">
-          <div className="flex items-center justify-between text-xs text-[var(--text-secondary)]">
-            <span className="font-semibold uppercase tracking-wider text-[11px]">Pending Review</span>
-            <div className="p-2 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-500 dark:text-rose-400">
+        <div className="p-5 flex flex-col justify-between">
+          <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
+            <span className="font-mono uppercase tracking-wider text-[11px]">Pending Review</span>
+            <div className="p-1.5 rounded-sm bg-[var(--accent-primary-subtle)] border border-[var(--accent-primary-border)] text-[var(--accent-primary)]">
               <AlertTriangle className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-3xl font-extrabold text-rose-500 dark:text-rose-400 mt-3 font-mono" suppressHydrationWarning>
+          <div className="font-editorial text-4xl text-[var(--accent-primary)] mt-3" suppressHydrationWarning>
             {kpis.pendingReview}
           </div>
-          <div className="text-xs text-rose-600/80 dark:text-rose-300/80 mt-2 flex items-center justify-between gap-1 font-medium">
+          <div className="text-xs font-mono text-[var(--text-secondary)] mt-2 flex items-center justify-between gap-1">
             <span>Requires Dispatcher Sign-off</span>
             {kpis.slaOverdueCount > 0 && (
-              <span className="px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-500 font-bold text-[10px]">
+              <span className="px-1.5 py-0.5 rounded-sm bg-[var(--accent-primary-subtle)] text-[var(--accent-primary)] font-bold text-[10px]">
                 {kpis.slaOverdueCount} Overdue SLA
               </span>
             )}
@@ -228,55 +228,55 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* KPI 3 */}
-        <div className="p-5 rounded-2xl glass-card border border-[var(--border-subtle)] relative overflow-hidden hover-lift transition-all">
-          <div className="flex items-center justify-between text-xs text-[var(--text-secondary)]">
-            <span className="font-semibold uppercase tracking-wider text-[11px]">Duplicate Merges</span>
-            <div className="p-2 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-500 dark:text-indigo-400">
+        <div className="p-5 flex flex-col justify-between">
+          <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
+            <span className="font-mono uppercase tracking-wider text-[11px]">Duplicate Merges</span>
+            <div className="p-1.5 rounded-sm bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-primary)]">
               <TrendingUp className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-3xl font-extrabold text-indigo-600 dark:text-indigo-300 mt-3 font-mono" suppressHydrationWarning>
+          <div className="font-editorial text-4xl text-[var(--text-primary)] mt-3" suppressHydrationWarning>
             {kpis.totalDuplicates}
           </div>
-          <div className="text-xs text-indigo-600/80 dark:text-indigo-300/80 mt-2 flex items-center gap-1 font-medium">
+          <div className="text-xs font-mono text-[var(--text-secondary)] mt-2 flex items-center gap-1">
             <span>Saved ~38 Crew Dispatch Hours</span>
           </div>
         </div>
 
         {/* KPI 4 */}
-        <div className="p-5 rounded-2xl glass-card border border-[var(--border-subtle)] relative overflow-hidden hover-lift transition-all">
-          <div className="flex items-center justify-between text-xs text-[var(--text-secondary)]">
-            <span className="font-semibold uppercase tracking-wider text-[11px]">Avg Resolution Time</span>
-            <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-500 dark:text-amber-400">
+        <div className="p-5 flex flex-col justify-between">
+          <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
+            <span className="font-mono uppercase tracking-wider text-[11px]">Avg Resolution Time</span>
+            <div className="p-1.5 rounded-sm bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-primary)]">
               <Clock className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-3xl font-extrabold text-amber-600 dark:text-amber-300 mt-3 font-mono" suppressHydrationWarning>
+          <div className="font-editorial text-4xl text-[var(--text-primary)] mt-3" suppressHydrationWarning>
             {kpis.avgResolution}
           </div>
-          <div className="text-xs text-emerald-600 dark:text-emerald-400 mt-2 flex items-center gap-1 font-medium">
+          <div className="text-xs font-mono text-[var(--status-resolved)] mt-2 flex items-center gap-1">
             <span>-28% Under ISO 18091 SLA</span>
           </div>
         </div>
       </div>
 
       {/* 2. Filter & Multi-Select Toolbar */}
-      <div className="p-5 rounded-2xl glass-panel border border-[var(--border-subtle)] space-y-4">
+      <div className="p-5 rounded-md bg-[var(--surface-card)] border border-[var(--border-subtle)] space-y-4">
         <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
           {/* Search Box */}
           <div className="relative flex-1">
-            <Search className="w-4 h-4 text-[var(--text-secondary)] absolute left-3.5 top-3" />
+            <Search className="w-4 h-4 text-[var(--text-muted)] absolute left-3.5 top-3" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search by ticket reference (e.g. CP-2026-891), keyword, street address..."
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-primary)] placeholder-[var(--text-secondary)]/50 text-xs focus:outline-none focus:border-emerald-500 transition-colors"
+              className="w-full pl-10 pr-4 py-2.5 rounded-sm bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-primary)] placeholder-[var(--text-muted)]/60 text-xs focus:outline-none focus:border-[var(--accent-primary)] transition-colors"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-2.5 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                className="absolute right-3 top-2.5 text-xs font-mono text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
               >
                 Clear
               </button>
@@ -285,12 +285,12 @@ export default function AdminDashboardPage() {
 
           {/* Sort Control */}
           <div className="flex items-center gap-2 self-start lg:self-auto shrink-0">
-            <ArrowUpDown className="w-3.5 h-3.5 text-[var(--text-secondary)]" />
-            <span className="text-xs text-[var(--text-secondary)] font-medium">Sort By:</span>
+            <ArrowUpDown className="w-3.5 h-3.5 text-[var(--text-muted)]" />
+            <span className="text-xs font-mono uppercase text-[var(--text-muted)]">Sort By:</span>
             <select
               value={sortBy}
               onChange={(e: any) => setSortBy(e.target.value)}
-              className="px-3 py-2 rounded-xl bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] focus:outline-none focus:border-emerald-500"
+              className="px-3 py-2 rounded-sm bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-primary)]"
             >
               <option value="priority-desc">Priority Score (Highest first)</option>
               <option value="priority-asc">Priority Score (Lowest first)</option>
@@ -302,10 +302,10 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Multi-Select Pills for Ward and Department */}
-        <div className="pt-2 border-t border-[var(--border-subtle)] flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs">
+        <div className="pt-3 border-t border-[var(--border-subtle)] flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs">
           {/* Department filter pills */}
           <div className="space-y-1.5 flex-1">
-            <span className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider block">
+            <span className="text-[11px] font-mono font-semibold text-[var(--text-muted)] uppercase tracking-wider block">
               Filter by Department:
             </span>
             <div className="flex items-center gap-1.5 flex-wrap">
@@ -315,10 +315,10 @@ export default function AdminDashboardPage() {
                   <button
                     key={dept}
                     onClick={() => toggleDepartment(dept)}
-                    className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all ${
+                    className={`px-2.5 py-1 rounded-sm text-[11px] font-mono transition-all border ${
                       active
-                        ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 border border-emerald-500/40 shadow-sm'
-                        : 'bg-[var(--surface-elevated)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border-subtle)]'
+                        ? 'bg-[var(--text-primary)] text-[var(--canvas-base)] border-[var(--text-primary)] font-bold'
+                        : 'bg-[var(--surface-elevated)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-[var(--border-subtle)]'
                     }`}
                   >
                     {dept.replace('Division', '').replace('Management', '')}
@@ -330,7 +330,7 @@ export default function AdminDashboardPage() {
 
           {/* Ward filter pills */}
           <div className="space-y-1.5 shrink-0">
-            <span className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider block">
+            <span className="text-[11px] font-mono font-semibold text-[var(--text-muted)] uppercase tracking-wider block">
               Filter by Ward:
             </span>
             <div className="flex items-center gap-1.5 flex-wrap">
@@ -341,10 +341,10 @@ export default function AdminDashboardPage() {
                   <button
                     key={ward}
                     onClick={() => toggleWard(ward)}
-                    className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all ${
+                    className={`px-2.5 py-1 rounded-sm text-[11px] font-mono transition-all border ${
                       active
-                        ? 'bg-indigo-500/20 text-indigo-600 dark:text-indigo-300 border border-indigo-500/40 shadow-sm'
-                        : 'bg-[var(--surface-elevated)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border-subtle)]'
+                        ? 'bg-[var(--accent-primary)] text-white border-[var(--accent-primary)] font-bold'
+                        : 'bg-[var(--surface-elevated)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-[var(--border-subtle)]'
                     }`}
                     title={ward}
                   >
@@ -358,7 +358,7 @@ export default function AdminDashboardPage() {
                     setSelectedDepartments([]);
                     setSelectedWards([]);
                   }}
-                  className="px-2 py-1 rounded-lg text-[10px] text-[var(--text-secondary)] hover:text-[var(--text-primary)] underline ml-2"
+                  className="px-2 py-1 rounded-sm text-[10px] font-mono text-[var(--accent-primary)] hover:underline ml-2"
                 >
                   Reset Filters
                 </button>
@@ -369,17 +369,17 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* 3. High-Density Triage Table */}
-      <div className="rounded-2xl glass-panel border border-[var(--border-subtle)] overflow-hidden shadow-2xl">
-        <div className="px-6 py-4 border-b border-[var(--border-subtle)] flex items-center justify-between">
+      <div className="rounded-md bg-[var(--surface-card)] border border-[var(--border-subtle)] overflow-hidden">
+        <div className="px-6 py-4 border-b border-[var(--border-subtle)] flex items-center justify-between bg-[var(--surface-secondary)]/50">
           <div className="flex items-center gap-2">
             <h3 className="text-sm font-bold text-[var(--text-primary)]">
               Emergency Triage Stream ({filteredComplaints.length} tickets)
             </h3>
-            <span className="text-xs px-2 py-0.5 rounded bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] border border-[var(--border-subtle)]">
+            <span className="text-[11px] font-mono px-2 py-0.5 rounded-sm bg-[var(--surface-card)] text-[var(--text-secondary)] border border-[var(--border-subtle)]">
               Live Queue
             </span>
           </div>
-          <span className="text-xs text-[var(--text-secondary)] font-mono">
+          <span className="text-xs text-[var(--text-muted)] font-mono">
             Updated via Real-Time Webhooks
           </span>
         </div>
@@ -387,10 +387,10 @@ export default function AdminDashboardPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="border-b border-[var(--border-subtle)] bg-[var(--surface-elevated)] text-[var(--text-secondary)] uppercase tracking-wider font-semibold text-[10px]">
+              <tr className="border-b border-[var(--border-subtle)] bg-[var(--surface-elevated)] text-[var(--text-muted)] uppercase tracking-wider font-mono font-semibold text-[10px]">
                 <th className="py-3.5 px-4">Ticket Reference</th>
                 <th className="py-3.5 px-3">Visual Evidence</th>
-                <th className="py-3.5 px-3">Category</th>
+                <th className="py-3.5 px-3">Suggested Category</th>
                 <th className="py-3.5 px-4">Geographic Location</th>
                 <th className="py-3.5 px-3">Cluster Dups</th>
                 <th className="py-3.5 px-4">Priority Score</th>
@@ -404,33 +404,32 @@ export default function AdminDashboardPage() {
                   const catTheme = CATEGORY_THEME[item.category] || CATEGORY_THEME['Road Damage'];
                   const pLevel = getPriorityLevel(item.priorityScore);
                   const pTheme = PRIORITY_THEME[pLevel];
-                  const sTheme = STATUS_THEME[item.status] || STATUS_THEME['New'];
 
                   return (
                     <tr
                       key={item.id}
-                      className="hover:bg-black/5 dark:hover:bg-white/[0.03] transition-colors group"
+                      className="hover:bg-[var(--surface-secondary)]/50 transition-colors group"
                     >
                       {/* Column 1: ID */}
                       <td className="py-3 px-4 font-mono font-bold text-[var(--text-primary)]">
                         <Link
                           href={`/admin/complaints/${item.id}`}
-                          className="hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors flex items-center gap-1.5"
+                          className="hover:text-[var(--accent-primary)] transition-colors flex items-center gap-1.5"
                         >
                           <span>{item.id}</span>
                         </Link>
-                        <div className="text-[10px] text-[var(--text-secondary)] font-sans mt-0.5" suppressHydrationWarning>
+                        <div className="text-[10px] text-[var(--text-muted)] font-sans mt-0.5" suppressHydrationWarning>
                           {formatRelativeTime(item.createdAt)}
                         </div>
                       </td>
 
                       {/* Column 2: Thumbnail */}
                       <td className="py-3 px-3">
-                        <div className="w-12 h-10 rounded-lg overflow-hidden border border-[var(--border-subtle)] bg-black/10 dark:bg-black/50 shrink-0 relative">
+                        <div className="w-12 h-10 rounded-sm overflow-hidden border border-[var(--border-subtle)] bg-[var(--surface-sunken)] shrink-0 relative">
                           <img
                             src={item.photoUrl}
                             alt={item.title}
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                            className="w-full h-full object-cover"
                           />
                         </div>
                       </td>
@@ -438,7 +437,7 @@ export default function AdminDashboardPage() {
                       {/* Column 3: Category */}
                       <td className="py-3 px-3">
                         <span
-                          className={`inline-block px-2 py-0.5 rounded border text-[11px] font-semibold whitespace-nowrap ${catTheme.bg} ${catTheme.text} ${catTheme.border}`}
+                          className={`inline-block px-2 py-0.5 rounded-sm border text-[11px] font-mono font-semibold whitespace-nowrap ${catTheme.bg} ${catTheme.text} ${catTheme.border}`}
                         >
                           {item.category}
                         </span>
@@ -449,29 +448,29 @@ export default function AdminDashboardPage() {
                         <div className="text-[var(--text-primary)] font-medium truncate" title={item.location.address}>
                           {item.location.address}
                         </div>
-                        <div className="text-[10px] text-indigo-500 dark:text-indigo-400 font-semibold mt-0.5">
+                        <div className="text-[10px] font-mono text-[var(--text-muted)] mt-0.5">
                           {item.ward || 'Municipal Ward 1'}
                         </div>
                       </td>
 
                       {/* Column 5: Duplicate Badge */}
-                      <td className="py-3 px-3">
+                      <td className="py-3 px-3 tabular-nums">
                         {item.duplicateCount > 0 ? (
-                          <span className="px-2 py-0.5 rounded-full bg-slate-200 dark:bg-zinc-800 text-slate-800 dark:text-zinc-300 border border-slate-300 dark:border-zinc-700 text-[10px] font-mono font-semibold whitespace-nowrap">
+                          <span className="px-2 py-0.5 rounded-sm bg-[var(--surface-elevated)] text-[var(--text-primary)] border border-[var(--border-subtle)] text-[10px] font-mono font-semibold whitespace-nowrap">
                             +{item.duplicateCount} dups
                           </span>
                         ) : (
-                          <span className="text-[var(--text-secondary)] font-mono text-[11px]">—</span>
+                          <span className="text-[var(--text-muted)] font-mono text-[11px]">—</span>
                         )}
                       </td>
 
                       {/* Column 6: Priority Pill with Breakdown Tooltip */}
-                      <td className="py-3 px-4">
+                      <td className="py-3 px-4 tabular-nums">
                         <div className="relative inline-block">
                           <div
                             onMouseEnter={() => setActiveTooltipId(item.id)}
                             onMouseLeave={() => setActiveTooltipId(null)}
-                            className={`cursor-help px-2.5 py-1 rounded-lg border text-xs font-bold font-mono flex items-center gap-1.5 whitespace-nowrap ${pTheme.bg} ${pTheme.text} ${pTheme.border}`}
+                            className={`cursor-help px-2.5 py-1 rounded-sm border text-xs font-bold font-mono flex items-center gap-1.5 whitespace-nowrap ${pTheme.bg} ${pTheme.text} ${pTheme.border}`}
                           >
                             <span>{item.priorityScore}</span>
                             <Info className="w-3 h-3 opacity-60" />
@@ -479,15 +478,15 @@ export default function AdminDashboardPage() {
 
                           {/* Mathematical Breakdown Hover Tooltip */}
                           {activeTooltipId === item.id && (
-                            <div className="absolute left-0 bottom-full mb-2 w-72 p-3.5 rounded-xl bg-[var(--surface-elevated)] border border-[var(--border-subtle)] shadow-2xl z-50 text-xs animate-in fade-in zoom-in-95 pointer-events-none">
+                            <div className="absolute left-0 bottom-full mb-2 w-72 p-3.5 rounded-sm bg-[var(--surface-card)] border border-[var(--border-strong)] z-50 text-xs pointer-events-none">
                               <div className="font-bold text-[var(--text-primary)] mb-1.5 flex items-center justify-between">
                                 <span>Priority Breakdown</span>
-                                <span className="font-mono text-emerald-500 dark:text-emerald-400 font-bold">{item.priorityScore} pts</span>
+                                <span className="font-mono text-[var(--accent-primary)] font-bold">{item.priorityScore} pts</span>
                               </div>
                               <div className="space-y-1 text-[11px] text-[var(--text-secondary)]">
                                 {item.priorityReasons.map((reason, idx) => (
                                   <div key={idx} className="flex items-start gap-1.5 leading-snug">
-                                    <span className="text-emerald-500 dark:text-emerald-400 shrink-0">•</span>
+                                    <span className="text-[var(--accent-primary)] shrink-0">•</span>
                                     <span>{reason}</span>
                                   </div>
                                 ))}
@@ -504,7 +503,7 @@ export default function AdminDashboardPage() {
                           onChange={(e: any) =>
                             handleStatusChange(item.id, item.department, e.target.value as ComplaintStatus)
                           }
-                          className="px-2.5 py-1 rounded-lg bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] font-medium focus:outline-none focus:border-emerald-500 cursor-pointer"
+                          className="px-2.5 py-1 rounded-sm bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-xs font-mono text-[var(--text-primary)] font-medium focus:outline-none focus:border-[var(--accent-primary)] cursor-pointer"
                         >
                           <option value="New">New</option>
                           <option value="Under Review">Under Review</option>
@@ -519,9 +518,9 @@ export default function AdminDashboardPage() {
                       <td className="py-3 px-4 text-right">
                         <Link
                           href={`/admin/complaints/${item.id}`}
-                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-600 dark:text-emerald-300 text-xs font-semibold transition-colors"
+                          className="stitch-btn-secondary inline-flex items-center gap-1 px-3 py-1.5 rounded-sm text-xs font-mono"
                         >
-                          <Eye className="w-3.5 h-3.5" />
+                          <Eye className="w-3.5 h-3.5 text-[var(--accent-primary)]" />
                           <span>Inspect</span>
                         </Link>
                       </td>
@@ -530,7 +529,7 @@ export default function AdminDashboardPage() {
                 })
               ) : (
                 <tr>
-                  <td colSpan={8} className="py-12 text-center text-[var(--text-secondary)]">
+                  <td colSpan={8} className="py-12 text-center text-[var(--text-secondary)] font-mono">
                     No complaints match current filter and search conditions.
                   </td>
                 </tr>
@@ -541,7 +540,7 @@ export default function AdminDashboardPage() {
 
         {/* Pagination Controls */}
         {pagination.totalPages > 1 && (
-          <div className="px-6 py-3 border-t border-[var(--border-subtle)] flex items-center justify-between text-xs">
+          <div className="px-6 py-3 border-t border-[var(--border-subtle)] flex items-center justify-between text-xs font-mono tabular-nums">
             <span className="text-[var(--text-secondary)]">
               Page {pagination.page} of {pagination.totalPages} ({pagination.total} total tickets)
             </span>
@@ -549,14 +548,14 @@ export default function AdminDashboardPage() {
               <button
                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                 disabled={currentPage <= 1}
-                className="px-3 py-1.5 rounded-lg bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-primary)] font-medium disabled:opacity-40 disabled:cursor-not-allowed hover:border-emerald-500/40 transition-colors"
+                className="stitch-btn-secondary px-3 py-1.5 rounded-sm disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 Previous
               </button>
               <button
                 onClick={() => setCurrentPage((p) => Math.min(pagination.totalPages, p + 1))}
                 disabled={currentPage >= pagination.totalPages}
-                className="px-3 py-1.5 rounded-lg bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-primary)] font-medium disabled:opacity-40 disabled:cursor-not-allowed hover:border-emerald-500/40 transition-colors"
+                className="stitch-btn-secondary px-3 py-1.5 rounded-sm disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 Next
               </button>

@@ -72,171 +72,175 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-[var(--canvas-base)] bg-civic-grid">
       <div className="w-full max-w-md space-y-6">
         {/* Top Return Row */}
-        <div className="flex items-center justify-start">
+        <div className="flex items-center justify-between">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-black/10 dark:hover:bg-white/10 transition-all group"
+            className="inline-flex items-center gap-2 px-3 py-1.5 bg-[var(--surface-card)] border border-[var(--border-subtle)] font-mono text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-strong)] transition-colors group"
           >
-            <ArrowLeft className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400 group-hover:-translate-x-0.5 transition-transform" />
-            <span>Return to Home</span>
+            <ArrowLeft className="w-3.5 h-3.5 text-[var(--brand-primary)] group-hover:-translate-x-0.5 transition-transform" />
+            <span>RETURN TO LEDGER</span>
           </Link>
-        </div>
-
-        {/* Brand Header */}
-        <div className="flex flex-col items-center text-center space-y-3">
-          <div className="flex items-center justify-center w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 dark:text-emerald-400 shadow-[0_0_24px_rgba(16,185,129,0.2)]">
-            <UserPlus className="w-7 h-7" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight text-[var(--text-primary)]">
-              Join CivicPulse
-            </h1>
-            <p className="text-sm text-[var(--text-muted)] mt-1">
-              Create your resident account to submit and track municipal issues
-            </p>
-          </div>
-        </div>
-
-        {/* Security / Role Notice */}
-        <div className="flex items-start gap-2.5 p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-700 dark:text-blue-300 text-xs">
-          <ShieldAlert className="w-4 h-4 shrink-0 mt-0.5 text-blue-500 dark:text-blue-400" />
-          <span>
-            New accounts are registered as <strong>Verified Resident</strong>. Municipal staff and administrator accounts are assigned by city authorities.
-          </span>
+          <span className="font-mono text-[11px] text-[var(--text-muted)]">ENROLL // SC-01</span>
         </div>
 
         {/* Form Card */}
-        <div className="glass-panel p-6 sm:p-8 rounded-2xl border border-[var(--border-subtle)] shadow-xl relative">
-          {error && (
-            <div className="mb-5 p-3.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-xs space-y-2.5 animate-in fade-in">
-              <div className="flex items-start gap-2.5">
-                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-red-500" />
-                <div className="flex-1 leading-relaxed">{error}</div>
+        <div className="bg-[var(--surface-card)] border border-[var(--border-subtle)]">
+          {/* Brand Header */}
+          <div className="p-6 sm:p-8 border-b border-[var(--border-subtle)] bg-[var(--surface-elevated)]">
+            <div className="flex items-center justify-between mb-3">
+              <span className="font-mono text-[10px] uppercase tracking-widest text-[var(--brand-primary)] font-semibold">
+                CITIZEN REGISTRATION
+              </span>
+              <UserPlus className="w-4 h-4 text-[var(--text-muted)]" />
+            </div>
+            <h1 className="font-editorial text-3xl text-[var(--text-primary)]">
+              Create a Resident Account
+            </h1>
+            <p className="text-xs text-[var(--text-secondary)] mt-1">
+              Register to track your municipal complaints across devices.
+            </p>
+          </div>
+
+          <div className="p-6 sm:p-8 space-y-5">
+            {/* Security / Role Notice */}
+            <div className="flex items-start gap-2.5 p-3 bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-secondary)] text-xs">
+              <ShieldAlert className="w-4 h-4 shrink-0 mt-0.5 text-[var(--brand-primary)]" />
+              <span>
+                Public sign-up creates a <strong>Verified Resident</strong> profile. Municipal dispatcher credentials are provisioned by city administration.
+              </span>
+            </div>
+
+            {error && (
+              <div className="p-3.5 bg-[var(--priority-high-bg)] border border-[var(--priority-high-border)] text-[var(--priority-high-text)] text-xs space-y-2.5">
+                <div className="flex items-start gap-2.5">
+                  <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                  <div className="flex-1 leading-relaxed">{error}</div>
+                </div>
+                <div className="pt-2 border-t border-[var(--priority-high-border)] flex flex-wrap items-center justify-between gap-2">
+                  <span className="text-[11px] text-[var(--text-secondary)]">Already registered?</span>
+                  <Link
+                    href="/login"
+                    className="font-mono text-xs font-semibold text-[var(--brand-primary)] hover:underline"
+                  >
+                    Sign in with Demo →
+                  </Link>
+                </div>
               </div>
-              <div className="pt-2 border-t border-red-500/20 flex flex-wrap items-center justify-between gap-2">
-                <span className="text-[11px] text-[var(--text-muted)]">Already have an account?</span>
+            )}
+
+            {success && (
+              <div className="flex items-center gap-2 p-3.5 bg-[var(--surface-elevated)] border border-[var(--border-strong)] text-[var(--text-primary)] font-mono text-xs">
+                <CheckCircle2 className="w-4 h-4 text-emerald-700 dark:text-emerald-400 shrink-0" />
+                <span>ACCOUNT CREATED · REDIRECTING...</span>
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="block font-mono text-[11px] uppercase tracking-wider font-semibold text-[var(--text-secondary)] mb-1.5">
+                  Full Name
+                </label>
+                <div className="relative">
+                  <User className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Alex Morgan"
+                    required
+                    disabled={loading}
+                    className="w-full pl-10 pr-4 py-2.5 bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-primary)] placeholder-[var(--text-muted)] text-sm focus:outline-none focus:border-[var(--text-primary)] transition-colors"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-mono text-[11px] uppercase tracking-wider font-semibold text-[var(--text-secondary)] mb-1.5">
+                  Email Address
+                </label>
+                <div className="relative">
+                  <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="alex@example.com"
+                    required
+                    disabled={loading}
+                    className="w-full pl-10 pr-4 py-2.5 bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-primary)] placeholder-[var(--text-muted)] text-sm focus:outline-none focus:border-[var(--text-primary)] transition-colors"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-mono text-[11px] uppercase tracking-wider font-semibold text-[var(--text-secondary)] mb-1.5">
+                  Password (min. 6 characters)
+                </label>
+                <div className="relative">
+                  <KeyRound className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    required
+                    disabled={loading}
+                    className="w-full pl-10 pr-4 py-2.5 bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-primary)] placeholder-[var(--text-muted)] text-sm focus:outline-none focus:border-[var(--text-primary)] transition-colors"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-mono text-[11px] uppercase tracking-wider font-semibold text-[var(--text-secondary)] mb-1.5">
+                  Confirm Password
+                </label>
+                <div className="relative">
+                  <Lock className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
+                  <input
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="••••••••"
+                    required
+                    disabled={loading}
+                    className="w-full pl-10 pr-4 py-2.5 bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-primary)] placeholder-[var(--text-muted)] text-sm focus:outline-none focus:border-[var(--text-primary)] transition-colors"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full mt-2 flex items-center justify-center gap-2 py-3 px-4 stitch-btn-accent font-mono text-xs uppercase tracking-wider font-semibold disabled:opacity-50"
+              >
+                {loading ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent animate-spin" />
+                    <span>Creating Account...</span>
+                  </div>
+                ) : (
+                  <>
+                    <span>Register Account</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </>
+                )}
+              </button>
+            </form>
+
+            <div className="pt-5 border-t border-[var(--border-subtle)] text-center">
+              <p className="text-xs text-[var(--text-secondary)]">
+                Already registered?{' '}
                 <Link
                   href="/login"
-                  className="px-2.5 py-1 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-300 text-xs font-semibold transition-colors"
+                  className="text-[var(--brand-primary)] font-semibold underline underline-offset-4"
                 >
-                  Sign in with Demo →
+                  Sign in to your account
                 </Link>
-              </div>
+              </p>
             </div>
-          )}
-
-          {success && (
-            <div className="mb-5 flex items-center gap-2 p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs animate-in fade-in">
-              <CheckCircle2 className="w-4 h-4 shrink-0" />
-              <span>Account created successfully! Redirecting...</span>
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">
-                Full Name
-              </label>
-              <div className="relative">
-                <User className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g. Alex Morgan"
-                  required
-                  disabled={loading}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-[var(--text-primary)] placeholder-[var(--text-muted)] text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">
-                Email Address
-              </label>
-              <div className="relative">
-                <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="e.g. alex@example.com"
-                  required
-                  disabled={loading}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-[var(--text-primary)] placeholder-[var(--text-muted)] text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">
-                Password (min. 6 characters)
-              </label>
-              <div className="relative">
-                <KeyRound className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  required
-                  disabled={loading}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-[var(--text-primary)] placeholder-[var(--text-muted)] text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">
-                Confirm Password
-              </label>
-              <div className="relative">
-                <Lock className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
-                <input
-                  type="password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="••••••••"
-                  required
-                  disabled={loading}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-[var(--text-primary)] placeholder-[var(--text-muted)] text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors"
-                />
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full mt-2 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 active:scale-[0.99] text-slate-950 font-semibold text-sm transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] disabled:opacity-50"
-            >
-              {loading ? (
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
-                  <span>Creating Account...</span>
-                </div>
-              ) : (
-                <>
-                  <span>Create Resident Account</span>
-                  <ArrowRight className="w-4 h-4" />
-                </>
-              )}
-            </button>
-          </form>
-
-          <div className="mt-6 pt-5 border-t border-[var(--border-subtle)] text-center">
-            <p className="text-xs text-[var(--text-muted)]">
-              Already registered?{' '}
-              <Link
-                href="/login"
-                className="text-emerald-600 dark:text-emerald-400 font-semibold underline underline-offset-4"
-              >
-                Sign in to your account
-              </Link>
-            </p>
           </div>
         </div>
       </div>

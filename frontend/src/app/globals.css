@@ -2,91 +2,99 @@
 @import "leaflet/dist/leaflet.css";
 
 /* ======================================================== */
-/* 1. STITCH MCP DESIGN TOKENS (DARK & LIGHT PALETTES)      */
+/* 1. GOOGLE STITCH DESIGN SYSTEM TOKENS                    */
 /* ======================================================== */
 
-:root {
-  /* Default Stitch Dark Mode Tokens */
-  --canvas-base: #090A0F;
-  --surface-card: #11131A;
-  --surface-elevated: #161922;
-  --surface-sunken: #0D0E13;
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-strong: rgba(255, 255, 255, 0.16);
-  --text-primary: #F8FAFC;
-  --text-secondary: #94A3B8;
-  --text-muted: #64748B;
+:root,
+html.light {
+  /* Grounded Editorial Palette — Warm Alabaster & Deep Charcoal Ink */
+  --canvas-base: #FAF9F6;
+  --surface-card: #FFFFFF;
+  --surface-elevated: #F4F4F0;
+  --surface-sunken: #ECEBE6;
+  --border-subtle: #E4E4E0;
+  --border-strong: #C8C7C0;
+  --text-primary: #111111;
+  --text-secondary: #484844;
+  --text-muted: #71716A;
 
-  /* Brand Primary (Emerald Glow) */
-  --brand-primary: #10B981;
-  --brand-hover: #059669;
-  --brand-glow: rgba(16, 185, 129, 0.22);
-  --brand-text: #090A0F;
+  /* Intentional Single Accent: Burnt International Orange + Forest Verification */
+  --brand-primary: #D9381E;
+  --brand-hover: #B82D16;
+  --brand-glow: rgba(217, 56, 30, 0.08);
+  --brand-text: #FFFFFF;
+  --accent-forest: #1B4332;
 
-  /* Priority Color Tokens */
-  --priority-high-text: #FB7185;
-  --priority-high-border: rgba(244, 63, 94, 0.35);
-  --priority-high-bg: rgba(244, 63, 94, 0.12);
+  /* Priority Color Tokens (High-Contrast Editorial) */
+  --priority-high-text: #B91C1C;
+  --priority-high-border: #FECACA;
+  --priority-high-bg: #FEF2F2;
 
-  --priority-medium-text: #FBBF24;
-  --priority-medium-border: rgba(245, 158, 11, 0.35);
-  --priority-medium-bg: rgba(245, 158, 11, 0.12);
+  --priority-medium-text: #92400E;
+  --priority-medium-border: #FDE68A;
+  --priority-medium-bg: #FFFBEB;
 
-  --priority-low-text: #60A5FA;
-  --priority-low-border: rgba(59, 130, 246, 0.25);
-  --priority-low-bg: rgba(59, 130, 246, 0.10);
+  --priority-low-text: #1E3A8A;
+  --priority-low-border: #BFDBFE;
+  --priority-low-bg: #EFF6FF;
 
   /* Category Color Tokens */
-  --cat-road-damage: #EA580C;
-  --cat-garbage: #84CC16;
-  --cat-streetlights: #FACC15;
-  --cat-water-leakage: #06B6D4;
-  --cat-blocked-drains: #8B5CF6;
+  --cat-road-damage: #C2410C;
+  --cat-garbage: #3F6212;
+  --cat-streetlights: #A16207;
+  --cat-water-leakage: #0369A1;
+  --cat-blocked-drains: #4338CA;
 
   /* Status Workflow Tokens */
-  --status-new: #6366F1;
-  --status-under-review: #D946EF;
-  --status-assigned: #3B82F6;
-  --status-in-progress: #F59E0B;
-  --status-resolved: #10B981;
-  --status-duplicate: #71717A;
+  --status-new: #1D4ED8;
+  --status-under-review: #7E22CE;
+  --status-assigned: #0369A1;
+  --status-in-progress: #B45309;
+  --status-resolved: #15803D;
+  --status-duplicate: #52525B;
 }
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Light Theme Overrides from Stitch Design System v2 */
-html.light {
-  --canvas-base: #F8F9FA;
-  --surface-card: #FFFFFF;
-  --surface-elevated: #F1F3F5;
-  --surface-sunken: #E9ECEF;
-  --border-subtle: #E2E8F0;
-  --border-strong: #CBD5E1;
-  --text-primary: #0F172A;
-  --text-secondary: #475569;
-  --text-muted: #64748B;
+/* True Carbon / Obsidian Dark Mode */
+html.dark {
+  --canvas-base: #0A0A0A;
+  --surface-card: #111111;
+  --surface-elevated: #141414;
+  --surface-sunken: #050505;
+  --border-subtle: #262626;
+  --border-strong: #3D3D3D;
+  --text-primary: #FAF9F6;
+  --text-secondary: #A3A39E;
+  --text-muted: #6E6E68;
 
-  /* Brand Primary */
-  --brand-primary: #059669;
-  --brand-hover: #047857;
-  --brand-glow: rgba(5, 150, 105, 0.2);
+  /* Brand Primary (International Orange) */
+  --brand-primary: #E04F33;
+  --brand-hover: #F26044;
+  --brand-glow: rgba(224, 79, 51, 0.14);
   --brand-text: #FFFFFF;
+  --accent-forest: #22C55E;
 
-  /* Light Priority Tokens */
-  --priority-high-text: #BE123C;
-  --priority-high-border: #FECDD3;
-  --priority-high-bg: #FFF1F2;
+  /* Dark Priority Tokens */
+  --priority-high-text: #F87171;
+  --priority-high-border: #451A1A;
+  --priority-high-bg: #1F0F0F;
 
-  --priority-medium-text: #B45309;
-  --priority-medium-border: #FDE68A;
-  --priority-medium-bg: #FEF3C7;
+  --priority-medium-text: #FBBF24;
+  --priority-medium-border: #42280B;
+  --priority-medium-bg: #1C1308;
 
-  --priority-low-text: #1D4ED8;
-  --priority-low-border: #BFDBFE;
-  --priority-low-bg: #EFF6FF;
+  --priority-low-text: #60A5FA;
+  --priority-low-border: #172554;
+  --priority-low-bg: #0F172A;
 }
 
 @theme {
+  --font-display: var(--font-display), Georgia, serif;
+  --font-serif: var(--font-display), Georgia, serif;
+  --font-sans: var(--font-sans), -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, SFMono-Regular, monospace;
+
   --color-canvas: var(--canvas-base);
   --color-surface-card: var(--surface-card);
   --color-surface-elevated: var(--surface-elevated);
@@ -120,100 +128,114 @@ html.light {
 }
 
 /* ======================================================== */
-/* 2. BASE STYLING & SMOOTH TRANSITIONS                     */
+/* 2. BASE STYLING & EDITORIAL TYPOGRAPHY                   */
 /* ======================================================== */
 
 body {
   background-color: var(--canvas-base);
   color: var(--text-primary);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, sans-serif;
   min-height: 100vh;
   overflow-x: hidden;
-  transition: background-color 0.25s ease, color 0.25s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-html.dark body {
-  background-image: 
-    radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.08) 0%, transparent 45%),
-    radial-gradient(circle at 100% 40%, rgba(99, 102, 241, 0.05) 0%, transparent 40%);
-  background-attachment: fixed;
+.font-editorial {
+  font-family: var(--font-display), Georgia, "Times New Roman", serif;
+  letter-spacing: -0.03em;
 }
 
-html.light body {
-  background-image: 
-    radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.04) 0%, transparent 45%),
-    radial-gradient(circle at 100% 40%, rgba(59, 130, 246, 0.03) 0%, transparent 40%);
-  background-attachment: fixed;
+.font-mono,
+code,
+pre,
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
 }
 
 /* ======================================================== */
-/* 3. GLASSMORPHISM & SURFACE PRIMITIVES                    */
+/* 3. SOLID ARCHITECTURAL SURFACES (ZERO GLASS SLOP)        */
 /* ======================================================== */
 
-.glass-panel {
+.glass-panel,
+.stitch-panel {
   background: var(--surface-card);
   color: var(--text-primary);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
   border: 1px solid var(--border-subtle);
-  transition: all 0.25s ease;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
 }
 
-.glass-nav {
+.glass-nav,
+.stitch-nav {
   background: var(--surface-card);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border-subtle);
-  transition: background 0.25s ease, border-color 0.25s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
 }
 
-html.dark .glass-nav {
-  background: rgba(9, 10, 15, 0.88);
-}
-
-html.light .glass-nav {
-  background: rgba(255, 255, 255, 0.92);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
-.glass-card {
+.glass-card,
+.stitch-card {
   background: var(--surface-card);
   color: var(--text-primary);
   border: 1px solid var(--border-subtle);
-  transition: all 0.25s ease;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
 }
 
-html.light .glass-card {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
-}
-
-html.light .glass-panel {
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.06), 0 2px 6px -1px rgba(0, 0, 0, 0.04);
-}
-
-.glass-card:hover {
-  background: var(--surface-elevated);
+.glass-card:hover,
+.stitch-card:hover {
   border-color: var(--border-strong);
-  transform: translateY(-2px);
+}
+
+.stitch-btn-primary {
+  background-color: var(--text-primary);
+  color: var(--canvas-base);
+  border: 1px solid var(--text-primary);
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.stitch-btn-primary:hover {
+  background-color: var(--brand-primary);
+  border-color: var(--brand-primary);
+  color: #FFFFFF;
+}
+
+.stitch-btn-accent {
+  background-color: var(--brand-primary);
+  color: #FFFFFF;
+  border: 1px solid var(--brand-primary);
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.stitch-btn-accent:hover {
+  background-color: var(--brand-hover);
+  border-color: var(--brand-hover);
+}
+
+.stitch-kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.125rem 0.375rem;
+  font-family: var(--font-mono), monospace;
+  font-size: 10px;
+  line-height: 1;
+  color: var(--text-secondary);
+  background-color: var(--surface-elevated);
+  border: 1px solid var(--border-strong);
+  border-bottom-width: 2px;
 }
 
 /* ======================================================== */
-/* 4. ANIMATION SUITE (STITCH MOTION SYSTEM)                */
+/* 4. SUBTLE MOTION & TACTILE STATES                        */
 /* ======================================================== */
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(6px);
   }
   to {
     opacity: 1;
@@ -221,46 +243,15 @@ html.light .glass-panel {
   }
 }
 
-@keyframes floatSlow {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-6px);
-  }
-}
-
-@keyframes pulseGlow {
-  0%, 100% {
-    box-shadow: 0 0 16px -2px rgba(16, 185, 129, 0.2);
-  }
-  50% {
-    box-shadow: 0 0 28px 2px rgba(16, 185, 129, 0.4);
-  }
-}
-
 @keyframes scanline {
-  0% {
-    transform: translateY(-100%);
-  }
-  100% {
-    transform: translateY(1000%);
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(1000%); }
 }
 
 @keyframes scaleIn {
   from {
     opacity: 0;
-    transform: scale(0.96);
+    transform: scale(0.98);
   }
   to {
     opacity: 1;
@@ -268,63 +259,51 @@ html.light .glass-panel {
   }
 }
 
-/* Animation utility classes */
 .animate-fade-in {
-  animation: fadeIn 0.4s ease-out forwards;
+  animation: fadeIn 0.25s ease-out forwards;
 }
 
 .animate-fade-in-up {
-  animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeInUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .animate-float {
-  animation: floatSlow 4s ease-in-out infinite;
+  /* Disabled floating bobbing AI slop */
 }
 
 .animate-pulse-glow {
-  animation: pulseGlow 3s ease-in-out infinite;
+  /* Disabled glowing blob AI slop */
 }
 
 .animate-scale-in {
-  animation: scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.animate-shimmer {
-  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0) 100%);
-  background-size: 200% 100%;
-  animation: shimmer 3s infinite;
+.animate-scanline {
+  animation: scanline 4s linear infinite;
 }
 
-/* Stagger entrance delays */
-.delay-75 { animation-delay: 75ms; }
-.delay-150 { animation-delay: 150ms; }
-.delay-200 { animation-delay: 200ms; }
-.delay-300 { animation-delay: 300ms; }
-.delay-400 { animation-delay: 400ms; }
+.delay-75 { animation-delay: 50ms; }
+.delay-150 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 150ms; }
+.delay-300 { animation-delay: 200ms; }
+.delay-400 { animation-delay: 250ms; }
 
-/* Interactive Hover Cards */
 .hover-lift {
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
 }
 
-html.dark .hover-lift:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 30px -6px rgba(0, 0, 0, 0.3);
-}
-
-html.light .hover-lift:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 24px -4px rgba(0, 0, 0, 0.08);
+.hover-lift:hover {
+  border-color: var(--border-strong);
 }
 
 /* ======================================================== */
-/* 5. ZERO-SCROLLBAR ARCHITECTURE & THEME ADAPTATION         */
+/* 5. ARCHITECTURAL GRID & LEAFLET ADAPTATIONS              */
 /* ======================================================== */
 
-/* Hide scrollbars globally on all elements */
 * {
-  scrollbar-width: none !important; /* Firefox */
-  -ms-overflow-style: none !important; /* IE/Edge */
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
 }
 
 *::-webkit-scrollbar {
@@ -341,68 +320,70 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Subtle civic grid pattern overlay */
+/* Exposed architectural grid pattern */
 html.dark .bg-civic-grid {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 0);
-  background-size: 24px 24px;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
 }
 
 html.light .bg-civic-grid {
-  background-image: radial-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 0);
-  background-size: 24px 24px;
+  background-image:
+    linear-gradient(to right, rgba(17, 17, 17, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(17, 17, 17, 0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
 }
 
 /* Leaflet Container Adaptations */
 .leaflet-container {
-  background-color: var(--canvas-base) !important;
+  background-color: var(--surface-sunken) !important;
   font-family: inherit;
-  transition: background-color 0.3s ease;
 }
 
-/* Dark mode map tiles (Dark Matter) */
 html.dark .leaflet-tile {
-  filter: brightness(0.7) invert(1) contrast(3) hue-rotate(200deg) saturate(0.35);
+  filter: brightness(0.68) invert(1) contrast(2.8) hue-rotate(200deg) saturate(0.2);
 }
 
-/* Light mode map tiles (Clean street view) */
 html.light .leaflet-tile {
-  filter: none;
+  filter: saturate(0.85) contrast(1.02);
 }
 
-/* Leaflet Bar & Controls */
 html.dark .leaflet-bar a {
-  background-color: #11131A !important;
-  color: #E2E8F0 !important;
-  border-color: rgba(255, 255, 255, 0.12) !important;
+  background-color: #141414 !important;
+  color: #FAF9F6 !important;
+  border-color: #262626 !important;
+  border-radius: 0px !important;
 }
 
 html.light .leaflet-bar a {
   background-color: #FFFFFF !important;
-  color: #1B2430 !important;
-  border-color: #E2DFD7 !important;
+  color: #111111 !important;
+  border-color: #E4E4E0 !important;
+  border-radius: 0px !important;
 }
 
-/* Leaflet Popups */
 html.dark .leaflet-popup-content-wrapper {
-  background-color: #11131A !important;
-  color: #F3F4F6 !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6) !important;
-  border-radius: 10px !important;
+  background-color: #111111 !important;
+  color: #FAF9F6 !important;
+  border: 1px solid #262626 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+  border-radius: 2px !important;
 }
 
 html.light .leaflet-popup-content-wrapper {
   background-color: #FFFFFF !important;
-  color: #1B2430 !important;
-  border: 1px solid #E2DFD7 !important;
-  box-shadow: 0 10px 25px -5px rgba(27, 36, 48, 0.15) !important;
-  border-radius: 10px !important;
+  color: #111111 !important;
+  border: 1px solid #E4E4E0 !important;
+  box-shadow: 0 4px 12px rgba(17, 17, 17, 0.08) !important;
+  border-radius: 2px !important;
 }
 
 html.dark .leaflet-popup-tip {
-  background-color: #11131A !important;
+  background-color: #111111 !important;
 }
 
 html.light .leaflet-popup-tip {
   background-color: #FFFFFF !important;
 }
+

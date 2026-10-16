@@ -86,51 +86,50 @@ export default function HelpCenterPage() {
   };
 
   return (
-    <div className="min-h-screen py-16 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto space-y-10">
+    <div className="min-h-screen py-14 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto space-y-10">
       {/* Header */}
-      <div className="text-center space-y-3 max-w-2xl mx-auto">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold">
-          <HelpCircle className="w-3.5 h-3.5" />
-          <span>Municipal Citizen Knowledge Base</span>
+      <div className="space-y-3 border-b border-[var(--border-subtle)] pb-8">
+        <div className="font-mono text-[11px] uppercase tracking-widest text-[var(--brand-primary)] font-semibold">
+          MUNICIPAL KNOWLEDGE BASE // SC-01
         </div>
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+        <h1 className="font-editorial text-4xl sm:text-5xl text-[var(--text-primary)] tracking-tight">
           Frequently Asked Questions
         </h1>
-        <p className="text-sm text-zinc-400 leading-relaxed">
-          Find answers regarding automated AI classification, priority scoring rubrics, duplicate clustering, and verification protocols.
+        <p className="text-sm sm:text-base text-[var(--text-secondary)] max-w-2xl leading-relaxed">
+          Documentation covering automated category suggestions, deterministic priority scoring, spatial duplicate clustering, and field verification protocols.
         </p>
       </div>
 
       {/* Search Input */}
       <div className="relative">
-        <Search className="w-5 h-5 text-[var(--text-muted)] absolute left-4 top-3.5" />
+        <Search className="w-4 h-4 text-[var(--text-muted)] absolute left-4 top-3.5" />
         <input
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search questions by keyword (e.g. duplicate, 72 hours, priority score, after photo)..."
-          className="w-full pl-12 pr-4 py-3 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-subtle)] text-[var(--text-primary)] placeholder-[var(--text-muted)] text-sm focus:outline-none focus:border-emerald-500 transition-colors shadow-md"
+          placeholder="Search specifications by keyword (e.g. duplicate, 72 hours, priority score, after photo)..."
+          className="w-full pl-11 pr-4 py-3 bg-[var(--surface-card)] border border-[var(--border-strong)] text-[var(--text-primary)] placeholder-[var(--text-muted)] text-sm focus:outline-none focus:border-[var(--text-primary)] transition-colors"
         />
         {searchQuery && (
           <button
             onClick={() => setSearchQuery('')}
-            className="absolute right-4 top-3.5 text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+            className="absolute right-4 top-3.5 font-mono text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)]"
           >
-            Clear
+            CLEAR
           </button>
         )}
       </div>
 
-      {/* Category Pills */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1">
+      {/* Category Filter Bar */}
+      <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
         {categories.map((cat) => (
           <button
             key={cat}
             onClick={() => setSelectedCategory(cat)}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
+            className={`px-3.5 py-2 font-mono text-xs uppercase tracking-wider whitespace-nowrap border transition-colors ${
               selectedCategory === cat
-                ? 'bg-emerald-500 text-slate-950 shadow-[0_0_14px_rgba(16,185,129,0.3)]'
-                : 'bg-[var(--surface-elevated)] text-[var(--text-muted)] hover:text-[var(--text-primary)] border border-[var(--border-subtle)]'
+                ? 'bg-[var(--text-primary)] text-[var(--canvas-base)] border-[var(--text-primary)] font-semibold'
+                : 'bg-[var(--surface-card)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-[var(--border-subtle)]'
             }`}
           >
             {cat}
@@ -139,15 +138,15 @@ export default function HelpCenterPage() {
       </div>
 
       {/* Searchable Accordion List */}
-      <div className="space-y-4">
+      <div className="border border-[var(--border-subtle)] bg-[var(--surface-card)] divide-y divide-[var(--border-subtle)]">
         {filteredFaqs.length > 0 ? (
           filteredFaqs.map((faq) => {
             const isExpanded = expandedId === faq.id;
             return (
               <div
                 key={faq.id}
-                className={`rounded-2xl glass-card border transition-all ${
-                  isExpanded ? 'border-emerald-500/40 bg-[var(--surface-elevated)]' : 'border-[var(--border-subtle)] hover:border-emerald-500/20'
+                className={`transition-colors ${
+                  isExpanded ? 'bg-[var(--surface-elevated)]/60' : 'hover:bg-[var(--surface-elevated)]/30'
                 }`}
               >
                 <button
@@ -156,21 +155,21 @@ export default function HelpCenterPage() {
                   className="w-full p-5 sm:p-6 text-left flex items-start justify-between gap-4"
                 >
                   <div className="space-y-1">
-                    <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider block">
+                    <span className="font-mono text-[10px] font-semibold text-[var(--brand-primary)] uppercase tracking-widest block">
                       {faq.category}
                     </span>
-                    <h3 className="text-sm sm:text-base font-bold text-[var(--text-primary)]">
+                    <h3 className="text-sm sm:text-base font-semibold text-[var(--text-primary)]">
                       {faq.question}
                     </h3>
                   </div>
 
-                  <div className="p-1 rounded-lg bg-black/5 dark:bg-white/5 text-[var(--text-muted)] shrink-0 mt-1">
-                    {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                  <div className="w-7 h-7 border border-[var(--border-subtle)] bg-[var(--surface-card)] flex items-center justify-center text-[var(--text-secondary)] shrink-0 mt-1">
+                    {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
                   </div>
                 </button>
 
                 {isExpanded && (
-                  <div className="px-5 sm:px-6 pb-6 pt-1 border-t border-[var(--border-subtle)] text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed animate-in slide-in-from-top-1">
+                  <div className="px-5 sm:px-6 pb-6 pt-3 border-t border-[var(--border-subtle)] text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed">
                     {faq.answer}
                   </div>
                 )}
@@ -178,9 +177,9 @@ export default function HelpCenterPage() {
             );
           })
         ) : (
-          <div className="p-12 rounded-2xl glass-panel border border-[var(--border-subtle)] text-center space-y-2">
-            <HelpCircle className="w-8 h-8 text-[var(--text-muted)] mx-auto" />
-            <h4 className="text-sm font-bold text-[var(--text-primary)]">No Matching Questions Found</h4>
+          <div className="p-12 text-center space-y-2">
+            <HelpCircle className="w-6 h-6 text-[var(--text-muted)] mx-auto" />
+            <h4 className="text-sm font-semibold text-[var(--text-primary)]">No Matching Questions Found</h4>
             <p className="text-xs text-[var(--text-muted)] max-w-sm mx-auto">
               Try adjusting your search terms or reach out through our Contact Directory.
             </p>
@@ -188,15 +187,15 @@ export default function HelpCenterPage() {
         )}
       </div>
 
-      {/* Still need help callout */}
-      <div className="p-6 rounded-2xl glass-panel border border-[var(--border-subtle)] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+      {/* Direct Assistance Callout */}
+      <div className="p-6 bg-[var(--surface-card)] border border-[var(--border-subtle)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs">
         <div>
-          <span className="font-bold text-[var(--text-primary)] block">Need direct municipal assistance?</span>
-          <span className="text-[var(--text-muted)]">Our customer relations desk is available during business hours.</span>
+          <span className="font-semibold text-sm text-[var(--text-primary)] block">Need direct municipal assistance?</span>
+          <span className="text-[var(--text-secondary)]">Our public works operations desk is available during municipal hours.</span>
         </div>
         <Link
           href="/contact"
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold transition-colors shadow-sm"
+          className="inline-flex items-center gap-2 px-4 py-2.5 stitch-btn-accent font-mono text-xs uppercase tracking-wider font-semibold"
         >
           <span>Contact Directory</span>
           <ArrowRight className="w-3.5 h-3.5" />

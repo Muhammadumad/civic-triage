@@ -18,7 +18,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       const saved = localStorage.getItem('civicpulse_theme') as Theme | null;
       if (saved === 'dark' || saved === 'light') return saved;
     }
-    return 'dark';
+    return 'light';
   });
 
   useEffect(() => {

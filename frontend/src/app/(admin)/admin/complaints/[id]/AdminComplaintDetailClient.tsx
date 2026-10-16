@@ -91,8 +91,8 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
   if (!mounted || isLoading) {
     return (
       <div className="min-h-screen py-16 px-4 flex flex-col items-center justify-center text-center bg-[var(--canvas-base)] text-[var(--text-primary)]">
-        <div className="w-14 h-14 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] flex items-center justify-center text-emerald-500 dark:text-emerald-400 mb-4 animate-pulse">
-          <Loader2 className="w-6 h-6 animate-spin" />
+        <div className="w-12 h-12 rounded-sm bg-[var(--surface-card)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--accent-primary)] mb-4">
+          <Loader2 className="w-5 h-5 animate-spin" />
         </div>
         <h2 className="text-sm font-semibold text-[var(--text-primary)] mb-1">Loading Ticket Details...</h2>
         <p className="text-xs text-[var(--text-muted)] font-mono">Synchronizing dispatch registry for {id}</p>
@@ -103,16 +103,16 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
   if (!complaint) {
     return (
       <div className="min-h-screen py-16 px-4 flex flex-col items-center justify-center text-center bg-[var(--canvas-base)] text-[var(--text-primary)]">
-        <div className="w-16 h-16 rounded-2xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] flex items-center justify-center text-[var(--text-secondary)] mb-4">
-          <AlertTriangle className="w-8 h-8 text-amber-500" />
+        <div className="w-14 h-14 rounded-sm bg-[var(--surface-card)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--accent-primary)] mb-4">
+          <AlertTriangle className="w-7 h-7" />
         </div>
-        <h2 className="text-xl font-bold text-[var(--text-primary)] mb-2">Complaint Reference Not Found</h2>
+        <h2 className="font-editorial text-3xl text-[var(--text-primary)] mb-2">Complaint Reference Not Found</h2>
         <p className="text-xs text-[var(--text-secondary)] max-w-sm mb-6">
           Could not locate ticket <span className="font-mono text-[var(--text-primary)] font-semibold">{id}</span> in administrative dispatch records.
         </p>
         <Link
           href="/admin"
-          className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs hover-lift transition-all"
+          className="stitch-btn-primary px-4 py-2.5 rounded-sm text-xs"
         >
           Return to Triage Console
         </Link>
@@ -214,17 +214,17 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
     <div className="min-h-screen py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8 animate-fade-in">
       {/* Action Notice Toast */}
       {actionNotice && (
-        <div className="fixed top-20 right-6 z-50 p-4 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-800 dark:text-emerald-200 text-xs font-semibold backdrop-blur-md shadow-2xl flex items-center gap-2 animate-in slide-in-from-top-3">
-          <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+        <div className="fixed top-20 right-6 z-50 p-4 rounded-sm bg-[var(--surface-card)] border border-[var(--border-strong)] text-[var(--text-primary)] text-xs font-mono font-semibold flex items-center gap-2">
+          <CheckCircle2 className="w-4 h-4 text-[var(--status-resolved)]" />
           <span>{actionNotice}</span>
         </div>
       )}
 
       {/* Top Breadcrumb & Action Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[var(--border-subtle)] pb-4">
         <Link
           href="/admin"
-          className="inline-flex items-center gap-2 text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors hover-lift"
+          className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider font-semibold text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Back to Triage Table</span>
@@ -238,7 +238,7 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
               setSelectedDept(complaint.department);
               setIsModalOpen(true);
             }}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs tracking-wide transition-all shadow-[0_0_20px_rgba(16,185,129,0.35)] hover-lift"
+            className="stitch-btn-accent flex items-center gap-2 px-4 py-2.5 rounded-sm text-xs"
           >
             <Sliders className="w-4 h-4" />
             <span>Update Status & Field Evidence</span>
@@ -247,40 +247,40 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
       </div>
 
       {/* Ticket Overview Bar */}
-      <div className="p-6 rounded-2xl glass-panel border border-[var(--border-subtle)] relative overflow-hidden">
+      <div className="p-6 rounded-md bg-[var(--surface-card)] border border-[var(--border-subtle)] relative overflow-hidden">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="space-y-2 flex-1">
             <div className="flex flex-wrap items-center gap-2.5">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] font-mono text-xs font-bold text-[var(--text-primary)]">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-sm bg-[var(--surface-elevated)] border border-[var(--border-subtle)] font-mono text-xs font-bold text-[var(--text-primary)]">
                 <span>{complaint.id}</span>
                 <button
                   type="button"
                   onClick={handleCopyId}
-                  className="p-1 rounded hover:bg-black/5 dark:hover:bg-white/10 text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                  className="p-1 rounded-sm hover:bg-[var(--surface-secondary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                   title="Copy Reference"
                 >
-                  {copied ? <Check className="w-3 h-3 text-emerald-500" /> : <Copy className="w-3 h-3 text-[var(--text-secondary)]" />}
+                  {copied ? <Check className="w-3 h-3 text-[var(--status-resolved)]" /> : <Copy className="w-3 h-3 text-[var(--text-secondary)]" />}
                 </button>
               </div>
 
-              <span className={`text-xs font-semibold px-2.5 py-1 rounded-lg border ${catTheme.bg} ${catTheme.text} ${catTheme.border}`}>
-                {complaint.category}
+              <span className={`text-xs font-mono font-semibold px-2.5 py-1 rounded-sm border ${catTheme.bg} ${catTheme.text} ${catTheme.border}`}>
+                Suggested: {complaint.category}
               </span>
 
-              <span className={`text-xs font-bold px-2.5 py-1 rounded-lg border ${sTheme.bg} ${sTheme.text} ${sTheme.border}`}>
+              <span className={`text-xs font-mono font-bold px-2.5 py-1 rounded-sm border ${sTheme.bg} ${sTheme.text} ${sTheme.border}`}>
                 {complaint.status}
               </span>
 
-              <span className={`text-xs font-extrabold px-2.5 py-1 rounded-lg border font-mono ${pTheme.bg} ${pTheme.text} ${pTheme.border}`}>
+              <span className={`text-xs font-mono font-extrabold px-2.5 py-1 rounded-sm border tabular-nums ${pTheme.bg} ${pTheme.text} ${pTheme.border}`}>
                 Priority {complaint.priorityScore} / 100
               </span>
 
-              <span className="text-xs text-indigo-600 dark:text-indigo-300 bg-indigo-500/15 border border-indigo-500/30 px-2.5 py-1 rounded-lg font-medium">
+              <span className="text-xs font-mono text-[var(--text-secondary)] bg-[var(--surface-elevated)] border border-[var(--border-subtle)] px-2.5 py-1 rounded-sm">
                 {complaint.ward || 'Ward 1 - Financial District'}
               </span>
             </div>
 
-            <h1 className="text-2xl font-bold text-[var(--text-primary)] tracking-tight">
+            <h1 className="font-editorial text-3xl sm:text-4xl text-[var(--text-primary)] tracking-tight">
               {complaint.title}
             </h1>
 
@@ -288,29 +288,29 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
               {complaint.description}
             </p>
 
-            <div className="flex flex-wrap items-center gap-4 text-xs text-[var(--text-secondary)] pt-2 border-t border-[var(--border-subtle)]">
+            <div className="flex flex-wrap items-center gap-4 text-xs font-mono text-[var(--text-secondary)] pt-2 border-t border-[var(--border-subtle)]">
               <div className="flex items-center gap-1.5">
-                <MapPin className="w-3.5 h-3.5 text-emerald-500" />
+                <MapPin className="w-3.5 h-3.5 text-[var(--accent-primary)]" />
                 <span>{complaint.location.address}</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <Building2 className="w-3.5 h-3.5 text-[var(--text-secondary)]" />
+                <Building2 className="w-3.5 h-3.5 text-[var(--text-muted)]" />
                 <span>{complaint.department}</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <Clock className="w-3.5 h-3.5 text-[var(--text-secondary)]" />
+                <Clock className="w-3.5 h-3.5 text-[var(--text-muted)]" />
                 <span suppressHydrationWarning>Filed {formatRelativeTime(complaint.createdAt)}</span>
               </div>
             </div>
           </div>
 
-          <div className="w-full lg:w-48 h-32 rounded-xl overflow-hidden border border-[var(--border-subtle)] bg-black/10 dark:bg-black shrink-0 relative hover-lift">
+          <div className="w-full lg:w-48 h-32 rounded-sm overflow-hidden border border-[var(--border-subtle)] bg-[var(--surface-sunken)] shrink-0 relative">
             <img
               src={complaint.photoUrl}
               alt={complaint.title}
               className="w-full h-full object-cover"
             />
-            <div className="absolute bottom-2 left-2 px-2 py-0.5 rounded bg-black/80 text-[10px] text-zinc-300 backdrop-blur-sm">
+            <div className="absolute bottom-2 left-2 px-2 py-0.5 rounded-sm bg-[var(--surface-card)] border border-[var(--border-subtle)] text-[10px] font-mono text-[var(--text-primary)]">
               Citizen Photo
             </div>
           </div>
@@ -318,10 +318,10 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
       </div>
 
       {/* Lifecycle Dispatch Controller */}
-      <div className="p-6 rounded-2xl glass-card border border-[var(--border-subtle)] space-y-4">
+      <div className="p-6 rounded-md bg-[var(--surface-card)] border border-[var(--border-subtle)] space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[var(--border-subtle)]">
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 dark:text-emerald-400">
+            <div className="p-2 rounded-sm bg-[var(--accent-primary-subtle)] border border-[var(--accent-primary-border)] text-[var(--accent-primary)]">
               <Sliders className="w-4 h-4" />
             </div>
             <div>
@@ -341,9 +341,9 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
               setSelectedDept(complaint.department);
               setIsModalOpen(true);
             }}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-xs font-semibold text-[var(--text-primary)] border border-[var(--border-subtle)] transition-colors self-start sm:self-auto"
+            className="stitch-btn-secondary flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-xs self-start sm:self-auto"
           >
-            <Camera className="w-3.5 h-3.5 text-emerald-500" />
+            <Camera className="w-3.5 h-3.5 text-[var(--accent-primary)]" />
             <span>Attach Evidence & Dispatch Notes</span>
           </button>
         </div>
@@ -351,11 +351,11 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
         {/* 5-Step Stepper Rail for Admin Control */}
         <div className="grid grid-cols-1 sm:grid-cols-5 gap-3 pt-1">
           {[
-            { key: 'New' as ComplaintStatus, label: '1. New', sub: 'Initial Citizen Filing' },
-            { key: 'Under Review' as ComplaintStatus, label: '2. Under Review', sub: 'Triage & Verification' },
-            { key: 'Assigned' as ComplaintStatus, label: '3. Assigned', sub: 'Dispatched to Crew' },
-            { key: 'In Progress' as ComplaintStatus, label: '4. In Progress', sub: 'Work Underway' },
-            { key: 'Resolved' as ComplaintStatus, label: '5. Resolved', sub: 'Site Repaired' },
+            { key: 'New' as ComplaintStatus, label: '01. New', sub: 'Initial Citizen Filing' },
+            { key: 'Under Review' as ComplaintStatus, label: '02. Under Review', sub: 'Triage & Verification' },
+            { key: 'Assigned' as ComplaintStatus, label: '03. Assigned', sub: 'Dispatched to Crew' },
+            { key: 'In Progress' as ComplaintStatus, label: '04. In Progress', sub: 'Work Underway' },
+            { key: 'Resolved' as ComplaintStatus, label: '05. Resolved', sub: 'Site Repaired' },
           ].map((st) => {
             const isCurrent =
               complaint.status.toLowerCase().replace(/[\s_]+/g, '') ===
@@ -372,28 +372,28 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
             return (
               <div
                 key={st.key}
-                className={`p-3.5 rounded-xl border transition-all flex flex-col justify-between gap-3 ${
+                className={`p-3.5 rounded-sm border transition-all flex flex-col justify-between gap-3 ${
                   isCurrent
-                    ? 'bg-emerald-500/10 border-emerald-500/40 shadow-lg shadow-emerald-500/10'
+                    ? 'bg-[var(--accent-primary-subtle)] border-[var(--accent-primary)]'
                     : isPast
-                    ? 'bg-black/5 dark:bg-white/[0.02] border-[var(--border-subtle)] opacity-80'
-                    : 'bg-black/5 dark:bg-white/[0.02] border-[var(--border-subtle)]'
+                    ? 'bg-[var(--surface-elevated)] border-[var(--border-subtle)] opacity-85'
+                    : 'bg-[var(--surface-elevated)] border-[var(--border-subtle)]'
                 }`}
               >
                 <div>
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs font-bold text-[var(--text-primary)]">{st.label}</span>
+                    <span className="text-xs font-mono font-bold text-[var(--text-primary)]">{st.label}</span>
                     {isCurrent ? (
-                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+                      <span className="w-2 h-2 rounded-full bg-[var(--accent-primary)]" />
                     ) : isPast ? (
-                      <Check className="w-3.5 h-3.5 text-emerald-500" />
+                      <Check className="w-3.5 h-3.5 text-[var(--status-resolved)]" />
                     ) : null}
                   </div>
                   <p className="text-[11px] text-[var(--text-secondary)]">{st.sub}</p>
                 </div>
 
                 {isCurrent ? (
-                  <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 py-1 text-center bg-emerald-500/10 rounded-lg">
+                  <span className="text-[11px] font-mono font-bold text-[var(--accent-primary)] py-1 text-center bg-[var(--surface-card)] border border-[var(--accent-primary-border)] rounded-sm">
                     Active Stage
                   </span>
                 ) : (
@@ -401,7 +401,7 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
                     type="button"
                     disabled={isSubmittingModal}
                     onClick={() => handleQuickTransition(st.key)}
-                    className="text-[11px] font-semibold py-1.5 px-2 rounded-lg bg-black/5 dark:bg-white/5 hover:bg-emerald-500 hover:text-slate-950 text-[var(--text-primary)] transition-all border border-[var(--border-subtle)] disabled:opacity-50"
+                    className="stitch-btn-secondary text-[11px] font-mono py-1.5 px-2 rounded-sm disabled:opacity-50"
                   >
                     Set to {st.key}
                   </button>
@@ -414,18 +414,18 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* 1. AI Provenance Panel */}
-        <div className="p-6 rounded-2xl glass-card border border-[var(--border-subtle)] space-y-5 hover-lift transition-all">
+        <div className="p-6 rounded-md bg-[var(--surface-card)] border border-[var(--border-subtle)] space-y-5">
           <div className="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)]">
             <div className="flex items-center gap-2">
-              <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 dark:text-emerald-400">
-                <Brain className="w-4 h-4 animate-float" />
+              <div className="p-2 rounded-sm bg-[var(--accent-primary-subtle)] border border-[var(--accent-primary-border)] text-[var(--accent-primary)]">
+                <Brain className="w-4 h-4" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-[var(--text-primary)]">AI Classification Provenance</h3>
-                <p className="text-[11px] text-[var(--text-secondary)]">Multimodal Neural Vision Model Telemetry</p>
+                <h3 className="text-sm font-bold text-[var(--text-primary)]">Suggested Classification Provenance</h3>
+                <p className="text-[11px] text-[var(--text-secondary)]">Multimodal Vision Model Telemetry</p>
               </div>
             </div>
-            <span className="font-mono text-xs text-emerald-600 dark:text-emerald-400 bg-emerald-500/15 px-2.5 py-1 rounded-lg border border-emerald-500/30 font-bold">
+            <span className="font-mono text-xs text-[var(--accent-primary)] bg-[var(--accent-primary-subtle)] px-2.5 py-1 rounded-sm border border-[var(--accent-primary-border)] font-bold tabular-nums">
               {(provenance.confidence * 100).toFixed(0)}% Confidence
             </span>
           </div>
@@ -433,19 +433,19 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
           <div className="space-y-4">
             <div>
               <div className="flex justify-between text-xs mb-1.5">
-                <span className="text-[var(--text-secondary)] font-medium">Model Inference Match:</span>
-                <span className="text-[var(--text-primary)] font-bold">{provenance.suggestedCategory}</span>
+                <span className="text-[var(--text-secondary)] font-medium">Suggested Category Match:</span>
+                <span className="text-[var(--text-primary)] font-mono font-bold">{provenance.suggestedCategory}</span>
               </div>
-              <div className="w-full h-2 rounded-full bg-slate-200 dark:bg-zinc-800 overflow-hidden">
+              <div className="w-full h-2 rounded-sm bg-[var(--surface-secondary)] border border-[var(--border-subtle)] overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full"
+                  className="h-full bg-[var(--accent-primary)]"
                   style={{ width: `${provenance.confidence * 100}%` }}
                 />
               </div>
             </div>
 
-            <div className="p-4 rounded-xl bg-[var(--surface-elevated)] border border-[var(--border-subtle)] space-y-1.5">
-              <span className="text-[11px] font-bold text-[var(--text-primary)] uppercase tracking-wider block">
+            <div className="p-4 rounded-sm bg-[var(--surface-elevated)] border border-[var(--border-subtle)] space-y-1.5">
+              <span className="text-[11px] font-mono font-bold text-[var(--text-primary)] uppercase tracking-wider block">
                 Model Classification Reason:
               </span>
               <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
@@ -454,16 +454,16 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
             </div>
 
             <div className="space-y-2">
-              <span className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider block">
+              <span className="text-[11px] font-mono font-semibold text-[var(--text-muted)] uppercase tracking-wider block">
                 Detected Visual Feature Vectors:
               </span>
               <div className="flex flex-wrap gap-2">
                 {provenance.visualFeatures.map((feat, i) => (
                   <span
                     key={i}
-                    className="text-xs px-2.5 py-1 rounded-lg bg-black/5 dark:bg-white/5 text-[var(--text-primary)] border border-[var(--border-subtle)] flex items-center gap-1.5"
+                    className="text-xs font-mono px-2.5 py-1 rounded-sm bg-[var(--surface-elevated)] text-[var(--text-primary)] border border-[var(--border-subtle)] flex items-center gap-1.5"
                   >
-                    <Sparkles className="w-3 h-3 text-emerald-500" />
+                    <Sparkles className="w-3 h-3 text-[var(--accent-primary)]" />
                     <span>{feat}</span>
                   </span>
                 ))}
@@ -478,65 +478,65 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
         </div>
 
         {/* 2. Priority Breakdown Card */}
-        <div className="p-6 rounded-2xl glass-card border border-[var(--border-subtle)] space-y-5 hover-lift transition-all">
+        <div className="p-6 rounded-md bg-[var(--surface-card)] border border-[var(--border-subtle)] space-y-5 tabular-nums">
           <div className="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)]">
             <div className="flex items-center gap-2">
-              <div className="p-2 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-500 dark:text-rose-400">
-                <Calculator className="w-4 h-4 animate-float" />
+              <div className="p-2 rounded-sm bg-[var(--accent-primary-subtle)] border border-[var(--accent-primary-border)] text-[var(--accent-primary)]">
+                <Calculator className="w-4 h-4" />
               </div>
               <div>
                 <h3 className="text-sm font-bold text-[var(--text-primary)]">Dynamic Priority Scoring Math</h3>
                 <p className="text-[11px] text-[var(--text-secondary)]">Deterministic Multi-Factor Scoring Formula</p>
               </div>
             </div>
-            <span className="font-mono text-sm font-extrabold text-rose-500 dark:text-rose-400 bg-rose-500/15 px-3 py-1 rounded-lg border border-rose-500/30">
+            <span className="font-mono text-sm font-extrabold text-[var(--accent-primary)] bg-[var(--accent-primary-subtle)] px-3 py-1 rounded-sm border border-[var(--accent-primary-border)]">
               Total: {math.totalScore} pts
             </span>
           </div>
 
           <div className="space-y-3">
             {/* Term 1 */}
-            <div className="p-3.5 rounded-xl bg-[var(--surface-elevated)] border border-[var(--border-subtle)] flex items-center justify-between">
+            <div className="p-3.5 rounded-sm bg-[var(--surface-elevated)] border border-[var(--border-subtle)] flex items-center justify-between">
               <div className="space-y-0.5">
                 <span className="text-xs font-semibold text-[var(--text-primary)]">Category Severity Base</span>
                 <p className="text-[11px] text-[var(--text-secondary)]">Base weight allocated for {complaint.category}</p>
               </div>
-              <span className="font-mono text-sm font-bold text-emerald-500 dark:text-emerald-400">+{math.categoryBasePoints} pts</span>
+              <span className="font-mono text-sm font-bold text-[var(--accent-primary)]">+{math.categoryBasePoints} pts</span>
             </div>
 
             {/* Term 2 */}
-            <div className="p-3.5 rounded-xl bg-[var(--surface-elevated)] border border-[var(--border-subtle)] flex items-center justify-between">
+            <div className="p-3.5 rounded-sm bg-[var(--surface-elevated)] border border-[var(--border-subtle)] flex items-center justify-between">
               <div className="space-y-0.5">
                 <span className="text-xs font-semibold text-[var(--text-primary)]">Duplicate Cluster Multiplier</span>
                 <p className="text-[11px] text-[var(--text-secondary)]">{complaint.duplicateCount} merged citizen reports</p>
               </div>
-              <span className="font-mono text-sm font-bold text-indigo-500 dark:text-indigo-400">+{math.duplicatePoints} pts</span>
+              <span className="font-mono text-sm font-bold text-[var(--accent-primary)]">+{math.duplicatePoints} pts</span>
             </div>
 
             {/* Term 3 */}
-            <div className="p-3.5 rounded-xl bg-[var(--surface-elevated)] border border-[var(--border-subtle)] flex items-center justify-between">
+            <div className="p-3.5 rounded-sm bg-[var(--surface-elevated)] border border-[var(--border-subtle)] flex items-center justify-between">
               <div className="space-y-0.5">
                 <span className="text-xs font-semibold text-[var(--text-primary)]">Sensitive Zone Proximity</span>
                 <p className="text-[11px] text-[var(--text-secondary)]">School corridor / hospital / transit arterial proximity</p>
               </div>
-              <span className="font-mono text-sm font-bold text-amber-500 dark:text-amber-400">+{math.sensitiveZonePoints} pts</span>
+              <span className="font-mono text-sm font-bold text-[var(--accent-primary)]">+{math.sensitiveZonePoints} pts</span>
             </div>
 
             {/* Term 4 */}
-            <div className="p-3.5 rounded-xl bg-[var(--surface-elevated)] border border-[var(--border-subtle)] flex items-center justify-between">
+            <div className="p-3.5 rounded-sm bg-[var(--surface-elevated)] border border-[var(--border-subtle)] flex items-center justify-between">
               <div className="space-y-0.5">
                 <span className="text-xs font-semibold text-[var(--text-primary)]">Elapsed Age Escalation</span>
                 <p className="text-[11px] text-[var(--text-secondary)]">Unresolved duration multiplier</p>
               </div>
-              <span className="font-mono text-sm font-bold text-rose-500 dark:text-rose-400">+{math.agePoints} pts</span>
+              <span className="font-mono text-sm font-bold text-[var(--text-primary)]">+{math.agePoints} pts</span>
             </div>
 
             {/* Total Formula Equation Bar */}
-            <div className="p-3.5 rounded-xl bg-black/5 dark:bg-white/[0.03] border border-[var(--border-subtle)] font-mono text-xs text-center text-[var(--text-secondary)]">
-              Formula: <span className="text-emerald-500 dark:text-emerald-400">{math.categoryBasePoints}</span> +{' '}
-              <span className="text-indigo-500 dark:text-indigo-400">{math.duplicatePoints}</span> +{' '}
-              <span className="text-amber-500 dark:text-amber-400">{math.sensitiveZonePoints}</span> +{' '}
-              <span className="text-rose-500 dark:text-rose-400">{math.agePoints}</span> ={' '}
+            <div className="p-3.5 rounded-sm bg-[var(--surface-secondary)] border border-[var(--border-subtle)] font-mono text-xs text-center text-[var(--text-secondary)]">
+              Formula: <span className="text-[var(--accent-primary)] font-bold">{math.categoryBasePoints}</span> +{' '}
+              <span className="text-[var(--accent-primary)] font-bold">{math.duplicatePoints}</span> +{' '}
+              <span className="text-[var(--accent-primary)] font-bold">{math.sensitiveZonePoints}</span> +{' '}
+              <span className="text-[var(--text-primary)] font-bold">{math.agePoints}</span> ={' '}
               <span className="text-[var(--text-primary)] font-bold">{math.totalScore} pts</span>
             </div>
           </div>
@@ -544,10 +544,10 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
       </div>
 
       {/* 3. Duplicate Detection Side-by-Side Review */}
-      <div className="p-6 rounded-2xl glass-card border border-[var(--border-subtle)] space-y-5">
+      <div className="p-6 rounded-md bg-[var(--surface-card)] border border-[var(--border-subtle)] space-y-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[var(--border-subtle)]">
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-500 dark:text-indigo-400">
+            <div className="p-2 rounded-sm bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-[var(--accent-primary)]">
               <GitMerge className="w-4 h-4" />
             </div>
             <div>
@@ -560,7 +560,7 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
             </div>
           </div>
 
-          <div className="text-xs text-[var(--text-secondary)]">
+          <div className="text-xs font-mono text-[var(--text-secondary)] tabular-nums">
             Current Cluster Count: <span className="font-bold text-[var(--text-primary)]">+{complaint.duplicateCount}</span>
           </div>
         </div>
@@ -570,19 +570,19 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
             {suspectedDups.map((dup) => (
               <div
                 key={dup.id}
-                className="p-5 rounded-xl bg-[var(--surface-elevated)] border border-[var(--border-subtle)] space-y-4 hover-lift transition-all"
+                className="p-5 rounded-sm bg-[var(--surface-elevated)] border border-[var(--border-subtle)] space-y-4"
               >
-                <div className="flex items-center justify-between text-xs pb-3 border-b border-[var(--border-subtle)]">
+                <div className="flex items-center justify-between text-xs pb-3 border-b border-[var(--border-subtle)] tabular-nums">
                   <div className="flex items-center gap-2">
                     <span className="font-mono font-bold text-[var(--text-primary)]">{dup.id}</span>
-                    <span className="px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-600 dark:text-indigo-300 font-bold border border-indigo-500/30">
+                    <span className="px-2 py-0.5 rounded-sm bg-[var(--accent-primary-subtle)] text-[var(--accent-primary)] font-mono font-bold border border-[var(--accent-primary-border)]">
                       {dup.similarityPct}% Visual Match
                     </span>
-                    <span className="px-2 py-0.5 rounded bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] font-mono">
+                    <span className="px-2 py-0.5 rounded-sm bg-[var(--surface-card)] border border-[var(--border-subtle)] text-[var(--text-secondary)] font-mono">
                       {dup.distanceMeters}m away
                     </span>
                   </div>
-                  <span className="text-[var(--text-secondary)]" suppressHydrationWarning>
+                  <span className="font-mono text-[var(--text-muted)]" suppressHydrationWarning>
                     {formatRelativeTime(dup.createdAt)}
                   </span>
                 </div>
@@ -591,11 +591,11 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {/* Left: Incoming Complaint */}
                   <div className="space-y-1.5">
-                    <div className="flex justify-between text-[11px] font-semibold text-[var(--text-secondary)]">
+                    <div className="flex justify-between text-[11px] font-mono font-semibold text-[var(--text-secondary)]">
                       <span>Primary Incident: {complaint.id}</span>
-                      <span className="text-emerald-500 dark:text-emerald-400 font-mono">Anchor</span>
+                      <span className="text-[var(--status-resolved)]">Anchor</span>
                     </div>
-                    <div className="h-44 rounded-xl overflow-hidden border border-[var(--border-subtle)] bg-black/20 dark:bg-black">
+                    <div className="h-44 rounded-sm overflow-hidden border border-[var(--border-subtle)] bg-[var(--surface-sunken)]">
                       <img
                         src={complaint.photoUrl}
                         alt="Primary Ticket"
@@ -607,11 +607,11 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
 
                   {/* Right: Suspected Duplicate */}
                   <div className="space-y-1.5">
-                    <div className="flex justify-between text-[11px] font-semibold text-[var(--text-secondary)]">
+                    <div className="flex justify-between text-[11px] font-mono font-semibold text-[var(--text-secondary)]">
                       <span>Suspected Duplicate: {dup.id}</span>
-                      <span className="text-indigo-500 dark:text-indigo-400 font-mono">{dup.similarityPct}% Similarity</span>
+                      <span className="text-[var(--accent-primary)]">{dup.similarityPct}% Similarity</span>
                     </div>
-                    <div className="h-44 rounded-xl overflow-hidden border border-indigo-500/30 bg-black/20 dark:bg-black">
+                    <div className="h-44 rounded-sm overflow-hidden border border-[var(--accent-primary-border)] bg-[var(--surface-sunken)]">
                       <img
                         src={dup.photoUrl}
                         alt="Suspected Duplicate"
@@ -627,16 +627,16 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
                   <button
                     type="button"
                     onClick={() => handleRejectDuplicate(dup.id)}
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-xs font-semibold border border-[var(--border-subtle)] transition-colors hover-lift"
+                    className="stitch-btn-secondary flex items-center gap-1.5 px-4 py-2 rounded-sm text-xs"
                   >
-                    <XCircle className="w-4 h-4 text-rose-500" />
+                    <XCircle className="w-4 h-4 text-[var(--accent-primary)]" />
                     <span>Reject Duplicate (Keep Separate)</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => handleConfirmMerge(dup.id)}
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition-all shadow-[0_0_16px_rgba(99,102,241,0.3)] hover-lift"
+                    className="stitch-btn-primary flex items-center gap-1.5 px-4 py-2 rounded-sm text-xs"
                   >
                     <GitMerge className="w-4 h-4" />
                     <span>Confirm Merge & Elevate Urgency (+7 pts)</span>
@@ -646,8 +646,8 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
             ))}
           </div>
         ) : (
-          <div className="p-8 rounded-xl bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-center space-y-2">
-            <CheckCircle2 className="w-8 h-8 text-emerald-500 mx-auto" />
+          <div className="p-8 rounded-sm bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-center space-y-2">
+            <CheckCircle2 className="w-8 h-8 text-[var(--status-resolved)] mx-auto" />
             <h4 className="text-sm font-semibold text-[var(--text-primary)]">No Pending Duplicates in Radius</h4>
             <p className="text-xs text-[var(--text-secondary)] max-w-sm mx-auto">
               All neighboring geotagged reports have been audited and merged into this master ticket cluster.
@@ -658,17 +658,17 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
 
       {/* 4. Status Transition & Evidence Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-in fade-in">
-          <div className="w-full max-w-lg p-6 rounded-2xl glass-panel border border-[var(--border-subtle)] shadow-2xl space-y-5 animate-scale-in">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 animate-in fade-in">
+          <div className="w-full max-w-lg p-6 rounded-md bg-[var(--surface-card)] border border-[var(--border-strong)] space-y-5">
             <div className="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)]">
-              <h3 className="text-base font-bold text-[var(--text-primary)] flex items-center gap-2">
-                <Sliders className="w-4 h-4 text-emerald-500" />
+              <h3 className="font-editorial text-2xl text-[var(--text-primary)] flex items-center gap-2">
+                <Sliders className="w-4 h-4 text-[var(--accent-primary)]" />
                 <span>Transition Status & Log Field Evidence</span>
               </h3>
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="p-1 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                className="p-1 rounded-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
               >
                 ✕
               </button>
@@ -677,13 +677,13 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
             <form onSubmit={handleModalSubmit} className="space-y-4 text-xs">
               {/* Status Select */}
               <div>
-                <label className="block font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">
+                <label className="block font-mono font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">
                   Target Workflow Status
                 </label>
                 <select
                   value={newStatus}
                   onChange={(e: any) => setNewStatus(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-primary)] font-medium focus:outline-none focus:border-emerald-500"
+                  className="w-full px-3 py-2.5 rounded-sm bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-primary)] font-medium focus:outline-none focus:border-[var(--accent-primary)]"
                 >
                   <option value="New">New</option>
                   <option value="Under Review">Under Review</option>
@@ -696,13 +696,13 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
 
               {/* Department Select */}
               <div>
-                <label className="block font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">
+                <label className="block font-mono font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">
                   Assigned Municipal Department
                 </label>
                 <select
                   value={selectedDept}
                   onChange={(e: any) => setSelectedDept(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-primary)] font-medium focus:outline-none focus:border-emerald-500"
+                  className="w-full px-3 py-2.5 rounded-sm bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-primary)] font-medium focus:outline-none focus:border-[var(--accent-primary)]"
                 >
                   <option value="Dept of Public Works & Roads">Dept of Public Works & Roads</option>
                   <option value="Water & Utilities Board">Water & Utilities Board</option>
@@ -714,7 +714,7 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
 
               {/* Field Notes */}
               <div>
-                <label className="block font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">
+                <label className="block font-mono font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">
                   Dispatcher Inspection Notes
                 </label>
                 <textarea
@@ -722,21 +722,21 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
                   value={fieldNotes}
                   onChange={(e) => setFieldNotes(e.target.value)}
                   placeholder="e.g. Field crew deployed with hot asphalt roller. Work scheduled for complete clearance..."
-                  className="w-full p-3 rounded-xl bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-primary)] placeholder-[var(--text-secondary)]/50 focus:outline-none focus:border-emerald-500 leading-relaxed"
+                  className="w-full p-3 rounded-sm bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-primary)] placeholder-[var(--text-muted)]/60 focus:outline-none focus:border-[var(--accent-primary)] leading-relaxed"
                 />
               </div>
 
               {/* After Photo Evidence (Active when Resolved) */}
               <div>
-                <label className="block font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">
-                  Official Verification After-Photo URL {newStatus === 'Resolved' && <span className="text-emerald-500">*</span>}
+                <label className="block font-mono font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">
+                  Official Verification After-Photo URL {newStatus === 'Resolved' && <span className="text-[var(--accent-primary)]">*</span>}
                 </label>
                 <input
                   type="text"
                   value={afterPhotoUrl}
                   onChange={(e) => setAfterPhotoUrl(e.target.value)}
                   placeholder="https://images.unsplash.com/... or paste image URI"
-                  className="w-full px-3 py-2.5 rounded-xl bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-primary)] placeholder-[var(--text-secondary)]/50 focus:outline-none focus:border-emerald-500"
+                  className="w-full px-3 py-2.5 rounded-sm bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-primary)] placeholder-[var(--text-muted)]/60 focus:outline-none focus:border-[var(--accent-primary)]"
                 />
                 <p className="text-[11px] text-[var(--text-secondary)] mt-1">
                   Required for public service resolution verification and citizen before/after comparison.
@@ -747,14 +747,14 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-semibold transition-colors"
+                  className="stitch-btn-secondary px-4 py-2.5 rounded-sm"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmittingModal}
-                  className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold shadow-[0_0_18px_rgba(16,185,129,0.3)] disabled:opacity-50 hover-lift"
+                  className="stitch-btn-accent flex items-center gap-1.5 px-5 py-2.5 rounded-sm disabled:opacity-50"
                 >
                   <Send className="w-3.5 h-3.5" />
                   <span>{isSubmittingModal ? 'Recording...' : 'Save & Dispatch'}</span>

@@ -207,7 +207,7 @@ export interface User {
   _id?: string;
 }
 
-// Token Configuration Objects matching CivicPulse v1 Design System
+// Token Configuration Objects matching Google Stitch Editorial Design System
 export const CATEGORY_THEME: Record<
   ComplaintCategory,
   {
@@ -220,42 +220,42 @@ export const CATEGORY_THEME: Record<
   }
 > = {
   'Road Damage': {
-    hex: '#EA580C',
-    border: 'border-orange-500/30',
-    bg: 'bg-orange-500/10',
-    text: 'text-orange-400',
+    hex: '#D9381E',
+    border: 'border-[#D9381E]/30',
+    bg: 'bg-[#D9381E]/10',
+    text: 'text-[#D9381E] dark:text-[#F26044]',
     icon: 'Hammer',
     department: 'Dept of Public Works & Roads',
   },
   'Garbage': {
-    hex: '#84CC16',
-    border: 'border-lime-500/30',
-    bg: 'bg-lime-500/10',
-    text: 'text-lime-400',
+    hex: '#2D6A4F',
+    border: 'border-[#2D6A4F]/30',
+    bg: 'bg-[#2D6A4F]/10',
+    text: 'text-[#1B4332] dark:text-[#52B788]',
     icon: 'Trash2',
     department: 'Sanitation & Solid Waste Management',
   },
   'Streetlights': {
-    hex: '#FACC15',
-    border: 'border-yellow-500/30',
-    bg: 'bg-yellow-500/10',
-    text: 'text-yellow-400',
+    hex: '#B45309',
+    border: 'border-amber-700/30',
+    bg: 'bg-amber-700/10',
+    text: 'text-amber-800 dark:text-amber-400',
     icon: 'Lightbulb',
     department: 'Municipal Electrical Grid',
   },
   'Water Leakage': {
-    hex: '#06B6D4',
-    border: 'border-cyan-500/30',
-    bg: 'bg-cyan-500/10',
-    text: 'text-cyan-400',
+    hex: '#0369A1',
+    border: 'border-sky-700/30',
+    bg: 'bg-sky-700/10',
+    text: 'text-sky-800 dark:text-sky-400',
     icon: 'Droplets',
     department: 'Water & Utilities Board',
   },
   'Blocked Drains': {
-    hex: '#8B5CF6',
-    border: 'border-purple-500/30',
-    bg: 'bg-purple-500/10',
-    text: 'text-purple-400',
+    hex: '#3F3F46',
+    border: 'border-stone-500/30',
+    bg: 'bg-stone-500/10',
+    text: 'text-stone-700 dark:text-stone-300',
     icon: 'Waves',
     department: 'Stormwater & Drainage Division',
   },
@@ -271,40 +271,40 @@ export const STATUS_THEME: Record<
   }
 > = {
   'New': {
-    hex: '#6366F1',
-    border: 'border-indigo-500/35',
-    bg: 'bg-indigo-500/15',
-    text: 'text-indigo-400',
+    hex: '#D9381E',
+    border: 'border-[#D9381E]/35',
+    bg: 'bg-[#D9381E]/10',
+    text: 'text-[#D9381E] dark:text-[#F26044]',
   },
   'Under Review': {
-    hex: '#D946EF',
-    border: 'border-fuchsia-500/35',
-    bg: 'bg-fuchsia-500/15',
-    text: 'text-fuchsia-400',
+    hex: '#B45309',
+    border: 'border-amber-700/35',
+    bg: 'bg-amber-700/10',
+    text: 'text-amber-800 dark:text-amber-400',
   },
   'Assigned': {
-    hex: '#3B82F6',
-    border: 'border-blue-500/35',
-    bg: 'bg-blue-500/15',
-    text: 'text-blue-400',
+    hex: '#0369A1',
+    border: 'border-sky-700/35',
+    bg: 'bg-sky-700/10',
+    text: 'text-sky-800 dark:text-sky-400',
   },
   'In Progress': {
-    hex: '#F59E0B',
-    border: 'border-amber-500/35',
-    bg: 'bg-amber-500/15',
-    text: 'text-amber-400',
+    hex: '#92400E',
+    border: 'border-amber-600/35',
+    bg: 'bg-amber-600/12',
+    text: 'text-amber-800 dark:text-amber-300',
   },
   'Resolved': {
-    hex: '#10B981',
-    border: 'border-emerald-500/35',
-    bg: 'bg-emerald-500/15',
-    text: 'text-emerald-400',
+    hex: '#15803D',
+    border: 'border-emerald-800/35',
+    bg: 'bg-emerald-800/10',
+    text: 'text-emerald-800 dark:text-emerald-400',
   },
   'Duplicate': {
-    hex: '#71717A',
-    border: 'border-zinc-500/35',
-    bg: 'bg-zinc-500/15',
-    text: 'text-zinc-400',
+    hex: '#71716A',
+    border: 'border-stone-500/35',
+    bg: 'bg-stone-500/10',
+    text: 'text-stone-600 dark:text-stone-400',
   },
 };
 
@@ -325,24 +325,24 @@ export const PRIORITY_THEME: Record<
   }
 > = {
   High: {
-    hex: '#FB7185',
-    text: 'text-[#FB7185]',
-    border: 'border-[rgba(244,63,94,0.35)]',
-    bg: 'bg-[rgba(244,63,94,0.12)]',
+    hex: '#D9381E',
+    text: 'text-[var(--priority-high-text)]',
+    border: 'border-[var(--priority-high-border)]',
+    bg: 'bg-[var(--priority-high-bg)]',
     label: 'High Priority (>=70)',
   },
   Medium: {
-    hex: '#FBBF24',
-    text: 'text-[#FBBF24]',
-    border: 'border-[rgba(245,158,11,0.35)]',
-    bg: 'bg-[rgba(245,158,11,0.12)]',
+    hex: '#B45309',
+    text: 'text-[var(--priority-medium-text)]',
+    border: 'border-[var(--priority-medium-border)]',
+    bg: 'bg-[var(--priority-medium-bg)]',
     label: 'Medium Priority (40-69)',
   },
   Low: {
-    hex: '#60A5FA',
-    text: 'text-[#60A5FA]',
-    border: 'border-[rgba(59,130,246,0.25)]',
-    bg: 'bg-[rgba(59,130,246,0.10)]',
+    hex: '#1E3A8A',
+    text: 'text-[var(--priority-low-text)]',
+    border: 'border-[var(--priority-low-border)]',
+    bg: 'bg-[var(--priority-low-bg)]',
     label: 'Low Priority (<40)',
   },
 };

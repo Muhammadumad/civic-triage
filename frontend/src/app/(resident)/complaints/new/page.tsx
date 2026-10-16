@@ -265,27 +265,27 @@ export default function NewComplaintPage() {
     <div className="min-h-screen bg-[var(--canvas-base)] text-[var(--text-primary)] py-10 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
       <div className="max-w-4xl mx-auto space-y-8 pb-24">
         {/* Breadcrumb & Header Section */}
-        <div className="flex flex-col space-y-2 animate-fade-in-up">
+        <div className="flex flex-col space-y-2 animate-fade-in-up border-b border-[var(--border-subtle)] pb-6">
           <div className="flex items-center gap-2 text-xs font-mono text-[var(--text-muted)]">
-            <Link href="/" className="hover:text-emerald-400 transition-colors flex items-center gap-1">
-              <span>CivicOps</span>
+            <Link href="/" className="hover:text-[var(--accent-primary)] transition-colors flex items-center gap-1">
+              <span>CivicPulse</span>
             </Link>
             <span>/</span>
-            <span className="text-emerald-400 font-medium">Telemetry Dispatch</span>
+            <span className="text-[var(--accent-primary)] font-medium">Telemetry Dispatch</span>
             <span>/</span>
             <span className="text-[var(--text-primary)]">Submit Incident</span>
           </div>
 
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pt-2">
             <div>
-              <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight">Report a Civic Hazard</h1>
-              <p className="text-sm sm:text-base text-[var(--text-muted)] max-w-2xl mt-1 leading-relaxed">
+              <h1 className="font-editorial text-4xl sm:text-5xl tracking-tight">Report a Civic Hazard</h1>
+              <p className="text-sm sm:text-base text-[var(--text-secondary)] max-w-2xl mt-1 leading-relaxed">
                 Autonomous multi-modal triage parses photographic telemetry, calculates spatial duplicates, and instantly routes field assets.
               </p>
             </div>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--surface-card)] border border-emerald-500/30 shadow-sm shrink-0 self-start md:self-auto animate-float">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-              <span className="font-mono text-xs text-emerald-400">Cluster Engine Active</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-sm bg-[var(--surface-card)] border border-[var(--border-subtle)] shrink-0 self-start md:self-auto">
+              <span className="w-2 h-2 rounded-full bg-[var(--status-resolved)]" />
+              <span className="font-mono text-xs text-[var(--text-primary)] uppercase tracking-wider">Cluster Engine Active</span>
             </div>
           </div>
         </div>
@@ -295,34 +295,32 @@ export default function NewComplaintPage() {
           {/* ======================================================== */}
           {/* 1. Photo Evidence Upload with Live AI Scanner            */}
           {/* ======================================================== */}
-          <div className="bg-[var(--surface-card)] border border-[var(--border-subtle)] rounded-xl p-6 shadow-xl space-y-4 hover-lift transition-all">
+          <div className="bg-[var(--surface-card)] border border-[var(--border-subtle)] rounded-md p-6 space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Camera className="w-5 h-5 text-emerald-400" />
-                <h2 className="text-lg font-bold">Photographic Evidence</h2>
+                <Camera className="w-5 h-5 text-[var(--accent-primary)]" />
+                <h2 className="font-editorial text-2xl">Photographic Evidence</h2>
               </div>
               <span className="font-mono text-xs text-[var(--text-muted)] uppercase tracking-wider">Field Telemetry Payload</span>
             </div>
 
-            {/* Photo Preview Container with Animated Laser Scanline */}
+            {/* Photo Preview Container */}
             {photoUrl ? (
-              <div className="relative rounded-xl overflow-hidden bg-[var(--surface-elevated)] group border border-[var(--border-subtle)]">
-                <div className="relative w-full h-72 sm:h-80 overflow-hidden rounded-xl">
+              <div className="relative rounded-sm overflow-hidden bg-[var(--surface-elevated)] group border border-[var(--border-subtle)]">
+                <div className="relative w-full h-72 sm:h-80 overflow-hidden">
                   <img
                     src={photoUrl}
                     alt="Hazard evidence"
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="w-full h-full object-cover"
                   />
-                  {/* Glowing Animated Scanline */}
-                  <div className="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-emerald-400 to-transparent shadow-[0_0_14px_#10B981] pointer-events-none animate-scanline" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[var(--canvas-base)]/90 via-transparent to-black/20 pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 pointer-events-none" />
 
                   {/* Top Actions Toolbar */}
                   <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
                     <button
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--surface-card)]/90 backdrop-blur-md text-[var(--text-primary)] font-mono text-xs shadow-md hover:bg-[var(--surface-card)] transition-all border border-[var(--border-subtle)]"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-sm bg-[var(--surface-card)] text-[var(--text-primary)] font-mono text-xs hover:bg-[var(--surface-secondary)] transition-all border border-[var(--border-strong)]"
                     >
                       <RefreshCw className="w-3.5 h-3.5" />
                       <span>Replace</span>
@@ -330,7 +328,7 @@ export default function NewComplaintPage() {
                     <button
                       type="button"
                       onClick={removePhoto}
-                      className="w-8 h-8 rounded-lg bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/30 flex items-center justify-center hover:bg-rose-500/30 transition-all shadow-md"
+                      className="w-8 h-8 rounded-sm bg-[var(--surface-card)] text-[var(--accent-primary)] border border-[var(--border-strong)] flex items-center justify-center hover:bg-[var(--accent-primary-subtle)] transition-all"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -338,31 +336,31 @@ export default function NewComplaintPage() {
 
                   {/* Top Left Metadata Pill */}
                   <div className="absolute top-4 left-4 z-10">
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--surface-card)]/90 backdrop-blur-md border border-[var(--border-subtle)] shadow-md">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" />
-                      <span className="font-mono text-xs text-[var(--text-primary)]">EXIF Verified • 4032×3024</span>
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-sm bg-[var(--surface-card)] border border-[var(--border-strong)]">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-[var(--status-resolved)]" />
+                      <span className="font-mono text-xs text-[var(--text-primary)] tabular-nums">EXIF Verified • 4032×3024</span>
                     </div>
                   </div>
 
-                  {/* AI Real-Time Vision HUD Scanner Overlay */}
+                  {/* AI Real-Time Vision HUD Overlay */}
                   <div className="absolute bottom-4 left-4 right-4 z-10">
-                    <div className="p-4 rounded-xl bg-[var(--surface-card)]/95 backdrop-blur-xl border border-[var(--border-strong)] shadow-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="p-4 rounded-sm bg-[var(--surface-card)] border border-[var(--border-strong)] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-lg bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center shrink-0">
+                        <div className="w-9 h-9 rounded-sm bg-[var(--accent-primary-subtle)] border border-[var(--accent-primary-border)] flex items-center justify-center shrink-0">
                           {isAnalyzingPhoto ? (
-                            <Loader2 className="w-4 h-4 text-emerald-500 dark:text-emerald-400 animate-spin" />
+                            <Loader2 className="w-4 h-4 text-[var(--accent-primary)] animate-spin" />
                           ) : (
-                            <Sparkles className="w-4 h-4 text-emerald-500 dark:text-emerald-400 animate-spin" style={{ animationDuration: '8s' }} />
+                            <Sparkles className="w-4 h-4 text-[var(--accent-primary)]" />
                           )}
                         </div>
                         <div>
                           <div className="flex items-center gap-2">
-                            <span className={`w-2 h-2 rounded-full ${isAnalyzingPhoto ? 'bg-amber-400 animate-ping' : 'bg-emerald-500 dark:bg-emerald-400 animate-pulse'}`} />
+                            <span className={`w-2 h-2 rounded-full ${isAnalyzingPhoto ? 'bg-[var(--status-progress)] animate-ping' : 'bg-[var(--status-resolved)]'}`} />
                             <span className="text-sm font-bold text-[var(--text-primary)]">
-                              {isAnalyzingPhoto ? 'Inspecting image with Gemini Vision...' : `AI Detected: ${aiSuggestedCategory}`}
+                              {isAnalyzingPhoto ? 'Inspecting image with Gemini Vision...' : `Suggested Category: ${aiSuggestedCategory}`}
                             </span>
                           </div>
-                          <p className="font-mono text-xs text-[var(--text-muted)] mt-0.5">
+                          <p className="font-mono text-xs text-[var(--text-secondary)] mt-0.5">
                             {isAnalyzingPhoto ? 'Extracting visual infrastructure hazards and telemetry...' : aiVisualHazard}
                           </p>
                         </div>
@@ -371,7 +369,7 @@ export default function NewComplaintPage() {
                         <span className="font-mono text-[10px] text-[var(--text-muted)] hidden md:inline">
                           {aiModelUsed}
                         </span>
-                        <span className="font-mono text-xs text-emerald-600 dark:text-emerald-400 font-bold px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+                        <span className="font-mono text-xs text-[var(--accent-primary)] font-bold px-2.5 py-1 rounded-sm bg-[var(--accent-primary-subtle)] border border-[var(--accent-primary-border)] tabular-nums">
                           {Math.round(aiConfidence * 100)}% Confidence
                         </span>
                       </div>
@@ -382,11 +380,11 @@ export default function NewComplaintPage() {
             ) : (
               <div 
                 onClick={() => fileInputRef.current?.click()}
-                className="p-8 rounded-xl bg-[var(--surface-elevated)] border-2 border-dashed border-[var(--border-strong)] hover:border-emerald-500/50 flex flex-col items-center justify-center text-center cursor-pointer transition-colors"
+                className="p-8 rounded-sm bg-[var(--surface-elevated)] border border-dashed border-[var(--border-strong)] hover:border-[var(--accent-primary)] flex flex-col items-center justify-center text-center cursor-pointer transition-colors"
               >
                 <Upload className="w-10 h-10 text-[var(--text-muted)] mb-2" />
                 <p className="text-sm font-semibold text-[var(--text-primary)]">Drag & drop photographic evidence or click to browse</p>
-                <p className="font-mono text-xs text-[var(--text-muted)] mt-1">Supports HEIC, RAW, JPG, PNG up to 25MB with embedded GPS metadata</p>
+                <p className="font-mono text-xs text-[var(--text-muted)] mt-1">Supports JPG, PNG, WebP up to 5MB with embedded GPS metadata</p>
               </div>
             )}
 
@@ -402,24 +400,24 @@ export default function NewComplaintPage() {
           {/* ======================================================== */}
           {/* 2. Interactive Geolocation Map Pin & Proximity Analysis */}
           {/* ======================================================== */}
-          <div className="bg-[var(--surface-card)] border border-[var(--border-subtle)] rounded-xl p-6 shadow-xl space-y-4">
+          <div className="bg-[var(--surface-card)] border border-[var(--border-subtle)] rounded-md p-6 space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div className="flex items-center gap-2">
-                <MapPin className="w-5 h-5 text-emerald-500 dark:text-emerald-400" />
-                <h2 className="text-lg font-bold text-[var(--text-primary)]">Spatial Pinpoint & Neighborhood Routing</h2>
+                <MapPin className="w-5 h-5 text-[var(--accent-primary)]" />
+                <h2 className="font-editorial text-2xl text-[var(--text-primary)]">Spatial Pinpoint & Neighborhood Routing</h2>
               </div>
               <button
                 type="button"
                 onClick={handleFetchGps}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--surface-elevated)] hover:bg-[var(--surface-card)] text-emerald-600 dark:text-emerald-400 font-mono text-xs border border-[var(--border-subtle)] transition-colors self-start sm:self-auto"
+                className="stitch-btn-secondary inline-flex items-center gap-1.5 px-3 py-1.5 rounded-sm font-mono text-xs self-start sm:self-auto"
               >
-                <Navigation className="w-3.5 h-3.5" />
+                <Navigation className="w-3.5 h-3.5 text-[var(--accent-primary)]" />
                 <span>Fetch Device GPS</span>
               </button>
             </div>
 
             {/* Map Container */}
-            <div className="relative w-full h-80 rounded-xl overflow-hidden border border-[var(--border-subtle)]">
+            <div className="relative w-full h-80 rounded-sm overflow-hidden border border-[var(--border-subtle)]">
               <LocationPickerMap
                 lat={location.lat}
                 lng={location.lng}
@@ -435,17 +433,17 @@ export default function NewComplaintPage() {
 
               {/* Top-Left Map Overlay: Ward Density Radar */}
               <div className="absolute top-3 left-3 z-[1000]">
-                <div className="px-3 py-1 rounded-lg bg-[var(--surface-card)]/90 backdrop-blur-md border border-[var(--border-subtle)] shadow-md flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-cyan-500 dark:bg-cyan-400" />
+                <div className="px-3 py-1 rounded-sm bg-[var(--surface-card)] border border-[var(--border-strong)] flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[var(--accent-primary)]" />
                   <span className="font-mono text-xs text-[var(--text-primary)]">Ward 4 North • Sector 18-A</span>
                 </div>
               </div>
             </div>
 
             {/* Bottom Geocoded Context Card */}
-            <div className="p-4 rounded-xl bg-[var(--surface-elevated)] border border-[var(--border-subtle)] flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <div className="p-4 rounded-sm bg-[var(--surface-elevated)] border border-[var(--border-subtle)] flex flex-col md:flex-row md:items-center justify-between gap-3">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-lg bg-[var(--surface-card)] flex items-center justify-center text-emerald-500 dark:text-emerald-400 shrink-0 border border-[var(--border-subtle)]">
+                <div className="w-9 h-9 rounded-sm bg-[var(--surface-card)] flex items-center justify-center text-[var(--accent-primary)] shrink-0 border border-[var(--border-subtle)]">
                   <MapPin className="w-4 h-4" />
                 </div>
                 <div>
@@ -453,18 +451,18 @@ export default function NewComplaintPage() {
                   <p className="font-mono text-xs text-[var(--text-muted)]">Cross-Street: Elmwood Ave • In front of Public School #44</p>
                 </div>
               </div>
-              <div className="flex items-center gap-2 bg-[var(--surface-card)] px-3 py-1.5 rounded-lg border border-[var(--border-subtle)] font-mono text-xs text-[var(--text-primary)]">
-                <Radio className="w-3.5 h-3.5 text-zinc-400" />
+              <div className="flex items-center gap-2 bg-[var(--surface-card)] px-3 py-1.5 rounded-sm border border-[var(--border-subtle)] font-mono text-xs text-[var(--text-primary)] tabular-nums">
+                <Radio className="w-3.5 h-3.5 text-[var(--accent-primary)]" />
                 <span>{location.lat.toFixed(4)}° N, {Math.abs(location.lng).toFixed(4)}° W (±2.8m)</span>
               </div>
             </div>
 
             {/* Proximity Cluster Callout */}
-            <div className="p-4 rounded-xl bg-[var(--surface-elevated)]/60 border border-[var(--border-subtle)] flex items-start gap-3">
-              <Layers className="w-5 h-5 text-cyan-500 dark:text-cyan-400 shrink-0 mt-0.5" />
+            <div className="p-4 rounded-sm bg-[var(--surface-secondary)] border border-[var(--border-subtle)] flex items-start gap-3">
+              <Layers className="w-5 h-5 text-[var(--accent-primary)] shrink-0 mt-0.5" />
               <div className="space-y-0.5">
                 <p className="text-sm font-semibold text-[var(--text-primary)]">Spatial Correlation Engine Note</p>
-                <p className="text-xs text-[var(--text-muted)] leading-relaxed">
+                <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
                   No overlapping complaints detected within 120m in the last 72 hours. This report will initialize a new priority ledger index (#PL-88219).
                 </p>
               </div>
@@ -474,15 +472,15 @@ export default function NewComplaintPage() {
           {/* ======================================================== */}
           {/* 3. Issue Category Selection with AI Suggestion           */}
           {/* ======================================================== */}
-          <div className="bg-[var(--surface-card)] border border-[var(--border-subtle)] rounded-xl p-6 shadow-xl space-y-4">
+          <div className="bg-[var(--surface-card)] border border-[var(--border-subtle)] rounded-md p-6 space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div className="flex items-center gap-2">
-                <Layers className="w-5 h-5 text-emerald-500 dark:text-emerald-400" />
-                <h2 className="text-lg font-bold text-[var(--text-primary)]">Municipal Department Categorization</h2>
+                <Layers className="w-5 h-5 text-[var(--accent-primary)]" />
+                <h2 className="font-editorial text-2xl text-[var(--text-primary)]">Municipal Department Categorization</h2>
               </div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 self-start sm:self-auto">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-sm bg-[var(--accent-primary-subtle)] border border-[var(--accent-primary-border)] text-[var(--accent-primary)] self-start sm:self-auto">
                 <Sparkles className="w-3.5 h-3.5" />
-                <span className="font-mono text-xs font-semibold">AI Inferred: {aiSuggestedCategory}</span>
+                <span className="font-mono text-xs font-bold">Suggested: {aiSuggestedCategory}</span>
               </div>
             </div>
 
@@ -503,27 +501,27 @@ export default function NewComplaintPage() {
                       setSelectedCategory(cat);
                       setIsManualOverride(true);
                     }}
-                    className={`p-4 rounded-xl cursor-pointer transition-all flex items-center justify-between border ${
+                    className={`p-4 rounded-sm cursor-pointer transition-all flex items-center justify-between border ${
                       isSelected
-                        ? 'bg-emerald-500/10 border-emerald-500/50 shadow-md ring-1 ring-emerald-500/30'
-                        : 'bg-[var(--surface-elevated)] border-[var(--border-subtle)] hover:border-emerald-500/40 hover:bg-[var(--surface-card)]'
+                        ? 'bg-[var(--accent-primary-subtle)] border-[var(--accent-primary)]'
+                        : 'bg-[var(--surface-elevated)] border-[var(--border-subtle)] hover:border-[var(--border-strong)] hover:bg-[var(--surface-card)]'
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${
-                        isSelected ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400' : 'bg-[var(--surface-card)] text-[var(--text-muted)]'
+                      <div className={`w-9 h-9 rounded-sm flex items-center justify-center border ${
+                        isSelected ? 'bg-[var(--surface-card)] text-[var(--accent-primary)] border-[var(--accent-primary-border)]' : 'bg-[var(--surface-card)] text-[var(--text-muted)] border-[var(--border-subtle)]'
                       }`}>
                         <Icon className="w-4 h-4" />
                       </div>
                       <div>
-                        <p className={`text-sm font-bold ${isSelected ? 'text-emerald-600 dark:text-emerald-400' : 'text-[var(--text-primary)]'}`}>{label}</p>
+                        <p className={`text-sm font-bold ${isSelected ? 'text-[var(--accent-primary)]' : 'text-[var(--text-primary)]'}`}>{label}</p>
                         <p className="text-[11px] font-mono text-[var(--text-muted)]">{desc}</p>
                       </div>
                     </div>
                     {isSelected ? (
-                      <CheckCircle2 className="w-5 h-5 text-emerald-500 dark:text-emerald-400 shrink-0" />
+                      <CheckCircle2 className="w-5 h-5 text-[var(--accent-primary)] shrink-0" />
                     ) : (
-                      <span className="w-4 h-4 rounded-full border border-[var(--border-strong)] shrink-0" />
+                      <span className="w-4 h-4 rounded-sm border border-[var(--border-strong)] shrink-0" />
                     )}
                   </div>
                 );
@@ -531,34 +529,34 @@ export default function NewComplaintPage() {
             </div>
 
             <p className="font-mono text-xs text-[var(--text-muted)]">
-              Classification weights are autonomously calibrated by telemetry embeddings. You can select another pill at any moment to override machine dispatch.
+              Classification weights are autonomously calibrated by telemetry embeddings. You can select another option at any moment to override machine dispatch.
             </p>
           </div>
 
           {/* ======================================================== */}
           {/* 4. Description Field & Voice Shortcut                    */}
           {/* ======================================================== */}
-          <div className="bg-[var(--surface-card)] border border-[var(--border-subtle)] rounded-xl p-6 shadow-xl space-y-4">
+          <div className="bg-[var(--surface-card)] border border-[var(--border-subtle)] rounded-md p-6 space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold text-[var(--text-primary)]">Field Description & Impact Scope</h2>
+              <h2 className="font-editorial text-2xl text-[var(--text-primary)]">Field Description & Impact Scope</h2>
               <button
                 type="button"
                 onClick={toggleRecording}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono transition-colors border ${
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-xs font-mono transition-colors border ${
                   isRecording 
-                    ? 'bg-rose-500/20 text-rose-600 dark:text-rose-400 border-rose-500/30 animate-pulse'
+                    ? 'bg-[var(--accent-primary-subtle)] text-[var(--accent-primary)] border-[var(--accent-primary)] animate-pulse'
                     : 'bg-[var(--surface-elevated)] text-[var(--text-primary)] border-[var(--border-subtle)] hover:bg-[var(--surface-card)]'
                 }`}
               >
-                <Mic className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" />
+                <Mic className="w-3.5 h-3.5 text-[var(--accent-primary)]" />
                 <span>{isRecording ? 'Listening...' : 'Dictate Note'}</span>
               </button>
             </div>
 
             <div className="space-y-3">
               <div>
-                <label className="text-xs font-semibold text-[var(--text-primary)] block mb-1">
-                  Incident Title Summary <span className="text-rose-500">*</span>
+                <label className="text-xs font-mono uppercase tracking-wider font-semibold text-[var(--text-primary)] block mb-1">
+                  Incident Title Summary <span className="text-[var(--accent-primary)]">*</span>
                 </label>
                 <input
                   type="text"
@@ -566,16 +564,16 @@ export default function NewComplaintPage() {
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="e.g. Hazardous Pothole on Tremont St"
-                  className="w-full bg-[var(--surface-elevated)] border border-[var(--border-subtle)] rounded-lg px-3.5 py-2.5 text-sm text-[var(--text-primary)] focus:border-emerald-500 focus:outline-none placeholder:text-[var(--text-muted)]/60 transition-colors"
+                  className="w-full bg-[var(--surface-elevated)] border border-[var(--border-subtle)] rounded-sm px-3.5 py-2.5 text-sm text-[var(--text-primary)] focus:border-[var(--accent-primary)] focus:outline-none placeholder:text-[var(--text-muted)]/60 transition-colors"
                 />
               </div>
 
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="text-xs font-semibold text-[var(--text-primary)]">
+                  <label className="text-xs font-mono uppercase tracking-wider font-semibold text-[var(--text-primary)]">
                     Detailed Notes & Observations
                   </label>
-                  <span className="font-mono text-xs text-[var(--text-muted)]">{description.length}/500</span>
+                  <span className="font-mono text-xs text-[var(--text-muted)] tabular-nums">{description.length}/500</span>
                 </div>
                 <textarea
                   rows={4}
@@ -583,7 +581,7 @@ export default function NewComplaintPage() {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Describe street landmarks, safety risks, or traffic disruptions..."
-                  className="w-full bg-[var(--surface-elevated)] border border-[var(--border-subtle)] rounded-lg p-3 text-sm text-[var(--text-primary)] focus:border-emerald-500 focus:outline-none placeholder:text-[var(--text-muted)]/60 resize-y transition-colors"
+                  className="w-full bg-[var(--surface-elevated)] border border-[var(--border-subtle)] rounded-sm p-3 text-sm text-[var(--text-primary)] focus:border-[var(--accent-primary)] focus:outline-none placeholder:text-[var(--text-muted)]/60 resize-y transition-colors"
                 />
               </div>
             </div>
@@ -592,17 +590,17 @@ export default function NewComplaintPage() {
           {/* ======================================================== */}
           {/* 5. Submitter Info Drawer (Privacy Toggle)                */}
           {/* ======================================================== */}
-          <div className="bg-[var(--surface-card)] border border-[var(--border-subtle)] rounded-xl overflow-hidden shadow-xl">
+          <div className="bg-[var(--surface-card)] border border-[var(--border-subtle)] rounded-md overflow-hidden">
             <button
               type="button"
               onClick={() => setIsSubmitterOpen(!isSubmitterOpen)}
-              className="w-full p-4 flex items-center justify-between text-left hover:bg-black/5 dark:hover:bg-white/[0.02] transition-colors"
+              className="w-full p-4 flex items-center justify-between text-left hover:bg-[var(--surface-secondary)]/50 transition-colors"
             >
               <div className="flex items-center gap-2">
-                <UserCheck className="w-5 h-5 text-emerald-500 dark:text-emerald-400" />
+                <UserCheck className="w-5 h-5 text-[var(--accent-primary)]" />
                 <div>
                   <span className="text-sm font-bold text-[var(--text-primary)] block">Submitter Privacy & Contact Details</span>
-                  <span className="text-xs text-[var(--text-muted)]">
+                  <span className="text-xs font-mono text-[var(--text-muted)]">
                     {isAnonymous ? 'Submitting as Anonymous' : `Submitting as ${submitterName}`}
                   </span>
                 </div>
@@ -618,7 +616,7 @@ export default function NewComplaintPage() {
                     id="anon-check"
                     checked={isAnonymous}
                     onChange={(e) => setIsAnonymous(e.target.checked)}
-                    className="rounded bg-[var(--surface-elevated)] border-[var(--border-strong)] text-emerald-500 focus:ring-emerald-500"
+                    className="rounded-sm bg-[var(--surface-elevated)] border-[var(--border-strong)] text-[var(--accent-primary)]"
                   />
                   <label htmlFor="anon-check" className="text-xs font-semibold text-[var(--text-primary)] cursor-pointer">
                     Submit Anonymously (Omits contact information from public records)
@@ -628,30 +626,30 @@ export default function NewComplaintPage() {
                 {!isAnonymous && (
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
                     <div>
-                      <label className="text-xs font-semibold text-[var(--text-muted)] block mb-1">Full Name</label>
+                      <label className="text-xs font-mono uppercase tracking-wider font-semibold text-[var(--text-muted)] block mb-1">Full Name</label>
                       <input
                         type="text"
                         value={submitterName}
                         onChange={(e) => setSubmitterName(e.target.value)}
-                        className="w-full bg-[var(--surface-elevated)] border border-[var(--border-subtle)] rounded-lg px-3 py-2 text-xs text-[var(--text-primary)] focus:border-emerald-500 focus:outline-none"
+                        className="w-full bg-[var(--surface-elevated)] border border-[var(--border-subtle)] rounded-sm px-3 py-2 text-xs text-[var(--text-primary)] focus:border-[var(--accent-primary)] focus:outline-none"
                       />
                     </div>
                     <div>
-                      <label className="text-xs font-semibold text-[var(--text-muted)] block mb-1">Email Address</label>
+                      <label className="text-xs font-mono uppercase tracking-wider font-semibold text-[var(--text-muted)] block mb-1">Email Address</label>
                       <input
                         type="email"
                         value={submitterEmail}
                         onChange={(e) => setSubmitterEmail(e.target.value)}
-                        className="w-full bg-[var(--surface-elevated)] border border-[var(--border-subtle)] rounded-lg px-3 py-2 text-xs text-[var(--text-primary)] focus:border-emerald-500 focus:outline-none"
+                        className="w-full bg-[var(--surface-elevated)] border border-[var(--border-subtle)] rounded-sm px-3 py-2 text-xs text-[var(--text-primary)] focus:border-[var(--accent-primary)] focus:outline-none"
                       />
                     </div>
                     <div>
-                      <label className="text-xs font-semibold text-[var(--text-muted)] block mb-1">Phone Number</label>
+                      <label className="text-xs font-mono uppercase tracking-wider font-semibold text-[var(--text-muted)] block mb-1">Phone Number</label>
                       <input
                         type="tel"
                         value={submitterPhone}
                         onChange={(e) => setSubmitterPhone(e.target.value)}
-                        className="w-full bg-[var(--surface-elevated)] border border-[var(--border-subtle)] rounded-lg px-3 py-2 text-xs text-[var(--text-primary)] focus:border-emerald-500 focus:outline-none"
+                        className="w-full bg-[var(--surface-elevated)] border border-[var(--border-subtle)] rounded-sm px-3 py-2 text-xs text-[var(--text-primary)] focus:border-[var(--accent-primary)] focus:outline-none"
                       />
                     </div>
                   </div>
@@ -665,7 +663,7 @@ export default function NewComplaintPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-4 px-6 rounded-xl bg-emerald-500 hover:bg-emerald-600 disabled:opacity-50 text-zinc-950 font-bold text-base transition-all shadow-[0_0_24px_rgba(16,185,129,0.3)] hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer"
+              className="stitch-btn-accent w-full py-4 px-6 rounded-sm disabled:opacity-50 font-bold text-base flex items-center justify-center gap-2 cursor-pointer"
             >
               {isSubmitting ? (
                 <>
@@ -683,11 +681,11 @@ export default function NewComplaintPage() {
         </form>
 
         {/* Fixed Mobile Bottom CTA Bar */}
-        <div className="md:hidden fixed bottom-0 left-0 right-0 p-4 bg-[var(--surface-card)]/95 backdrop-blur-xl border-t border-[var(--border-subtle)] z-40 shadow-lg">
+        <div className="md:hidden fixed bottom-0 left-0 right-0 p-4 bg-[var(--surface-card)] border-t border-[var(--border-subtle)] z-40">
           <button
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className="w-full py-3.5 px-4 rounded-xl bg-emerald-500 active:bg-emerald-600 text-zinc-950 font-bold text-sm shadow-[0_0_16px_rgba(16,185,129,0.3)] flex items-center justify-center gap-2"
+            className="stitch-btn-accent w-full py-3.5 px-4 rounded-sm font-bold text-sm flex items-center justify-center gap-2"
           >
             {isSubmitting ? (
               <>

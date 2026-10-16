@@ -92,150 +92,153 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-[var(--canvas-base)] bg-civic-grid">
       <div className="w-full max-w-md space-y-6">
         {/* Top Return Row */}
-        <div className="flex items-center justify-start">
+        <div className="flex items-center justify-between">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-black/10 dark:hover:bg-white/10 transition-all group"
+            className="inline-flex items-center gap-2 px-3 py-1.5 bg-[var(--surface-card)] border border-[var(--border-subtle)] font-mono text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-strong)] transition-colors group"
           >
-            <ArrowLeft className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400 group-hover:-translate-x-0.5 transition-transform" />
-            <span>Return to Home</span>
+            <ArrowLeft className="w-3.5 h-3.5 text-[var(--brand-primary)] group-hover:-translate-x-0.5 transition-transform" />
+            <span>RETURN TO LEDGER</span>
           </Link>
+          <span className="font-mono text-[11px] text-[var(--text-muted)]">AUTH // SC-01</span>
         </div>
 
-        {/* Brand Header */}
-        <div className="flex flex-col items-center text-center space-y-3">
-          <div className="flex items-center justify-center w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 dark:text-emerald-400 shadow-[0_0_24px_rgba(16,185,129,0.2)]">
-            <Lock className="w-7 h-7" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight text-[var(--text-primary)]">
-              Sign In to CivicPulse
+        {/* Main Architectural Dossier Card */}
+        <div className="bg-[var(--surface-card)] border border-[var(--border-subtle)]">
+          {/* Header Block */}
+          <div className="p-6 sm:p-8 border-b border-[var(--border-subtle)] bg-[var(--surface-elevated)]">
+            <div className="flex items-center justify-between mb-3">
+              <span className="font-mono text-[10px] uppercase tracking-widest text-[var(--brand-primary)] font-semibold">
+                SESSION AUTHENTICATION
+              </span>
+              <Lock className="w-4 h-4 text-[var(--text-muted)]" />
+            </div>
+            <h1 className="font-editorial text-3xl text-[var(--text-primary)]">
+              Sign in to CivicPulse
             </h1>
-            <p className="text-sm text-[var(--text-muted)] mt-1">
-              Access your civic complaint portal or municipal triage command center
+            <p className="text-xs text-[var(--text-secondary)] mt-1">
+              Access your resident tracking ledger or the municipal dispatch console.
             </p>
           </div>
-        </div>
 
-        {/* Main Form Card */}
-        <div className="glass-panel p-6 sm:p-8 rounded-2xl border border-[var(--border-subtle)] shadow-xl relative">
-          {error && (
-            <div className="mb-5 p-3.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-xs space-y-2.5 animate-in fade-in">
-              <div className="flex items-start gap-2.5">
-                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-red-500" />
-                <div className="flex-1 leading-relaxed">{error}</div>
-              </div>
-              <div className="pt-2 border-t border-red-500/20 flex flex-wrap items-center justify-between gap-2">
-                <span className="text-[11px] text-[var(--text-muted)]">Want to test right now?</span>
-                <button
-                  type="button"
-                  onClick={() => handleDirectDemoLogin('admin@demo.com', 'admin123')}
-                  className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 hover:underline"
-                >
-                  Continue as Demo Admin →
-                </button>
-              </div>
-            </div>
-          )}
-
-          {success && (
-            <div className="mb-5 flex items-center gap-2 p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs animate-in fade-in">
-              <CheckCircle2 className="w-4 h-4 shrink-0" />
-              <span>Authentication successful! Redirecting...</span>
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">
-                Email Address
-              </label>
-              <div className="relative">
-                <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="e.g. resident@demo.com"
-                  required
-                  disabled={loading}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-[var(--text-primary)] placeholder-[var(--text-muted)] text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">
-                Password
-              </label>
-              <div className="relative">
-                <KeyRound className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  required
-                  disabled={loading}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-subtle)] text-[var(--text-primary)] placeholder-[var(--text-muted)] text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors"
-                />
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full mt-2 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 active:scale-[0.99] text-slate-950 font-semibold text-sm transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] disabled:opacity-50"
-            >
-              {loading ? (
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
-                  <span>Verifying Credentials...</span>
+          <div className="p-6 sm:p-8">
+            {error && (
+              <div className="mb-5 p-3.5 bg-[var(--priority-high-bg)] border border-[var(--priority-high-border)] text-[var(--priority-high-text)] text-xs space-y-2.5">
+                <div className="flex items-start gap-2.5">
+                  <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                  <div className="flex-1 leading-relaxed">{error}</div>
                 </div>
-              ) : (
-                <>
-                  <span>Sign In</span>
-                  <ArrowRight className="w-4 h-4" />
-                </>
-              )}
-            </button>
-
-            {/* Demo Credential Autofill Helpers */}
-            <div className="pt-3 border-t border-[var(--border-subtle)] flex items-center justify-between text-[11px] text-[var(--text-muted)]">
-              <span>Demo Quick Fill:</span>
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => handleFillDemo('admin@demo.com', 'admin123')}
-                  className="text-emerald-600 dark:text-emerald-400 font-semibold hover:underline"
-                >
-                  Admin
-                </button>
-                <span>•</span>
-                <button
-                  type="button"
-                  onClick={() => handleFillDemo('resident@demo.com', 'resident123')}
-                  className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-semibold hover:underline"
-                >
-                  Resident
-                </button>
+                <div className="pt-2 border-t border-[var(--priority-high-border)] flex flex-wrap items-center justify-between gap-2">
+                  <span className="text-[11px] text-[var(--text-secondary)]">Evaluate immediately:</span>
+                  <button
+                    type="button"
+                    onClick={() => handleDirectDemoLogin('admin@demo.com', 'admin123')}
+                    className="font-mono text-[11px] font-bold text-[var(--brand-primary)] hover:underline uppercase"
+                  >
+                    Continue as Demo Admin →
+                  </button>
+                </div>
               </div>
-            </div>
-          </form>
+            )}
 
-          <div className="mt-6 pt-5 border-t border-[var(--border-subtle)] text-center">
-            <p className="text-xs text-[var(--text-muted)]">
-              New to CivicPulse?{' '}
-              <Link
-                href="/register"
-                className="text-emerald-600 dark:text-emerald-400 font-semibold underline underline-offset-4"
+            {success && (
+              <div className="mb-5 flex items-center gap-2 p-3.5 bg-[var(--surface-elevated)] border border-[var(--border-strong)] text-[var(--text-primary)] font-mono text-xs">
+                <CheckCircle2 className="w-4 h-4 text-emerald-700 dark:text-emerald-400 shrink-0" />
+                <span>SESSION VERIFIED · REDIRECTING...</span>
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="block font-mono text-[11px] uppercase tracking-wider font-semibold text-[var(--text-secondary)] mb-1.5">
+                  Email Address
+                </label>
+                <div className="relative">
+                  <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="resident@demo.com"
+                    required
+                    disabled={loading}
+                    className="w-full pl-10 pr-4 py-2.5 bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-primary)] placeholder-[var(--text-muted)] text-sm focus:outline-none focus:border-[var(--text-primary)] transition-colors"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-mono text-[11px] uppercase tracking-wider font-semibold text-[var(--text-secondary)] mb-1.5">
+                  Password
+                </label>
+                <div className="relative">
+                  <KeyRound className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    required
+                    disabled={loading}
+                    className="w-full pl-10 pr-4 py-2.5 bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-primary)] placeholder-[var(--text-muted)] text-sm focus:outline-none focus:border-[var(--text-primary)] transition-colors"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full mt-2 flex items-center justify-center gap-2 py-3 px-4 stitch-btn-accent font-mono text-xs uppercase tracking-wider font-semibold disabled:opacity-50"
               >
-                Create a resident account
-              </Link>
-            </p>
+                {loading ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent animate-spin" />
+                    <span>Verifying Credentials...</span>
+                  </div>
+                ) : (
+                  <>
+                    <span>Authenticate Session</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </>
+                )}
+              </button>
+
+              {/* Demo Credential Autofill Helpers */}
+              <div className="pt-4 border-t border-[var(--border-subtle)] flex items-center justify-between font-mono text-[11px] text-[var(--text-muted)]">
+                <span>DEMO PRESETS:</span>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleFillDemo('admin@demo.com', 'admin123')}
+                    className="px-2 py-1 bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-primary)] hover:border-[var(--brand-primary)] font-semibold"
+                  >
+                    Admin
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleFillDemo('resident@demo.com', 'resident123')}
+                    className="px-2 py-1 bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-semibold"
+                  >
+                    Resident
+                  </button>
+                </div>
+              </div>
+            </form>
+
+            <div className="mt-6 pt-5 border-t border-[var(--border-subtle)] text-center">
+              <p className="text-xs text-[var(--text-secondary)]">
+                New to CivicPulse?{' '}
+                <Link
+                  href="/register"
+                  className="text-[var(--brand-primary)] font-semibold underline underline-offset-4"
+                >
+                  Create a resident account
+                </Link>
+              </p>
+            </div>
           </div>
         </div>
       </div>
