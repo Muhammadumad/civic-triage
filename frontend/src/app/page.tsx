@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { 
-  SAMPLE_COMPLAINTS, 
   Complaint, 
   CATEGORY_THEME, 
   PRIORITY_THEME, 
@@ -13,6 +12,7 @@ import {
   TransparencyStats
 } from '@/lib/types';
 import { fetchTransparencyStats } from '@/lib/api';
+import { useComplaintsStore } from '@/lib/complaints-store';
 import { CivicMap } from '@/components/map';
 import { usePersona } from '@/context/PersonaContext';
 import { 
@@ -47,11 +47,17 @@ import {
 export default function HomePage() {
   const router = useRouter();
   const { role } = usePersona();
-  const [complaints] = useState<Complaint[]>(SAMPLE_COMPLAINTS);
-  const [selectedComplaint, setSelectedComplaint] = useState<Complaint | null>(SAMPLE_COMPLAINTS[0]);
+  const { complaints } = useComplaintsStore();
+  const [selectedComplaint, setSelectedComplaint] = useState<Complaint | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategoryFilter, setActiveCategoryFilter] = useState<string>('All');
   const [transparency, setTransparency] = useState<TransparencyStats | null>(null);
+
+  useEffect(() => {
+    if (complaints.length > 0 && !selectedComplaint) {
+      setSelectedComplaint(complaints[0]);
+    }
+  }, [complaints, selectedComplaint]);
 
   useEffect(() => {
     fetchTransparencyStats().then((data) => {

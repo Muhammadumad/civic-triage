@@ -11,8 +11,7 @@ import {
   CATEGORY_THEME, 
   STATUS_THEME, 
   PRIORITY_THEME, 
-  getPriorityLevel,
-  SAMPLE_COMPLAINTS
+  getPriorityLevel
 } from '@/lib/types';
 import { 
   ArrowLeft, 
@@ -56,13 +55,12 @@ export default function ComplaintTrackingClient({ id }: { id: string }) {
   const [fetchedComplaint, setFetchedComplaint] = useState<Complaint | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const sampleFallback = SAMPLE_COMPLAINTS.find((c) => c.id === id);
   const storeComplaint = getComplaintById(id);
-  const complaint = fetchedComplaint || storeComplaint || sampleFallback;
+  const complaint = fetchedComplaint || storeComplaint;
 
   useEffect(() => {
     setMounted(true);
-    const existing = getComplaintById(id) || SAMPLE_COMPLAINTS.find((c) => c.id === id);
+    const existing = getComplaintById(id);
     if (existing) {
       setFetchedComplaint(existing);
       setIsLoading(false);

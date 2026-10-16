@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Complaint, SAMPLE_COMPLAINTS, StatusHistory } from './types';
+import { Complaint, StatusHistory } from './types';
 import {
   fetchComplaints as apiFetchComplaints,
   fetchComplaintById as apiFetchComplaintById,
@@ -10,21 +10,18 @@ import {
   mergeDuplicate as apiMergeDuplicate,
 } from './api';
 
-const STORAGE_KEY = 'civicpulse_complaints_v3';
+const STORAGE_KEY = 'civicpulse_live_complaints';
 
 export function getStoredComplaints(): Complaint[] {
-  if (typeof window === 'undefined') return SAMPLE_COMPLAINTS;
+  if (typeof window === 'undefined') return [];
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(SAMPLE_COMPLAINTS));
-      return SAMPLE_COMPLAINTS;
-    }
+    if (!raw) return [];
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) && parsed.length > 0 ? parsed : SAMPLE_COMPLAINTS;
+    return Array.isArray(parsed) ? parsed : [];
   } catch (err) {
     console.error('Failed reading complaints from localStorage:', err);
-    return SAMPLE_COMPLAINTS;
+    return [];
   }
 }
 
@@ -39,7 +36,7 @@ export function saveStoredComplaints(complaints: Complaint[]) {
 }
 
 export function useComplaintsStore() {
-  const [complaints, setComplaints] = useState<Complaint[]>(SAMPLE_COMPLAINTS);
+  const [complaints, setComplaints] = useState<Complaint[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
   const syncRequestedRef = useRef(false);
@@ -51,25 +48,19 @@ export function useComplaintsStore() {
     setIsLoaded(true);
   }, []);
 
-  // Sync with live Express/MongoDB backend smoothly in the background
+  // Sync with live Express/MongoDB backend
   const syncWithBackend = useCallback(async () => {
     if (isSyncing) return;
     try {
       setIsSyncing(true);
       const backendComplaints = await apiFetchComplaints({ limit: 100 });
-      if (backendComplaints && backendComplaints.length > 0) {
-        // Merge: keep any local-only complaints that haven't synced yet, then add backend complaints
-        const existing = getStoredComplaints();
-        const backendIds = new Set(backendComplaints.map((c) => c.id));
-        const localOnly = existing.filter((c) => !backendIds.has(c.id) && c.id.startsWith('CP-local-'));
-
-        const merged = [...localOnly, ...backendComplaints];
-        saveStoredComplaints(merged);
-        setComplaints(merged);
+      if (Array.isArray(backendComplaints)) {
+        saveStoredComplaints(backendComplaints);
+        setComplaints(backendComplaints);
+        setIsLoaded(true);
       }
     } catch (err) {
-      // Graceful silence: offline mode / backend warming up
-      console.info('[CivicPulse Store] Background sync notice (using local cache):', err);
+      console.warn('[CivicPulse Store] Live backend fetch notice:', err);
     } finally {
       setIsSyncing(false);
     }

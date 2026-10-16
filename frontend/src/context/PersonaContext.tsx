@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { User, DEMO_USERS } from '@/lib/types';
+import { User } from '@/lib/types';
 import { loginUser, registerUser, logoutUser, fetchCurrentUser } from '@/lib/api';
 
 interface PersonaContextType {
@@ -51,20 +51,8 @@ export function PersonaProvider({ children }: { children: React.ReactNode }) {
   });
 
   useEffect(() => {
-    // Validate session in background if token exists
+    // Validate session with backend if token exists
     if (token) {
-      if (token.startsWith('demo_token_')) {
-        const raw = typeof window !== 'undefined' ? localStorage.getItem('civicpulse_user') : null;
-        if (raw) {
-          try {
-            const u = JSON.parse(raw);
-            setAuthProfile(u);
-            setRoleState(u.role);
-            return;
-          } catch {}
-        }
-      }
-
       fetchCurrentUser().then((user) => {
         if (user) {
           setAuthProfile(user);

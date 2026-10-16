@@ -52,7 +52,9 @@ export default function RootLayout({
             </main>
 
             {/* Public Service Footer */}
-            <Footer />
+            <Suspense fallback={null}>
+              <Footer />
+            </Suspense>
           </PersonaProvider>
         </ThemeProvider>
       </body>

@@ -6,11 +6,10 @@ import {
   StatusHistory,
   TransparencyStats,
   User,
-  DEMO_USERS,
 } from './types';
 
 export const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+  (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000').replace(/\/+$/, '');
 
 const CATEGORY_MAP_TO_FE: Record<string, ComplaintCategory> = {
   road_damage: 'Road Damage',
@@ -102,104 +101,52 @@ export function mapFrontendStatus(status: ComplaintStatus): string {
 let cachedAuthToken: string | null = null;
 
 export async function loginUser(email: string, password: string): Promise<{ token: string; user: User }> {
-  try {
-    const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
+  const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password }),
+  });
 
-    const data = await res.json();
-    if (!res.ok) {
-      throw new Error(data.error || 'Authentication failed. Please check your credentials.');
-    }
-
-    if (typeof window !== 'undefined' && data.token) {
-      localStorage.setItem('civicpulse_token', data.token);
-      localStorage.setItem('civicpulse_user', JSON.stringify(data.user));
-      localStorage.setItem('civicpulse_persona', data.user.role);
-      cachedAuthToken = data.token;
-    }
-
-    return { token: data.token, user: data.user };
-  } catch (err: any) {
-    const isDemoAdmin = email === 'admin@demo.com' && (password === 'admin123' || password.length > 0);
-    const isDemoResident = email === 'resident@demo.com' && (password === 'resident123' || password.length > 0);
-
-    if (isDemoAdmin || isDemoResident) {
-      console.warn('[CivicPulse API] Live backend unreachable; initiating offline demo session for:', email);
-      const demoUser = isDemoAdmin ? DEMO_USERS.admin : DEMO_USERS.resident;
-      const demoToken = `demo_token_${demoUser.role}_${Date.now()}`;
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('civicpulse_token', demoToken);
-        localStorage.setItem('civicpulse_user', JSON.stringify(demoUser));
-        localStorage.setItem('civicpulse_persona', demoUser.role);
-        cachedAuthToken = demoToken;
-      }
-      return { token: demoToken, user: demoUser };
-    }
-    throw err;
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.error || 'Authentication failed. Please check your credentials.');
   }
+
+  if (typeof window !== 'undefined' && data.token) {
+    localStorage.setItem('civicpulse_token', data.token);
+    localStorage.setItem('civicpulse_user', JSON.stringify(data.user));
+    localStorage.setItem('civicpulse_persona', data.user.role);
+    cachedAuthToken = data.token;
+  }
+
+  return { token: data.token, user: data.user };
 }
 
 export async function registerUser(name: string, email: string, password: string): Promise<{ token: string; user: User }> {
-  try {
-    const res = await fetch(`${API_BASE_URL}/api/auth/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, password }),
-    });
+  const res = await fetch(`${API_BASE_URL}/api/auth/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, email, password }),
+  });
 
-    const data = await res.json();
-    if (!res.ok) {
-      throw new Error(data.error || 'Registration failed. Please check your input.');
-    }
-
-    if (typeof window !== 'undefined' && data.token) {
-      localStorage.setItem('civicpulse_token', data.token);
-      localStorage.setItem('civicpulse_user', JSON.stringify(data.user));
-      localStorage.setItem('civicpulse_persona', data.user.role);
-      cachedAuthToken = data.token;
-    }
-
-    return { token: data.token, user: data.user };
-  } catch (err: any) {
-    if (err.message === 'Failed to fetch' || err.name === 'TypeError') {
-      const newUser: User = {
-        id: `resident-${Date.now()}`,
-        name,
-        email,
-        role: 'resident',
-      };
-      const demoToken = `demo_token_resident_${Date.now()}`;
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('civicpulse_token', demoToken);
-        localStorage.setItem('civicpulse_user', JSON.stringify(newUser));
-        localStorage.setItem('civicpulse_persona', 'resident');
-        cachedAuthToken = demoToken;
-      }
-      return { token: demoToken, user: newUser };
-    }
-    throw err;
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.error || 'Registration failed. Please check your input.');
   }
+
+  if (typeof window !== 'undefined' && data.token) {
+    localStorage.setItem('civicpulse_token', data.token);
+    localStorage.setItem('civicpulse_user', JSON.stringify(data.user));
+    localStorage.setItem('civicpulse_persona', data.user.role);
+    cachedAuthToken = data.token;
+  }
+
+  return { token: data.token, user: data.user };
 }
 
 export async function fetchCurrentUser(): Promise<User | null> {
   const token = typeof window !== 'undefined' ? localStorage.getItem('civicpulse_token') : cachedAuthToken;
   if (!token) return null;
-
-  // Preserve demo/offline tokens and resident profile
-  if (token.startsWith('demo_token_')) {
-    if (typeof window !== 'undefined') {
-      const raw = localStorage.getItem('civicpulse_user');
-      if (raw) {
-        try {
-          return JSON.parse(raw);
-        } catch {}
-      }
-    }
-    return null;
-  }
 
   try {
     const res = await fetch(`${API_BASE_URL}/api/auth/me`, {
@@ -217,24 +164,16 @@ export async function fetchCurrentUser(): Promise<User | null> {
       return data.user;
     }
 
-    // Only clear if token was definitively rejected (401 / 403)
     if (res.status === 401 || res.status === 403) {
+      logoutUser();
       return null;
     }
   } catch (err) {
-    console.warn('[CivicPulse API] Failed to fetch current user (backend waking up or offline):', err);
-    // On network failure, preserve cached user so the resident/admin session remains active
-    if (typeof window !== 'undefined') {
-      const raw = localStorage.getItem('civicpulse_user');
-      if (raw) {
-        try {
-          return JSON.parse(raw);
-        } catch {}
-      }
-    }
+    console.warn('[CivicPulse API] Failed to fetch current user:', err);
   }
   return null;
 }
+
 
 export function logoutUser(): void {
   cachedAuthToken = null;
@@ -700,6 +639,143 @@ export async function deleteSensitiveZone(
   if (!res.ok) {
     const errBody = await res.json().catch(() => ({}));
     throw new Error(errBody.error || `Failed deleting sensitive zone: ${res.status}`);
+  }
+  return res.json();
+}
+
+export interface AdminComplaintsResponse {
+  complaints: Complaint[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
+export async function fetchAdminComplaints(params?: {
+  status?: string;
+  category?: string;
+  priorityBand?: string;
+  search?: string;
+  page?: number;
+  limit?: number;
+}): Promise<AdminComplaintsResponse> {
+  const token = await getAdminAuthToken();
+  const query = new URLSearchParams();
+  if (params?.status) query.append('status', params.status);
+  if (params?.category) query.append('category', params.category);
+  if (params?.priorityBand) query.append('priorityBand', params.priorityBand);
+  if (params?.search) query.append('search', params.search);
+  query.append('page', String(params?.page || 1));
+  query.append('limit', String(params?.limit || 50));
+
+  const headers: Record<string, string> = { Accept: 'application/json' };
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  const res = await fetch(`${API_BASE_URL}/api/admin/complaints?${query.toString()}`, {
+    headers,
+    cache: 'no-store',
+  });
+
+  if (!res.ok) {
+    throw new Error(`Failed to fetch admin complaints: ${res.status}`);
+  }
+
+  const data = await res.json();
+  const rawList = Array.isArray(data.complaints) ? data.complaints : [];
+  return {
+    complaints: rawList.map(normalizeBackendComplaint),
+    pagination: data.pagination || { page: 1, limit: 50, total: rawList.length, totalPages: 1 },
+  };
+}
+
+export async function fetchNearbyComplaints(params: {
+  lat: number;
+  lng: number;
+  radius?: number;
+  category?: string;
+  status?: string;
+}): Promise<{ count: number; radiusMeters: number; complaints: Complaint[] }> {
+  const query = new URLSearchParams();
+  query.append('lat', String(params.lat));
+  query.append('lng', String(params.lng));
+  if (params.radius) query.append('radius', String(params.radius));
+  if (params.category) query.append('category', params.category);
+  if (params.status) query.append('status', params.status);
+
+  const res = await fetch(`${API_BASE_URL}/api/complaints/nearby?${query.toString()}`, {
+    headers: { Accept: 'application/json' },
+    cache: 'no-store',
+  });
+
+  if (!res.ok) {
+    throw new Error(`Failed to fetch nearby complaints: ${res.status}`);
+  }
+
+  const data = await res.json();
+  const rawList = Array.isArray(data.complaints) ? data.complaints : [];
+  return {
+    count: data.count || rawList.length,
+    radiusMeters: data.radiusMeters || params.radius || 5000,
+    complaints: rawList.map(normalizeBackendComplaint),
+  };
+}
+
+export async function fetchBoundsComplaints(params: {
+  minLat: number;
+  minLng: number;
+  maxLat: number;
+  maxLng: number;
+  category?: string;
+  status?: string;
+}): Promise<{ count: number; complaints: Complaint[] }> {
+  const query = new URLSearchParams();
+  query.append('minLat', String(params.minLat));
+  query.append('minLng', String(params.minLng));
+  query.append('maxLat', String(params.maxLat));
+  query.append('maxLng', String(params.maxLng));
+  if (params.category) query.append('category', params.category);
+  if (params.status) query.append('status', params.status);
+
+  const res = await fetch(`${API_BASE_URL}/api/complaints/bounds?${query.toString()}`, {
+    headers: { Accept: 'application/json' },
+    cache: 'no-store',
+  });
+
+  if (!res.ok) {
+    throw new Error(`Failed to fetch complaints by bounds: ${res.status}`);
+  }
+
+  const data = await res.json();
+  const rawList = Array.isArray(data.complaints) ? data.complaints : [];
+  return {
+    count: data.count || rawList.length,
+    complaints: rawList.map(normalizeBackendComplaint),
+  };
+}
+
+export async function changePassword(currentPassword: string, newPassword: string): Promise<{ message: string }> {
+  const token = typeof window !== 'undefined' ? localStorage.getItem('civicpulse_token') : cachedAuthToken;
+  if (!token) {
+    throw new Error('You must be logged in to change your password.');
+  }
+
+  const res = await fetch(`${API_BASE_URL}/api/auth/password`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+      Accept: 'application/json',
+    },
+    body: JSON.stringify({ currentPassword, newPassword }),
+  });
+
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => ({}));
+    throw new Error(errBody.error || `Password change failed: ${res.status}`);
   }
   return res.json();
 }

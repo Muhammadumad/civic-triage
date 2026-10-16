@@ -33,11 +33,14 @@ import {
   X
 } from 'lucide-react';
 import { formatRelativeTime } from '@/lib/utils';
-import { fetchAdminStats, AdminStatsResponse } from '@/lib/api';
+import { fetchAdminStats, AdminStatsResponse, fetchAdminComplaints, AdminComplaintsResponse } from '@/lib/api';
 
 export default function AdminDashboardPage() {
   const { complaints, updateStatusWithEvidence } = useComplaintsStore();
   const [adminStats, setAdminStats] = useState<AdminStatsResponse | null>(null);
+  const [adminComplaints, setAdminComplaints] = useState<Complaint[]>([]);
+  const [pagination, setPagination] = useState({ page: 1, limit: 50, total: 0, totalPages: 1 });
+  const [isLoadingAdmin, setIsLoadingAdmin] = useState(false);
 
   useEffect(() => {
     fetchAdminStats().then((data) => {
@@ -50,9 +53,32 @@ export default function AdminDashboardPage() {
   const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]);
   const [selectedWards, setSelectedWards] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState<'priority-desc' | 'priority-asc' | 'age-desc' | 'age-asc' | 'category'>('priority-desc');
+  const [currentPage, setCurrentPage] = useState(1);
 
   // Tooltip hover state for priority score breakdown
   const [activeTooltipId, setActiveTooltipId] = useState<string | null>(null);
+
+  // Fetch admin complaints from dedicated server-side endpoint
+  useEffect(() => {
+    const loadAdminComplaints = async () => {
+      setIsLoadingAdmin(true);
+      try {
+        const result = await fetchAdminComplaints({
+          search: searchQuery || undefined,
+          page: currentPage,
+          limit: 50,
+        });
+        setAdminComplaints(result.complaints);
+        setPagination(result.pagination);
+      } catch (err) {
+        console.warn('[Admin] Server-side fetch failed, falling back to store:', err);
+        setAdminComplaints(complaints);
+      } finally {
+        setIsLoadingAdmin(false);
+      }
+    };
+    loadAdminComplaints();
+  }, [searchQuery, currentPage, complaints]);
 
   // Departments and Wards available
   const allDepartments = [
@@ -90,21 +116,9 @@ export default function AdminDashboardPage() {
     };
   }, [complaints, adminStats]);
 
-  // Filtering and Sorting
+  // Filtering and Sorting (search is now server-side via fetchAdminComplaints)
   const filteredComplaints = useMemo(() => {
-    let result = [...complaints];
-
-    // Search query
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase();
-      result = result.filter(
-        (c) =>
-          c.id.toLowerCase().includes(q) ||
-          c.title.toLowerCase().includes(q) ||
-          c.description.toLowerCase().includes(q) ||
-          c.location.address.toLowerCase().includes(q)
-      );
-    }
+    let result = [...adminComplaints];
 
     // Department multi-select
     if (selectedDepartments.length > 0) {
@@ -127,7 +141,7 @@ export default function AdminDashboardPage() {
     });
 
     return result;
-  }, [complaints, searchQuery, selectedDepartments, selectedWards, sortBy]);
+  }, [adminComplaints, selectedDepartments, selectedWards, sortBy]);
 
   const toggleDepartment = (dept: string) => {
     setSelectedDepartments((prev) =>
