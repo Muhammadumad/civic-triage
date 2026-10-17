@@ -1,11 +1,6 @@
-const connectDB = require('../backend/src/config/db');
+// Vercel serverless entrypoint - routes all /api/* and /uploads/* to Express
+require('dotenv').config({ path: require('path').resolve(__dirname, '../backend/.env') });
+
 const app = require('../backend/src/app');
 
-module.exports = async (req, res) => {
-  try {
-    await connectDB();
-  } catch (err) {
-    console.error('[Vercel Serverless] MongoDB connection error:', err);
-  }
-  return app(req, res);
-};
+module.exports = app;

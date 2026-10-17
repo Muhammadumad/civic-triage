@@ -1,41 +1,24 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "services": {
-    "frontend": {
-      "root": "frontend",
-      "framework": "nextjs",
-      "bindings": [
-        {
-          "type": "service",
-          "service": "civic-triage-api",
-          "format": "url",
-          "env": "BACKEND_URL"
-        }
-      ]
-    },
-    "civic-triage-api": {
-      "root": "backend",
-      "framework": "express"
+  "version": 2,
+  "buildCommand": "cd frontend && npm install && npm run build",
+  "outputDirectory": "frontend/.next",
+  "installCommand": "npm install --prefix frontend",
+  "functions": {
+    "api/index.js": {
+      "memory": 1024,
+      "maxDuration": 30,
+      "includeFiles": "backend/**"
     }
   },
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": {
-        "service": "civic-triage-api"
-      }
+      "source": "/api/:path*",
+      "destination": "/api/index.js"
     },
     {
-      "source": "/uploads/(.*)",
-      "destination": {
-        "service": "civic-triage-api"
-      }
-    },
-    {
-      "source": "/(.*)",
-      "destination": {
-        "service": "frontend"
-      }
+      "source": "/uploads/:path*",
+      "destination": "/api/index.js"
     }
   ]
 }
