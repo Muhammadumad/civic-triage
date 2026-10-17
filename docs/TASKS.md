@@ -253,11 +253,27 @@
   - Verified: npm run build and npm run test:logic pass from root with 0 errors.
   - *Status:* Completed & verified.
 
-- [x] **Task 10.10: Fix JSON Parsing Error & Add Local Dev Proxy Rewrites**
-  - Resolved `Unexpected token '<', "<!DOCTYPE "... is not valid JSON`: in local development, `fetch('/api/auth/login')` was hitting Next.js (port 3000) which served the 404 HTML document instead of routing to Express (port 5000).
-  - Added `async rewrites()` to `frontend/next.config.ts` to automatically proxy `/api/:path*` and `/uploads/:path*` to `http://localhost:5000` during local dev while respecting Vercel's serverless router in production.
-  - Implemented safe JSON parser `parseJsonSafe(res)` across all API functions in `frontend/src/lib/api.ts`, preventing unhandled SyntaxErrors on HTML/non-JSON error pages.
-  - Added resilient offline fallback for demo accounts (`admin@demo.com` / `admin123` and `resident@demo.com` / `resident123`) in `loginUser`, and wired "Continue as Demo Admin" to authenticate directly into the Command Center.
-  - Verified: `npm run build` and `npm run test:logic` pass with 0 errors.
+- [x] **Task 10.11: Gemini Error Logging Hardening, Startup Key Presence Check, and AI Source Tracking**
+  - Updated `backend/src/services/geminiService.js`:
+    - In candidate model loop and outer inspection catch blocks, extracted and logged HTTP status codes and error messages (`extractHttpStatus`).
+    - Added error message sanitization (`sanitizeErrorMessage`) ensuring Gemini API keys and credentials are never leaked in logs.
+    - Implemented fallback reason tracking (`getLastFallbackReason`) whenever Gemini multimodal calls fail or fall back to keyword classification.
+  - Updated `backend/server.js`:
+    - At startup, logged whether `GEMINI_API_KEY` is set (`console.log('GEMINI_API_KEY is set:', Boolean(getGeminiApiKey()))`), outputting strictly `true` or `false` without revealing secrets.
+  - Updated `backend/src/models/Complaint.js`, `backend/src/services/pipeline.js`, and `backend/src/routes/complaints.js`:
+    - Added `aiSource` field (`enum: ['gemini', 'rules']`) to `Complaint` schema and complaint triage pipeline output.
+    - Included `aiSource` in complaint submission (`POST /api/complaints`), inspection (`POST /api/complaints/inspect`), photo analysis (`POST /api/complaints/analyze`), and single complaint (`GET /api/complaints/:id`) responses.
+    - Logged fallback reasons to server logs (`[AI Triage Fallback] ...`) whenever falling back to the rules-based classifier.
+  - Added unit test suites to `backend/src/tests/logic.test.js` validating status extraction, API key redaction, and `aiSource` schema integrity.
+  - Verified: `npm run test:logic` passes 20/20 tests; `npm run build` passes with 0 errors.
+- [x] **Task 10.12: Production Deployment Stability Hardening (CORS, Base URL, 404 Loop, Health & Image Fallbacks)**
+  - Fixed Base URL normalization in `frontend/src/lib/api.ts` to strip trailing `/api` and avoid `/api/api/...` route duplication whether `NEXT_PUBLIC_API_URL` is configured with or without `/api`.
+  - Re-ordered Express middleware in `backend/src/app.js` to mount dynamic CORS first, added support for comma-separated `CLIENT_URL`, localhost dev ports, and `*.vercel.app` preview wildcards, and handled `OPTIONS /*splat` before database connection middleware.
+  - Added route aliases in `backend/src/app.js` for `/api/login`, `/api/mine`, `/api/analyze`, `/api/inspect`, and `/health`.
+  - Updated `backend/src/routes/healthRoutes.js` to return `geminiConfigured: Boolean(getGeminiApiKey())` directly at root alongside `status: 'ok'`.
+  - Fixed 404 retry loop in `frontend/src/app/(resident)/complaints/[id]/ComplaintTrackingClient.tsx` by terminating polling on 404 and removing `getComplaintById` from `useEffect` dependencies; simplified `getComplaintById` in `frontend/src/lib/complaints-store.ts` to a pure getter without render-time network fetches.
+  - Replaced all external Unsplash images with local assets in `frontend/public/samples/` (`sample_pothole_1.jpg`, `sample_pothole_2.jpg`, `sample_water_1.jpg`, etc.) with `onError` fallbacks to eliminate `net::ERR_BLOCKED_BY_ORB`.
+  - Verified: `npm run test:logic` passes 20/20 tests; `npm run build` passes with 0 errors.
   - *Status:* Completed & verified.
+
 
