@@ -67,6 +67,11 @@ const complaintSchema = new mongoose.Schema(
       max: 1,
       default: null,
     },
+    aiSource: {
+      type: String,
+      enum: ['gemini', 'rules'],
+      default: 'rules',
+    },
     aiReason: {
       type: String,
       default: '',

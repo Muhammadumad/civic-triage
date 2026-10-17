@@ -3,25 +3,58 @@ const path = require('path');
 const { GoogleGenAI } = require('@google/genai');
 
 const VALID_CATEGORIES = [
-  'road_damage',
-  'garbage',
-  'streetlight',
-  'water_leakage',
-  'blocked_drain',
-  'other',
+  'road_damage', 'garbage', 'streetlight', 'water_leakage', 'blocked_drain', 'other',
 ];
 
 const DEFAULT_CANDIDATE_MODELS = [
-  'gemini-3.5-flash-lite',
-  'gemini-3.6-flash',
-  'gemini-3.5-flash',
-  'gemini-flash-lite-latest',
-  'gemini-3.8-flash',
-  'gemini-flash-latest',
+  'gemini-3.5-flash-lite', 'gemini-3.6-flash', 'gemini-3.5-flash',
+  'gemini-flash-lite-latest', 'gemini-3.8-flash', 'gemini-flash-latest',
 ];
 
 let aiClient = null;
 let activeApiKey = null;
+let lastFallbackReason = null;
+
+function setLastFallbackReason(reason) {
+  lastFallbackReason = reason;
+}
+
+function getLastFallbackReason() {
+  return lastFallbackReason;
+}
+
+/**
+ * Safely extracts HTTP status code from Gemini / GoogleGenAI errors.
+ */
+function extractHttpStatus(err) {
+  if (!err) return 'Unknown';
+  if (typeof err.status === 'number' || (typeof err.status === 'string' && /^\d+$/.test(err.status))) {
+    return Number(err.status);
+  }
+  if (typeof err.statusCode === 'number') return err.statusCode;
+  if (err.response && (err.response.status || err.response.statusCode)) {
+    return err.response.status || err.response.statusCode;
+  }
+  if (err.error && (err.error.code || err.error.status)) {
+    return err.error.code || err.error.status;
+  }
+  return 'Unknown';
+}
+
+/**
+ * Sanitizes any string or error message to strictly prevent logging secret API keys.
+ */
+function sanitizeErrorMessage(message) {
+  if (!message || typeof message !== 'string') return '';
+  let sanitized = message;
+  const currentKey = getGeminiApiKey();
+  if (currentKey) {
+    sanitized = sanitized.split(currentKey).join('[REDACTED]');
+  }
+  return sanitized
+    .replace(/AIza[0-9A-Za-z-_]{35}/g, '[REDACTED]')
+    .replace(/(key=)[^&\s"'`]+/gi, '$1[REDACTED]');
+}
 
 /**
  * Cleanly extracts and normalizes the Gemini API key from environment variables.
@@ -120,13 +153,9 @@ async function loadImagePart(photoPath) {
     } else {
       let resolved = photoPath;
       if (!fs.existsSync(resolved)) {
-        const uploadDir = path.resolve(process.cwd(), process.env.UPLOAD_DIR || 'uploads');
-        const candidate = path.join(uploadDir, path.basename(photoPath));
-        if (fs.existsSync(candidate)) {
-          resolved = candidate;
-        } else {
-          return null;
-        }
+        const candidate = path.join(path.resolve(process.cwd(), process.env.UPLOAD_DIR || 'uploads'), path.basename(photoPath));
+        if (fs.existsSync(candidate)) resolved = candidate;
+        else return null;
       }
       const ext = path.extname(resolved).toLowerCase();
       mimeType = ext === '.png' ? 'image/png' : ext === '.webp' ? 'image/webp' : 'image/jpeg';
@@ -149,41 +178,31 @@ async function loadImagePart(photoPath) {
 async function analyzeComplaintWithGemini({ title, description, photoPath }) {
   const client = getAIClient();
   if (!client) {
-    return null; // Local keyword fallback
+    const reason = 'GEMINI_API_KEY is not configured or is a placeholder';
+    setLastFallbackReason(reason);
+    console.warn(`[Gemini AI] Engaging local classifier fallback. Reason: ${reason}`);
+    return null;
   }
 
   try {
     const contents = [];
-
-    // Multimodal image inspection (supports local disk files and remote URLs)
     const imagePart = await loadImagePart(photoPath);
-    if (imagePart) {
-      contents.push(imagePart);
-    }
+    if (imagePart) contents.push(imagePart);
 
-    const promptText = `You are an automated civic triage specialist inspecting a municipal complaint.
-Analyze the following incident report:
+    const promptText = `Municipal civic triage specialist. Analyze report:
 Title: "${title || 'Untitled'}"
 Description: "${description || 'No description provided'}"
-
-Instructions:
-1. Select the most accurate category strictly from: ["road_damage", "garbage", "streetlight", "water_leakage", "blocked_drain", "other"].
-2. Provide a confidence score between 0.50 and 0.99.
-3. If an image is attached, describe the specific visual damage or physical hazard visible in 1 clear sentence. Otherwise, summarize the described hazard.
-4. Recommend the municipal department and immediate field action.
-
-Return valid JSON in this exact structure:
+Return JSON:
 {
   "category": "road_damage" | "garbage" | "streetlight" | "water_leakage" | "blocked_drain" | "other",
   "confidence": 0.95,
-  "visualHazardSummary": "Deep 14-inch asphalt subsidence with loose gravel in active traffic lane.",
+  "visualHazardSummary": "Hazard description in 1 sentence",
   "recommendedDepartment": "Dept of Public Works & Roads",
-  "recommendedAction": "Dispatch asphalt cold-patch crew with high-visibility safety barriers."
+  "recommendedAction": "Action plan"
 }`;
 
     contents.push({ text: promptText });
 
-    // Try candidate models with graceful failover
     let responseText = null;
     let successfulModel = null;
     let lastError = null;
@@ -196,9 +215,7 @@ Return valid JSON in this exact structure:
           client.models.generateContent({
             model,
             contents,
-            config: {
-              responseMimeType: 'application/json',
-            },
+            config: { responseMimeType: 'application/json' },
           }),
           7000
         );
@@ -210,19 +227,23 @@ Return valid JSON in this exact structure:
         }
       } catch (err) {
         lastError = err;
-        // Continue to next candidate model on 503/404/rate-limit
+        const status = extractHttpStatus(err);
+        const errorMsg = sanitizeErrorMessage(err.message || String(err));
+        console.error(`[Gemini AI] Error (HTTP ${status}): ${errorMsg}`);
       }
     }
 
     if (!responseText) {
-      if (lastError) {
-        console.warn('[Gemini AI] LLM call failed across models, engaging local classifier fallback:', lastError.message);
-      }
+      const status = extractHttpStatus(lastError);
+      const reason = lastError
+        ? `LLM call failed across models (HTTP ${status}): ${sanitizeErrorMessage(lastError.message)}`
+        : 'No response received from candidate Gemini models';
+      setLastFallbackReason(reason);
+      console.warn(`[Gemini AI] Engaging local classifier fallback. Reason: ${reason}`);
       return null;
     }
 
     const parsed = JSON.parse(responseText);
-
     const category = VALID_CATEGORIES.includes(parsed.category) ? parsed.category : 'other';
     const confidence = typeof parsed.confidence === 'number' ? Math.min(0.99, Math.max(0.5, parsed.confidence)) : 0.85;
 
@@ -234,23 +255,26 @@ Return valid JSON in this exact structure:
       recommendedDepartment: parsed.recommendedDepartment || null,
       recommendedAction: parsed.recommendedAction || null,
       isLLM: true,
+      aiSource: 'gemini',
       modelUsed: successfulModel || candidateModels[0],
     };
   } catch (err) {
-    console.warn('[Gemini AI] Inspection failed, engaging local classifier fallback:', err.message);
+    const status = extractHttpStatus(err);
+    const errorMsg = sanitizeErrorMessage(err.message || String(err));
+    console.error(`[Gemini AI] Error (HTTP ${status}): ${errorMsg}`);
+    const reason = `Inspection failed (HTTP ${status}): ${errorMsg}`;
+    setLastFallbackReason(reason);
+    console.warn(`[Gemini AI] Engaging local classifier fallback. Reason: ${reason}`);
     return null;
   }
 }
 
 /**
-/**
  * Pre-submission multimodal analysis of an uploaded image to auto-populate complaint form
  */
 async function analyzeImageWithGemini({ photoPath, imageBuffer, mimeType }) {
   const client = getAIClient();
-  if (!client) {
-    return null;
-  }
+  if (!client) return null;
 
   try {
     let buf = imageBuffer;
@@ -261,35 +285,18 @@ async function analyzeImageWithGemini({ photoPath, imageBuffer, mimeType }) {
       mType = ext === '.png' ? 'image/png' : ext === '.webp' ? 'image/webp' : 'image/jpeg';
       buf = fs.readFileSync(photoPath);
     }
-
-    if (!buf) {
-      return null;
-    }
+    if (!buf) return null;
 
     const contents = [
+      { inlineData: { mimeType, data: buf.toString('base64') } },
       {
-        inlineData: {
-          mimeType: mType,
-          data: buf.toString('base64'),
-        },
-      },
-      {
-        text: `You are an expert municipal infrastructure inspector analyzing a photo of a civic hazard reported by a resident.
-Inspect the photo and return strict JSON with:
-1. "category": exactly one of ["road_damage", "garbage", "streetlight", "water_leakage", "blocked_drain", "other"].
-2. "title": a concise, formal incident title (under 50 characters, e.g., "Deep Pothole on Asphalt Roadway").
-3. "description": a clear 2-3 sentence factual description of the hazard, damage extent, and potential safety risk to pedestrians or vehicles.
-4. "confidence": float between 0.60 and 0.99 reflecting certainty.
-5. "visualHazardSummary": 1 sentence specific damage detail.
-6. "recommendedDepartment": the relevant municipal authority.
-
-Return JSON in this format:
+        text: `Expert municipal infrastructure inspector. Inspect photo and return JSON:
 {
-  "category": "road_damage",
-  "title": "Severe Pothole near Crosswalk",
-  "description": "Deep asphalt crater with exposed aggregate causing vehicle swerving and hazard to pedestrians.",
-  "confidence": 0.96,
-  "visualHazardSummary": "Approx 12-inch wide asphalt cavity with standing rainwater.",
+  "category": "road_damage" | "garbage" | "streetlight" | "water_leakage" | "blocked_drain" | "other",
+  "title": "Incident Title",
+  "description": "2-3 sentence description of hazard and damage",
+  "confidence": 0.95,
+  "visualHazardSummary": "Specific damage detail in 1 sentence",
   "recommendedDepartment": "Dept of Public Works & Roads"
 }`,
       },
@@ -303,9 +310,7 @@ Return JSON in this format:
           client.models.generateContent({
             model,
             contents,
-            config: {
-              responseMimeType: 'application/json',
-            },
+            config: { responseMimeType: 'application/json' },
           }),
           7000
         );
@@ -314,7 +319,9 @@ Return JSON in this format:
           break;
         }
       } catch (err) {
-        console.warn(`[Gemini AI] Model ${model} failed for image inspection:`, err.message);
+        const status = extractHttpStatus(err);
+        const errorMsg = sanitizeErrorMessage(err.message || String(err));
+        console.error(`[Gemini AI] Model ${model} failed (HTTP ${status}): ${errorMsg}`);
       }
     }
 
@@ -336,10 +343,13 @@ Return JSON in this format:
       visualHazardSummary: parsed.visualHazardSummary || null,
       recommendedDepartment: parsed.recommendedDepartment || 'Dept of Public Works & Roads',
       isLLM: true,
+      aiSource: 'gemini',
       modelUsed: 'gemini-3.5-flash-lite',
     };
   } catch (err) {
-    console.warn('[Gemini AI] analyzeImageWithGemini failed:', err.message);
+    const status = extractHttpStatus(err);
+    const errorMsg = sanitizeErrorMessage(err.message || String(err));
+    console.error(`[Gemini AI] Error (HTTP ${status}): ${errorMsg}`);
     return null;
   }
 }
@@ -380,5 +390,8 @@ module.exports = {
   checkGeminiStatus,
   getGeminiApiKey,
   getCandidateModels,
+  getLastFallbackReason,
+  extractHttpStatus,
+  sanitizeErrorMessage,
   VALID_CATEGORIES,
 };

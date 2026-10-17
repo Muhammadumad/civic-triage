@@ -43,9 +43,11 @@ router.post('/analyze', uploadPhoto, async (req, res, next) => {
       };
     }
 
+    const aiSource = analysis.isLLM ? 'gemini' : 'rules';
     res.status(200).json({
       success: true,
       photoUrl,
+      aiSource,
       ...analysis,
     });
   } catch (err) {
@@ -91,7 +93,7 @@ router.post('/', auth(false), uploadPhoto, async (req, res, next) => {
     };
 
     // Execute triage pipeline
-    const { processedFields, duplicateMatch, rules, sensitiveZones } = await processComplaint({
+    const { processedFields, duplicateMatch, rules, sensitiveZones, aiSource } = await processComplaint({
       title,
       description: description.trim(),
       photoUrl,
@@ -136,6 +138,7 @@ router.post('/', auth(false), uploadPhoto, async (req, res, next) => {
     res.status(201).json({
       success: true,
       complaint,
+      aiSource: complaint.aiSource || aiSource || 'rules',
       suggestedCategory: complaint.aiCategory,
       confidence: complaint.aiConfidence,
       priorityBand: complaint.priorityBand,
@@ -172,9 +175,14 @@ router.post('/inspect', uploadPhoto, async (req, res, next) => {
       aiResult = await classifyComplaint(description || title, req.file ? `/uploads/${req.file.filename}` : (photoUrl || null));
     }
 
+    const aiSource = aiResult && aiResult.isLLM ? 'gemini' : 'rules';
     res.status(200).json({
       success: true,
-      analysis: aiResult,
+      aiSource,
+      analysis: {
+        ...aiResult,
+        aiSource,
+      },
     });
   } catch (err) {
     next(err);
@@ -366,6 +374,7 @@ router.get('/:id', async (req, res, next) => {
 
     res.status(200).json({
       complaint,
+      aiSource: complaint.aiSource || 'rules',
       timeline,
     });
   } catch (err) {

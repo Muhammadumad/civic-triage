@@ -3,7 +3,7 @@ const { Complaint } = require('../models/Complaint');
 const RuleSettings = require('../models/RuleSettings');
 const { SensitiveZone } = require('../models/SensitiveZone');
 const { classifyComplaint } = require('./classifier');
-const { analyzeComplaintWithGemini } = require('./geminiService');
+const { analyzeComplaintWithGemini, getLastFallbackReason } = require('./geminiService');
 const { generateEmbedding, calculateTextSimilarity, calculateCosineSimilarity } = require('./similarity');
 const { calculatePriority } = require('./priority');
 const { calculateDistanceMeters } = require('../utils/geo');
@@ -54,6 +54,9 @@ const processComplaint = async (inputData) => {
     }
   }
 
+  let aiSource = 'gemini';
+  let fallbackReason = null;
+
   let aiResult = await analyzeComplaintWithGemini({
     title,
     description,
@@ -61,6 +64,9 @@ const processComplaint = async (inputData) => {
   });
 
   if (!aiResult) {
+    aiSource = 'rules';
+    fallbackReason = getLastFallbackReason() || 'Gemini service unavailable';
+    console.warn(`[AI Triage Fallback] Falling back to rules classifier. Reason: ${fallbackReason}`);
     // Deterministic keyword classifier fallback
     aiResult = await classifyComplaint(description, photoUrl);
   }
@@ -143,6 +149,7 @@ const processComplaint = async (inputData) => {
       category: finalCategory,
       aiCategory,
       aiConfidence,
+      aiSource,
       photoUrl,
       location: {
         lat: Number(lat),
@@ -176,6 +183,8 @@ const processComplaint = async (inputData) => {
     rules,
     sensitiveZones,
     aiReason,
+    aiSource,
+    fallbackReason,
   };
 };
 

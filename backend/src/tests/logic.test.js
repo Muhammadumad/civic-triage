@@ -162,7 +162,15 @@ test('Priority: Score reaches High band (>=70) when duplicates increase', () => 
 });
 
 // ==================== 5. Gemini Service Fallback Tests ====================
-const { VALID_CATEGORIES, getGeminiApiKey, getCandidateModels } = require('../services/geminiService');
+const {
+  VALID_CATEGORIES,
+  getGeminiApiKey,
+  getCandidateModels,
+  extractHttpStatus,
+  sanitizeErrorMessage,
+  getLastFallbackReason,
+} = require('../services/geminiService');
+
 test('Gemini: Service validates allowed categories enum', () => {
   assert.strictEqual(VALID_CATEGORIES.length, 6);
   assert(VALID_CATEGORIES.includes('road_damage'));
@@ -194,6 +202,36 @@ test('Gemini: Candidate models includes latest flash models', () => {
   assert(models.includes('gemini-3.8-flash'));
   assert(models.includes('gemini-3.6-flash'));
   assert(models.includes('gemini-flash-latest'));
+});
+
+test('Gemini: Extracts HTTP status codes accurately from errors', () => {
+  assert.strictEqual(extractHttpStatus({ status: 404 }), 404);
+  assert.strictEqual(extractHttpStatus({ statusCode: 429 }), 429);
+  assert.strictEqual(extractHttpStatus({ response: { status: 503 } }), 503);
+  assert.strictEqual(extractHttpStatus({ error: { code: 401 } }), 401);
+  assert.strictEqual(extractHttpStatus(new Error('Network timeout')), 'Unknown');
+});
+
+test('Gemini: Redacts API keys from error messages (never leaks key)', () => {
+  const origKey = process.env.GEMINI_API_KEY;
+  try {
+    process.env.GEMINI_API_KEY = 'AIzaSyFakeKeyForTest1234567890abcdefg';
+    const rawError = 'Request to https://generativelanguage.googleapis.com/v1beta?key=AIzaSyFakeKeyForTest1234567890abcdefg failed';
+    const sanitized = sanitizeErrorMessage(rawError);
+    assert(!sanitized.includes('AIzaSyFakeKeyForTest1234567890abcdefg'));
+    assert(sanitized.includes('[REDACTED]'));
+  } finally {
+    process.env.GEMINI_API_KEY = origKey;
+  }
+});
+
+test('Complaint Model: Includes aiSource enum field ("gemini" | "rules")', () => {
+  const { Complaint } = require('../models/Complaint');
+  const pathDef = Complaint.schema.path('aiSource');
+  assert(pathDef, 'aiSource field must exist in Complaint schema');
+  assert.strictEqual(pathDef.defaultValue, 'rules');
+  assert(pathDef.enumValues.includes('gemini'));
+  assert(pathDef.enumValues.includes('rules'));
 });
 
 console.log(`\nResults: ${passed} passed, ${failed} failed.`);

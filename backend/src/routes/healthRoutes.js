@@ -19,6 +19,7 @@ router.get('/', (req, res) => {
     status: 'ok',
     uptime: Math.floor(process.uptime()),
     database: dbStatus,
+    geminiConfigured,
     aiService: {
       configured: geminiConfigured,
       status: geminiConfigured ? 'ready' : 'offline_fallback',
