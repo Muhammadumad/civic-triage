@@ -78,10 +78,19 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 const localUploadDir = path.resolve(process.cwd(), process.env.UPLOAD_DIR || 'uploads');
 const tmpUploadDir = path.join(require('os').tmpdir(), 'uploads');
 
-app.use('/uploads', express.static(localUploadDir));
-app.use('/uploads', express.static(tmpUploadDir));
+const staticUploadOptions = {
+  setHeaders: (res) => {
+    res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+  },
+};
+
+app.use('/uploads', express.static(localUploadDir, staticUploadOptions));
+app.use('/uploads', express.static(tmpUploadDir, staticUploadOptions));
 
 app.use('/uploads', (req, res) => {
+  res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+  res.setHeader('Access-Control-Allow-Origin', '*');
   const localFallback = path.join(localUploadDir, 'sample_pothole_1.jpg');
   if (fs.existsSync(localFallback)) {
     return res.sendFile(localFallback);
@@ -131,6 +140,12 @@ app.all(['/api/mine', '/mine'], (req, res, next) => {
 
 app.use('/api/admin', adminRoutes);
 app.use('/admin', adminRoutes);
+
+// Direct aliases for /stats
+app.all(['/api/stats', '/stats'], (req, res, next) => {
+  req.url = '/stats';
+  adminRoutes(req, res, next);
+});
 
 // Error handling
 app.use(notFound);

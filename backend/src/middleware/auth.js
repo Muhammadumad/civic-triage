@@ -7,6 +7,7 @@ const User = require('../models/User');
  */
 const auth = (required = false) => {
   return async (req, res, next) => {
+    if (req.method === 'OPTIONS') return next();
     try {
       const authHeader = req.headers.authorization;
       if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -45,6 +46,7 @@ const auth = (required = false) => {
  * Require admin role middleware
  */
 const requireAdmin = (req, res, next) => {
+  if (req.method === 'OPTIONS') return next();
   if (!req.user || req.user.role !== 'admin') {
     return res.status(403).json({ error: 'Access forbidden. Administrator privileges required.' });
   }

@@ -213,15 +213,20 @@ router.get('/mine', auth(true), async (req, res, next) => {
  */
 router.get('/', async (req, res, next) => {
   try {
-    const { category, status, limit = 50 } = req.query;
+    const { category, status, limit = 50, page = 1 } = req.query;
     const filter = {};
 
     if (category) filter.category = category;
     if (status) filter.status = status;
 
+    const parsedLimit = Math.min(100, Math.max(1, parseInt(limit, 10) || 50));
+    const parsedPage = Math.max(1, parseInt(page, 10) || 1);
+    const skip = (parsedPage - 1) * parsedLimit;
+
     const complaints = await Complaint.find(filter)
       .sort({ createdAt: -1 })
-      .limit(Math.min(100, parseInt(limit, 10)))
+      .skip(skip)
+      .limit(parsedLimit)
       .select('-embedding');
 
     res.status(200).json({ complaints });
