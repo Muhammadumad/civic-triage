@@ -387,7 +387,7 @@ export const SAMPLE_COMPLAINTS: Complaint[] = [
     category: 'Road Damage',
     aiCategory: 'Road Damage',
     aiConfidence: 0.96,
-    photoUrl: 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80',
+    photoUrl: '/samples/sample_pothole_1.jpg',
     location: {
       lat: 25.3960,
       lng: 68.3578,
@@ -424,7 +424,7 @@ export const SAMPLE_COMPLAINTS: Complaint[] = [
         title: 'Deep pothole popping bike tires outside bakery on Autobahn',
         distanceMeters: 45,
         similarityPct: 94,
-        photoUrl: 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80',
+        photoUrl: '/samples/sample_pothole_1.jpg',
         createdAt: '2026-10-13T13:10:00.000Z',
         status: 'New',
       },
@@ -433,7 +433,7 @@ export const SAMPLE_COMPLAINTS: Complaint[] = [
         title: 'Cracked road crater near bus stop',
         distanceMeters: 80,
         similarityPct: 89,
-        photoUrl: 'https://images.unsplash.com/photo-1584463699047-73d72a74c2be?auto=format&fit=crop&w=800&q=80',
+        photoUrl: '/samples/sample_pothole_2.jpg',
         createdAt: '2026-10-13T12:45:00.000Z',
         status: 'New',
       },
@@ -476,7 +476,7 @@ export const SAMPLE_COMPLAINTS: Complaint[] = [
     category: 'Water Leakage',
     aiCategory: 'Water Leakage',
     aiConfidence: 0.98,
-    photoUrl: 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=800&q=80',
+    photoUrl: '/samples/sample_water_1.jpg',
     location: {
       lat: 25.4020,
       lng: 68.3620,
@@ -538,7 +538,7 @@ export const SAMPLE_COMPLAINTS: Complaint[] = [
     category: 'Garbage',
     aiCategory: 'Garbage',
     aiConfidence: 0.91,
-    photoUrl: 'https://images.unsplash.com/photo-1605600659908-0ef719419d41?auto=format&fit=crop&w=800&q=80',
+    photoUrl: '/samples/sample_garbage_1.jpg',
     location: {
       lat: 25.3910,
       lng: 68.3710,
@@ -593,7 +593,7 @@ export const SAMPLE_COMPLAINTS: Complaint[] = [
     category: 'Streetlights',
     aiCategory: 'Streetlights',
     aiConfidence: 0.89,
-    photoUrl: 'https://images.unsplash.com/photo-1509114397022-ed747cca3f65?auto=format&fit=crop&w=800&q=80',
+    photoUrl: '/samples/sample_streetlight_before.jpg',
     location: {
       lat: 25.4072,
       lng: 68.2558,
@@ -648,7 +648,7 @@ export const SAMPLE_COMPLAINTS: Complaint[] = [
     category: 'Blocked Drains',
     aiCategory: 'Blocked Drains',
     aiConfidence: 0.94,
-    photoUrl: 'https://images.unsplash.com/photo-1517646287270-a5a9ca602e5c?auto=format&fit=crop&w=800&q=80',
+    photoUrl: '/samples/sample_drain_1.jpg',
     location: {
       lat: 25.3880,
       lng: 68.3540,
@@ -699,11 +699,11 @@ export const SAMPLE_COMPLAINTS: Complaint[] = [
         note: 'Dislodged blockage using high-pressure jetting. Water drained completely and crosswalk disinfected.',
         changedBy: 'Supervisor Aslam Khan',
         changedAt: '2026-10-13T11:40:00.000Z',
-        evidencePhotoUrl: 'https://images.unsplash.com/photo-1541888946425-d0fbb186f5f8?auto=format&fit=crop&w=800&q=80',
+        evidencePhotoUrl: '/samples/sample_drain_1.jpg',
       },
     ],
     resolutionEvidence: {
-      afterPhotoUrl: 'https://images.unsplash.com/photo-1541888946425-d0fbb186f5f8?auto=format&fit=crop&w=800&q=80',
+      afterPhotoUrl: '/samples/sample_drain_1.jpg',
       completedAt: '2026-10-13T11:40:00.000Z',
       crewNotes: 'Cleared 220 lbs of silt with high-velocity vacuum jetter unit. Culvert flow verified at 100% capacity.',
       inspectorName: 'Inspector Aslam Khan (Badge #409)',
@@ -716,7 +716,7 @@ export const SAMPLE_COMPLAINTS: Complaint[] = [
     category: 'Road Damage',
     aiCategory: 'Road Damage',
     aiConfidence: 0.95,
-    photoUrl: 'https://images.unsplash.com/photo-1584463699047-73d72a74c2be?auto=format&fit=crop&w=800&q=80',
+    photoUrl: '/samples/sample_pothole_2.jpg',
     location: {
       lat: 25.4150,
       lng: 68.2610,
@@ -764,7 +764,7 @@ export const SAMPLE_COMPLAINTS: Complaint[] = [
     category: 'Garbage',
     aiCategory: 'Garbage',
     aiConfidence: 0.97,
-    photoUrl: 'https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&w=800&q=80',
+    photoUrl: '/samples/sample_garbage_1.jpg',
     location: {
       lat: 25.4010,
       lng: 68.3590,
@@ -819,7 +819,7 @@ export const SAMPLE_COMPLAINTS: Complaint[] = [
     category: 'Water Leakage',
     aiCategory: 'Water Leakage',
     aiConfidence: 0.92,
-    photoUrl: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80',
+    photoUrl: '/samples/sample_water_1.jpg',
     location: {
       lat: 25.3780,
       lng: 68.3650,
@@ -867,7 +867,7 @@ export const SAMPLE_COMPLAINTS: Complaint[] = [
     category: 'Streetlights',
     aiCategory: 'Streetlights',
     aiConfidence: 0.93,
-    photoUrl: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80',
+    photoUrl: '/samples/sample_streetlight_1.jpg',
     location: {
       lat: 25.4120,
       lng: 68.3490,
@@ -922,7 +922,7 @@ export const SAMPLE_COMPLAINTS: Complaint[] = [
     category: 'Blocked Drains',
     aiCategory: 'Blocked Drains',
     aiConfidence: 0.96,
-    photoUrl: 'https://images.unsplash.com/photo-1595278069441-2cf29f8005a4?auto=format&fit=crop&w=800&q=80',
+    photoUrl: '/samples/sample_drain_1.jpg',
     location: {
       lat: 25.3940,
       lng: 68.3420,
@@ -977,7 +977,7 @@ export const SAMPLE_COMPLAINTS: Complaint[] = [
     category: 'Road Damage',
     aiCategory: 'Road Damage',
     aiConfidence: 0.94,
-    photoUrl: 'https://images.unsplash.com/photo-1578844251758-2f71da64c96f?auto=format&fit=crop&w=800&q=80',
+    photoUrl: '/samples/sample_pothole_1.jpg',
     location: {
       lat: 25.4210,
       lng: 68.2720,
@@ -1032,7 +1032,7 @@ export const SAMPLE_COMPLAINTS: Complaint[] = [
     category: 'Streetlights',
     aiCategory: 'Streetlights',
     aiConfidence: 0.98,
-    photoUrl: 'https://images.unsplash.com/photo-1509114397022-ed747cca3f65?auto=format&fit=crop&w=800&q=80',
+    photoUrl: '/samples/sample_streetlight_1.jpg',
     location: {
       lat: 25.3990,
       lng: 68.3510,
@@ -1083,11 +1083,11 @@ export const SAMPLE_COMPLAINTS: Complaint[] = [
         note: 'All 12 lamps replaced, calibrated, and connected to central municipal IoT lighting grid.',
         changedBy: 'Chief Electrical Inspector',
         changedAt: '2026-10-12T17:00:00.000Z',
-        evidencePhotoUrl: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
+        evidencePhotoUrl: '/samples/sample_streetlight_after.jpg',
       },
     ],
     resolutionEvidence: {
-      afterPhotoUrl: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
+      afterPhotoUrl: '/samples/sample_streetlight_after.jpg',
       completedAt: '2026-10-12T17:00:00.000Z',
       crewNotes: 'Installed 12 commercial 150W LED heads. Verified nighttime lux output exceeds municipal safety standard (>25 lux).',
       inspectorName: 'Chief Electrical Inspector Farooq',

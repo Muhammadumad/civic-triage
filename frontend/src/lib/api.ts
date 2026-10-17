@@ -9,18 +9,25 @@ import {
 } from './types';
 
 export const API_BASE_URL = (() => {
-  // Client-side in browser: use relative paths so Vercel public rewrites handle routing
-  if (typeof window !== 'undefined') {
-    return process.env.NEXT_PUBLIC_API_URL ? process.env.NEXT_PUBLIC_API_URL.replace(/\/+$/, '') : '';
+  const rawEnvUrl = (
+    process.env.NEXT_PUBLIC_API_URL ||
+    (typeof window === 'undefined' ? process.env.BACKEND_URL : '') ||
+    ''
+  ).trim().replace(/\/+$/, '');
+
+  if (rawEnvUrl) {
+    // If user sets NEXT_PUBLIC_API_URL to https://<host>/api or https://<host>,
+    // strip trailing /api so endpoints appending /api/... never generate /api/api/...
+    return rawEnvUrl.endsWith('/api') ? rawEnvUrl.slice(0, -4) : rawEnvUrl;
   }
-  // Server-side: use the Vercel internal service binding BACKEND_URL if present
-  if (process.env.BACKEND_URL) {
-    return process.env.BACKEND_URL.replace(/\/+$/, '');
+
+  // Server-side default
+  if (typeof window === 'undefined') {
+    return 'http://localhost:5000';
   }
-  if (process.env.NEXT_PUBLIC_API_URL) {
-    return process.env.NEXT_PUBLIC_API_URL.replace(/\/+$/, '');
-  }
-  return 'http://localhost:5000';
+
+  // Client-side fallback to relative path (handles local dev proxy and same-origin rewrites)
+  return '';
 })();
 
 const CATEGORY_MAP_TO_FE: Record<string, ComplaintCategory> = {
@@ -83,7 +90,7 @@ const STATUS_MAP_TO_BE: Record<ComplaintStatus, string> = {
 
 export function resolveMediaUrl(url?: string | null): string {
   if (!url) {
-    return 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80';
+    return '/samples/sample_pothole_1.jpg';
   }
   if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) {
     return url;

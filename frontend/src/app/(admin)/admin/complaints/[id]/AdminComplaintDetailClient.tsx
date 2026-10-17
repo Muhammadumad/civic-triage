@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useComplaintsStore } from '@/lib/complaints-store';
-import { fetchComplaintById } from '@/lib/api';
+import { fetchComplaintById, resolveMediaUrl } from '@/lib/api';
 import { 
   Complaint, 
   ComplaintStatus, 
@@ -55,6 +55,7 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
 
   useEffect(() => {
     setMounted(true);
+    let isCancelled = false;
     const existing = getComplaintById(id);
     if (existing) {
       setFetchedComplaint(existing);
@@ -62,12 +63,15 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
     }
     fetchComplaintById(id)
       .then((data) => {
-        if (data) setFetchedComplaint(data);
+        if (!isCancelled && data) setFetchedComplaint(data);
       })
       .finally(() => {
-        setIsLoading(false);
+        if (!isCancelled) setIsLoading(false);
       });
-  }, [id, getComplaintById]);
+    return () => {
+      isCancelled = true;
+    };
+  }, [id]);
 
   // Status & Evidence Modal
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -306,9 +310,12 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
 
           <div className="w-full lg:w-48 h-32 rounded-sm overflow-hidden border border-[var(--border-subtle)] bg-[var(--surface-sunken)] shrink-0 relative">
             <img
-              src={complaint.photoUrl}
+              src={resolveMediaUrl(complaint.photoUrl || '/samples/sample_pothole_1.jpg')}
               alt={complaint.title}
               className="w-full h-full object-cover"
+              onError={(e) => {
+                e.currentTarget.src = '/samples/sample_pothole_1.jpg';
+              }}
             />
             <div className="absolute bottom-2 left-2 px-2 py-0.5 rounded-sm bg-[var(--surface-card)] border border-[var(--border-subtle)] text-[10px] font-mono text-[var(--text-primary)]">
               Citizen Photo
@@ -597,9 +604,12 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
                     </div>
                     <div className="h-44 rounded-sm overflow-hidden border border-[var(--border-subtle)] bg-[var(--surface-sunken)]">
                       <img
-                        src={complaint.photoUrl}
+                        src={resolveMediaUrl(complaint.photoUrl || '/samples/sample_pothole_1.jpg')}
                         alt="Primary Ticket"
                         className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.src = '/samples/sample_pothole_1.jpg';
+                        }}
                       />
                     </div>
                     <p className="text-xs text-[var(--text-secondary)] line-clamp-1">{complaint.title}</p>
@@ -613,9 +623,12 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
                     </div>
                     <div className="h-44 rounded-sm overflow-hidden border border-[var(--accent-primary-border)] bg-[var(--surface-sunken)]">
                       <img
-                        src={dup.photoUrl}
+                        src={resolveMediaUrl(dup.photoUrl || '/samples/sample_pothole_2.jpg')}
                         alt="Suspected Duplicate"
                         className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.src = '/samples/sample_pothole_2.jpg';
+                        }}
                       />
                     </div>
                     <p className="text-xs text-[var(--text-secondary)] line-clamp-1">{dup.title}</p>
@@ -735,7 +748,7 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
                   type="text"
                   value={afterPhotoUrl}
                   onChange={(e) => setAfterPhotoUrl(e.target.value)}
-                  placeholder="https://images.unsplash.com/... or paste image URI"
+                  placeholder="/samples/sample_pothole_2.jpg or paste image URI"
                   className="w-full px-3 py-2.5 rounded-sm bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-primary)] placeholder-[var(--text-muted)]/60 focus:outline-none focus:border-[var(--accent-primary)]"
                 />
                 <p className="text-[11px] text-[var(--text-secondary)] mt-1">

@@ -120,26 +120,14 @@ export function useComplaintsStore() {
     }
   }, []);
 
-  // Retrieve complaint by ID, with async backend fallback if not cached
+  // Retrieve complaint by ID from local state/cache (pure getter, zero render-loop side effects)
   const getComplaintById = useCallback((id: string): Complaint | undefined => {
+    if (!id) return undefined;
+    const fromState = complaints.find((c) => c.id === id || (c as any)._id === id);
+    if (fromState) return fromState;
     const list = getStoredComplaints();
-    const found = list.find((c) => c.id === id);
-    if (found) return found;
-
-    // Asynchronously fetch from backend if direct URL was opened
-    apiFetchComplaintById(id).then((fromBackend) => {
-      if (fromBackend) {
-        const current = getStoredComplaints();
-        if (!current.some((c) => c.id === fromBackend.id)) {
-          const updated = [fromBackend, ...current];
-          saveStoredComplaints(updated);
-          setComplaints(updated);
-        }
-      }
-    }).catch(() => {});
-
-    return undefined;
-  }, []);
+    return list.find((c) => c.id === id || (c as any)._id === id);
+  }, [complaints]);
 
   const updateComplaint = useCallback((id: string, updates: Partial<Complaint>) => {
     const existing = getStoredComplaints();

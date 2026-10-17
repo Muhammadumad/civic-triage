@@ -11,7 +11,7 @@ import {
 } from '@/lib/types';
 import { LocationPickerMap } from '@/components/map';
 import { useComplaintsStore } from '@/lib/complaints-store';
-import { analyzeComplaintPhoto, inspectComplaintWithAI } from '@/lib/api';
+import { analyzeComplaintPhoto, inspectComplaintWithAI, resolveMediaUrl } from '@/lib/api';
 import { 
   Camera, 
   Sparkles, 
@@ -46,7 +46,7 @@ export default function NewComplaintPage() {
   const { addComplaint } = useComplaintsStore();
 
   // Photo state
-  const [photoUrl, setPhotoUrl] = useState<string>('https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80');
+  const [photoUrl, setPhotoUrl] = useState<string>('/samples/sample_pothole_1.jpg');
   const [isAnalyzingPhoto, setIsAnalyzingPhoto] = useState(false);
   const [isAiVisionReady, setIsAiVisionReady] = useState(true);
   const [aiVisualHazard, setAiVisualHazard] = useState<string>('Deep asphalt crater with loose aggregate in active traffic lane.');
@@ -225,7 +225,7 @@ export default function NewComplaintPage() {
       category: selectedCategory,
       aiCategory: aiSuggestedCategory,
       aiConfidence,
-      photoUrl: photoUrl || 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80',
+      photoUrl: photoUrl || '/samples/sample_pothole_1.jpg',
       location: {
         lat: location.lat,
         lng: location.lng,
@@ -331,9 +331,12 @@ export default function NewComplaintPage() {
               <div className="relative rounded-sm overflow-hidden bg-[var(--surface-elevated)] group border border-[var(--border-subtle)]">
                 <div className="relative w-full h-72 sm:h-80 overflow-hidden">
                   <img
-                    src={photoUrl}
+                    src={resolveMediaUrl(photoUrl)}
                     alt="Hazard evidence"
                     className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = '/samples/sample_pothole_1.jpg';
+                    }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 pointer-events-none" />
 

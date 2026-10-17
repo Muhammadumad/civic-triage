@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useComplaintsStore } from '@/lib/complaints-store';
-import { fetchComplaintById } from '@/lib/api';
+import { fetchComplaintById, resolveMediaUrl } from '@/lib/api';
 import { 
   Complaint,
   ComplaintStatus, 
@@ -54,24 +54,39 @@ export default function ComplaintTrackingClient({ id }: { id: string }) {
   const [mounted, setMounted] = useState(false);
   const [fetchedComplaint, setFetchedComplaint] = useState<Complaint | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
 
   const storeComplaint = getComplaintById(id);
   const complaint = fetchedComplaint || storeComplaint;
 
   useEffect(() => {
     setMounted(true);
+    let isCancelled = false;
+    let pollInterval: NodeJS.Timeout | null = null;
+
     const existing = getComplaintById(id);
     if (existing) {
       setFetchedComplaint(existing);
       setIsLoading(false);
     }
 
-    let isCancelled = false;
     const fetchLatest = async () => {
       try {
         const latest = await fetchComplaintById(id);
-        if (!isCancelled && latest) {
+        if (isCancelled) return;
+        if (latest) {
           setFetchedComplaint(latest);
+          setNotFound(false);
+        } else {
+          // If not in API and not in local storage cache, stop auto-retries immediately
+          const cached = getComplaintById(id);
+          if (!cached) {
+            setNotFound(true);
+            if (pollInterval) {
+              clearInterval(pollInterval);
+              pollInterval = null;
+            }
+          }
         }
       } catch (err) {
         console.warn('Live tracking sync notice:', err);
@@ -80,12 +95,11 @@ export default function ComplaintTrackingClient({ id }: { id: string }) {
       }
     };
 
-    fetchLatest();
-
-    // Auto-poll every 5 seconds for live lifecycle updates
-    const pollInterval = setInterval(() => {
-      fetchLatest();
-    }, 5000);
+    fetchLatest().then(() => {
+      if (isCancelled || notFound) return;
+      // Auto-poll every 10 seconds for live updates ONLY if complaint exists
+      pollInterval = setInterval(fetchLatest, 10000);
+    });
 
     const handleStorageUpdate = () => {
       fetchLatest();
@@ -94,10 +108,10 @@ export default function ComplaintTrackingClient({ id }: { id: string }) {
 
     return () => {
       isCancelled = true;
-      clearInterval(pollInterval);
+      if (pollInterval) clearInterval(pollInterval);
       window.removeEventListener('civicpulse_complaints_updated', handleStorageUpdate);
     };
-  }, [id, getComplaintById]);
+  }, [id]);
 
   // Tooltip & Copy state
   const [showPriorityTooltip, setShowPriorityTooltip] = useState(false);
@@ -120,7 +134,7 @@ export default function ComplaintTrackingClient({ id }: { id: string }) {
     );
   }
 
-  if (!complaint) {
+  if (notFound || !complaint) {
     return (
       <div className="min-h-screen py-16 px-4 flex flex-col items-center justify-center text-center bg-[var(--canvas-base)] text-[var(--text-primary)]">
         <div className="w-14 h-14 rounded-sm bg-[var(--surface-card)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--accent-primary)] mb-4">
@@ -398,9 +412,12 @@ export default function ComplaintTrackingClient({ id }: { id: string }) {
             <div className="flex flex-col bg-[var(--surface-elevated)] rounded-sm overflow-hidden border border-[var(--border-subtle)]">
               <div className="relative h-48 w-full bg-[var(--surface-sunken)] overflow-hidden">
                 <img
-                  src={complaint.photoUrl}
+                  src={resolveMediaUrl(complaint.photoUrl || '/samples/sample_pothole_1.jpg')}
                   alt="Initial citizen report"
                   className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.src = '/samples/sample_pothole_1.jpg';
+                  }}
                 />
                 <div className="absolute top-2 left-2 px-2 py-0.5 rounded-sm bg-[var(--surface-card)] border border-[var(--border-strong)] text-xs font-mono text-[var(--text-primary)] flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-primary)]" />
@@ -422,12 +439,14 @@ export default function ComplaintTrackingClient({ id }: { id: string }) {
             <div className="flex flex-col bg-[var(--surface-elevated)] rounded-sm overflow-hidden border border-[var(--border-subtle)]">
               <div className="relative h-48 w-full bg-[var(--surface-sunken)] overflow-hidden">
                 <img
-                  src={
-                    complaint.resolutionEvidence?.afterPhotoUrl ||
-                    'https://images.unsplash.com/photo-1584463699042-494b29bb01e5?auto=format&fit=crop&w=800&q=80'
-                  }
+                  src={resolveMediaUrl(
+                    complaint.resolutionEvidence?.afterPhotoUrl || '/samples/sample_pothole_2.jpg'
+                  )}
                   alt="Resolution proof"
                   className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.src = '/samples/sample_pothole_2.jpg';
+                  }}
                 />
                 <div className="absolute bottom-2 right-2 bg-[var(--surface-card)] border border-[var(--border-strong)] text-[var(--status-resolved)] font-mono text-[11px] px-2.5 py-1 rounded-sm flex items-center gap-1.5 font-bold">
                   <ShieldCheck className="w-3.5 h-3.5" />

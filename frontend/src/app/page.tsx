@@ -662,7 +662,10 @@ export default function HomePage() {
                       <img
                         className="w-full h-full object-cover"
                         alt="Hazardous deep asphalt pothole with cracks on urban road"
-                        src="https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&q=80&w=800"
+                        src="/samples/sample_pothole_1.jpg"
+                        onError={(e) => {
+                          e.currentTarget.src = '/samples/sample_pothole_1.jpg';
+                        }}
                       />
                       <div className="absolute inset-3 border border-[var(--brand-primary)] border-dashed pointer-events-none flex flex-col justify-between p-1.5">
                         <span className="bg-[var(--brand-primary)] text-white font-mono text-[10px] px-1.5 py-0.5 self-start font-semibold">
@@ -685,7 +688,10 @@ export default function HomePage() {
                       <img
                         className="w-full h-full object-cover"
                         alt="Asphalt repair patch leveled seamlessly"
-                        src="https://images.unsplash.com/photo-1584463699042-494b29bb01e5?auto=format&fit=crop&q=80&w=800"
+                        src="/samples/sample_pothole_2.jpg"
+                        onError={(e) => {
+                          e.currentTarget.src = '/samples/sample_pothole_2.jpg';
+                        }}
                       />
                       <div className="absolute bottom-2 right-2 bg-[var(--surface-card)] border border-[var(--border-strong)] text-[var(--text-primary)] font-mono text-[10px] px-2 py-1 flex items-center gap-1">
                         <ShieldCheck className="w-3.5 h-3.5 text-emerald-700 dark:text-emerald-400" />
