@@ -170,6 +170,7 @@ const processComplaint = async (inputData) => {
       department: recommendedDepartment || 'General',
       aiReason: aiReason || '',
       recommendedAction: recommendedAction || '',
+      modelUsed: aiResult.modelUsed || 'gemini-3.5-flash-lite',
       resident,
       residentContact,
     },

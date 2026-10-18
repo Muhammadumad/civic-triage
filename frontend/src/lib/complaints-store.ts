@@ -93,13 +93,14 @@ export function useComplaintsStore() {
 
     // 2. Transmit to backend for automated AI keyword triage, duplicate check & 2dsphere indexing
     try {
+      const isManual = (complaint as any).isManualOverride;
       const createdFromBackend = await apiCreateComplaint({
         title: complaint.title,
         description: complaint.description,
         lat: complaint.location.lat,
         lng: complaint.location.lng,
         address: complaint.location.address,
-        category: complaint.category,
+        category: isManual ? complaint.category : undefined,
         photoFile: photoFile || null,
         contactName: complaint.contactInfo?.name,
         contactPhone: complaint.contactInfo?.phone,

@@ -80,6 +80,10 @@ const complaintSchema = new mongoose.Schema(
       type: String,
       default: '',
     },
+    modelUsed: {
+      type: String,
+      default: 'gemini-3.5-flash-lite',
+    },
     photoUrl: {
       type: String,
       default: null,

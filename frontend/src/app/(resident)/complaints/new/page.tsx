@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { 
@@ -40,6 +40,39 @@ import {
   Droplets,
   Waves
 } from 'lucide-react';
+
+export const PRESET_SAMPLES = [
+  {
+    name: 'Road Pothole',
+    title: 'Severe Asphalt Road Pothole near Crosswalk',
+    desc: 'Deep asphalt crater causing vehicle swerving near pedestrian crosswalk and school zone approach. Substrate gravel exposed with risk of tire damage.',
+    photo: '/samples/sample_pothole_1.jpg',
+  },
+  {
+    name: 'Overflowing Garbage',
+    title: 'Overflowing Commercial Dumpster & Rotting Waste',
+    desc: 'Public municipal dumpster overflowing with household garbage bags, broken plastic bins, and food waste scattered across the pedestrian sidewalk.',
+    photo: '/samples/sample_garbage_1.jpg',
+  },
+  {
+    name: 'Broken Streetlight',
+    title: 'Broken Streetlight Luminaire on Residential Corner',
+    desc: 'Streetlight pole fixture completely dark at night, causing high safety risk for pedestrians walking home.',
+    photo: '/samples/sample_streetlight_1.jpg',
+  },
+  {
+    name: 'Water Main Leak',
+    title: 'High-Pressure Water Pipe Rupture Flooding Road',
+    desc: 'Clean pressurized municipal drinking water gushing from underground line near curb, flooding traffic lanes and eroding sidewalk.',
+    photo: '/samples/sample_water_1.jpg',
+  },
+  {
+    name: 'Blocked Storm Drain',
+    title: 'Severely Blocked Storm Drain & Street Sewage',
+    desc: 'Catch basin grating completely clogged with leaves, plastic debris and mud runoff, causing dark standing sewage on walkway.',
+    photo: '/samples/sample_drain_1.jpg',
+  },
+];
 
 export default function NewComplaintPage() {
   const router = useRouter();
@@ -163,6 +196,73 @@ export default function NewComplaintPage() {
     }
   };
 
+  const applyPreset = async (preset: typeof PRESET_SAMPLES[0]) => {
+    setTitle(preset.title);
+    setDescription(preset.desc);
+    setPhotoUrl(preset.photo);
+    setSelectedFile(null);
+    setIsManualOverride(false);
+    setIsAnalyzingPhoto(true);
+    setIsAiVisionReady(false);
+
+    try {
+      const inspectRes = await inspectComplaintWithAI({
+        title: preset.title,
+        description: preset.desc,
+      });
+      if (inspectRes) {
+        setAiSuggestedCategory(inspectRes.category);
+        setSelectedCategory(inspectRes.category);
+        if (typeof inspectRes.confidence === 'number') setAiConfidence(inspectRes.confidence);
+        if (inspectRes.visualHazardSummary || inspectRes.reason) {
+          setAiVisualHazard(inspectRes.visualHazardSummary || inspectRes.reason || '');
+          setAiReason(inspectRes.reason || inspectRes.visualHazardSummary || '');
+        }
+        if (inspectRes.recommendedAction) setAiAction(inspectRes.recommendedAction);
+        setAiModelUsed(inspectRes.isLLM ? 'Gemini 3.5 Flash-Lite (Vision)' : 'Civic Heuristics Fallback');
+      }
+    } catch (err) {
+      console.warn('Preset inspect notice:', err);
+    } finally {
+      setIsAnalyzingPhoto(false);
+      setIsAiVisionReady(true);
+    }
+  };
+
+  // Real-time AI auto-inspection when title or description changes
+  useEffect(() => {
+    if (!description || description.trim().length < 15) return;
+    const timer = setTimeout(async () => {
+      try {
+        setIsAnalyzingPhoto(true);
+        const res = await inspectComplaintWithAI({
+          title,
+          description,
+          photoFile: selectedFile,
+        });
+        if (res) {
+          setAiSuggestedCategory(res.category);
+          if (!isManualOverride) {
+            setSelectedCategory(res.category);
+          }
+          if (typeof res.confidence === 'number') setAiConfidence(res.confidence);
+          if (res.visualHazardSummary || res.reason) {
+            setAiVisualHazard(res.visualHazardSummary || res.reason || '');
+            setAiReason(res.reason || res.visualHazardSummary || '');
+          }
+          if (res.recommendedAction) setAiAction(res.recommendedAction);
+          setAiModelUsed(res.isLLM ? 'Gemini 3.5 Flash-Lite (Vision)' : 'Civic Heuristics Fallback');
+          setIsAiVisionReady(true);
+        }
+      } catch (err) {
+        console.warn('[Realtime AI] Inspect notice:', err);
+      } finally {
+        setIsAnalyzingPhoto(false);
+      }
+    }, 900);
+    return () => clearTimeout(timer);
+  }, [description, title, selectedFile]);
+
   // Mic shortcut speech dictation toggle
   const toggleRecording = () => {
     if (isRecording) {
@@ -222,7 +322,7 @@ export default function NewComplaintPage() {
       id: newId,
       title: title.trim(),
       description: description.trim() || 'Visual report filed with high-resolution photographic evidence and GPS coordinates.',
-      category: selectedCategory,
+      category: isManualOverride ? selectedCategory : aiSuggestedCategory,
       aiCategory: aiSuggestedCategory,
       aiConfidence,
       photoUrl: photoUrl || '/samples/sample_pothole_1.jpg',
@@ -272,6 +372,7 @@ export default function NewComplaintPage() {
         visualFeatures: aiAction ? [aiAction] : ['surface anomaly', 'public right-of-way'],
       },
     };
+    (newComplaint as any).isManualOverride = isManualOverride;
 
     try {
       const created = await addComplaint(newComplaint, selectedFile);
@@ -309,6 +410,29 @@ export default function NewComplaintPage() {
               <span className="w-2 h-2 rounded-full bg-[var(--status-resolved)]" />
               <span className="font-mono text-xs text-[var(--text-primary)] uppercase tracking-wider">Cluster Engine Active</span>
             </div>
+          </div>
+        </div>
+
+        {/* Quick Sample AI Test Scenarios */}
+        <div className="p-4 rounded-sm bg-[var(--surface-card)] border border-[var(--border-subtle)] space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-mono font-bold text-[var(--accent-primary)] uppercase tracking-wider flex items-center gap-1.5">
+              <Sparkles className="w-4 h-4 text-[var(--accent-primary)]" />
+              <span>Quick Test Scenarios (1-Click Gemini Multi-Report Demos):</span>
+            </span>
+            <span className="text-[10px] font-mono text-[var(--text-muted)]">Live multimodal AI analysis</span>
+          </div>
+          <div className="flex flex-wrap gap-2 pt-1">
+            {PRESET_SAMPLES.map((preset) => (
+              <button
+                key={preset.name}
+                type="button"
+                onClick={() => applyPreset(preset)}
+                className="text-xs font-mono px-3 py-1.5 rounded-sm bg-[var(--surface-elevated)] hover:bg-[var(--accent-primary-subtle)] hover:text-[var(--accent-primary)] border border-[var(--border-subtle)] hover:border-[var(--accent-primary-border)] text-[var(--text-primary)] transition-all font-semibold flex items-center gap-1.5"
+              >
+                <span>⚡ {preset.name}</span>
+              </button>
+            ))}
           </div>
         </div>
 
