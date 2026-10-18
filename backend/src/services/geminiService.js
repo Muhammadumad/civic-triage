@@ -7,11 +7,13 @@ const VALID_CATEGORIES = [
 ];
 
 const DEFAULT_CANDIDATE_MODELS = [
-  'gemini-2.0-flash',           // fast, free tier, multimodal
-  'gemini-2.0-flash-lite',      // fastest, lowest cost
-  'gemini-1.5-flash',           // stable fallback
-  'gemini-1.5-flash-latest',    // alias
-  'gemini-1.5-pro',             // high accuracy fallback
+  'gemini-3.5-flash-lite',
+  'gemini-3.5-flash',
+  'gemini-3.6-flash',
+  'gemini-3.7-flash',
+  'gemini-3.8-flash',
+  'gemini-flash-lite-latest',
+  'gemini-flash-latest',
 ];
 
 let aiClient = null;
@@ -118,7 +120,7 @@ function getAIClient() {
 /**
  * Executes a promise with an enforced timeout.
  */
-function withTimeout(promise, ms = 7000) {
+function withTimeout(promise, ms = 12000) {
   let timer;
   const timeoutPromise = new Promise((_, reject) => {
     timer = setTimeout(() => {
@@ -220,7 +222,7 @@ Return JSON:
             contents,
             config: { responseMimeType: 'application/json' },
           }),
-          7000
+          12000
         );
 
         if (response && response.text) {
@@ -306,6 +308,7 @@ async function analyzeImageWithGemini({ photoPath, imageBuffer, mimeType }) {
     ];
 
     let responseText = null;
+    let successfulModel = null;
     const candidateModels = getCandidateModels();
     for (const model of candidateModels) {
       try {
@@ -315,10 +318,11 @@ async function analyzeImageWithGemini({ photoPath, imageBuffer, mimeType }) {
             contents,
             config: { responseMimeType: 'application/json' },
           }),
-          7000
+          12000
         );
         if (response && response.text) {
           responseText = response.text;
+          successfulModel = model;
           break;
         }
       } catch (err) {
@@ -347,7 +351,7 @@ async function analyzeImageWithGemini({ photoPath, imageBuffer, mimeType }) {
       recommendedDepartment: parsed.recommendedDepartment || 'Dept of Public Works & Roads',
       isLLM: true,
       aiSource: 'gemini',
-      modelUsed: 'gemini-3.5-flash-lite',
+      modelUsed: successfulModel || candidateModels[0],
     };
   } catch (err) {
     const status = extractHttpStatus(err);
