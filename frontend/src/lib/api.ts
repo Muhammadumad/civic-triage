@@ -8,9 +8,12 @@ import {
   User,
 } from './types';
 
-// Always use relative paths — Next.js rewrites (next.config.ts) proxy
-// /api/* and /uploads/* to the Render backend. No CORS issues ever.
-export const API_BASE_URL = '';
+// Set NEXT_PUBLIC_API_URL in Vercel env vars to your Render backend URL.
+// e.g. https://civic-triage-api.onrender.com
+// Locally falls back to http://localhost:5000
+export const API_BASE_URL = (
+  process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'
+).replace(/\/+$/, '').replace(/\/api$/, '');
 
 const CATEGORY_MAP_TO_FE: Record<string, ComplaintCategory> = {
   road_damage: 'Road Damage',
