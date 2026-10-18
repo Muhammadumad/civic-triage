@@ -8,27 +8,9 @@ import {
   User,
 } from './types';
 
-export const API_BASE_URL = (() => {
-  const rawEnvUrl = (
-    process.env.NEXT_PUBLIC_API_URL ||
-    (typeof window === 'undefined' ? process.env.BACKEND_URL : '') ||
-    ''
-  ).trim().replace(/\/+$/, '');
-
-  if (rawEnvUrl) {
-    // If user sets NEXT_PUBLIC_API_URL to https://<host>/api or https://<host>,
-    // strip trailing /api so endpoints appending /api/... never generate /api/api/...
-    return rawEnvUrl.endsWith('/api') ? rawEnvUrl.slice(0, -4) : rawEnvUrl;
-  }
-
-  // Server-side default
-  if (typeof window === 'undefined') {
-    return 'http://localhost:5000';
-  }
-
-  // Client-side fallback to relative path (handles local dev proxy and same-origin rewrites)
-  return '';
-})();
+// Always use relative paths — Next.js rewrites (next.config.ts) proxy
+// /api/* and /uploads/* to the Render backend. No CORS issues ever.
+export const API_BASE_URL = '';
 
 const CATEGORY_MAP_TO_FE: Record<string, ComplaintCategory> = {
   road_damage: 'Road Damage',

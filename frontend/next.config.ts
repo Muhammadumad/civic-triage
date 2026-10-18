@@ -1,27 +1,16 @@
 import type { NextConfig } from "next";
 
-import path from 'path';
-
 const nextConfig: NextConfig = {
-  /* config options here */
-  cacheComponents: true,
-  partialPrefetching: true,
-  turbopack: {
-    root: path.resolve(__dirname, '..'),
-    rules: {
-      "*.css": {
-        loaders: ["@tailwindcss/turbopack"],
-        as: "*.css",
-      },
-    },
-  },
+  // Proxy /api/* and /uploads/* to the Render backend in all environments.
+  // Set NEXT_PUBLIC_API_URL to your Render backend URL in Vercel env vars.
+  // Locally it falls back to http://localhost:5000.
   async rewrites() {
-    // In Vercel deployment, vercel.json handles routing /api/* to the serverless function.
-    // In local development, proxy /api/* and /uploads/* to Express on port 5000.
-    if (process.env.VERCEL) {
-      return [];
-    }
-    const backendUrl = process.env.BACKEND_URL || 'http://localhost:5000';
+    const backendUrl = (
+      process.env.NEXT_PUBLIC_API_URL ||
+      process.env.BACKEND_URL ||
+      'http://localhost:5000'
+    ).replace(/\/+$/, '').replace(/\/api$/, '');
+
     return [
       {
         source: '/api/:path*',
@@ -32,6 +21,13 @@ const nextConfig: NextConfig = {
         destination: `${backendUrl}/uploads/:path*`,
       },
     ];
+  },
+
+  images: {
+    remotePatterns: [
+      { protocol: 'https', hostname: '*.onrender.com' },
+      { protocol: 'http', hostname: 'localhost' },
+    ],
   },
 };
 
