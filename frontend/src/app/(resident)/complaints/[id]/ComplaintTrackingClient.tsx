@@ -246,8 +246,17 @@ export default function ComplaintTrackingClient({ id }: { id: string }) {
               style={{ backgroundColor: catTheme.bg, color: catTheme.text }}
             >
               <span>{complaint.category}</span>
-              <span className="opacity-70 text-[10px] uppercase">· Suggested</span>
+              {(!complaint.aiCategory || complaint.aiCategory === complaint.category) && (
+                <span className="opacity-70 text-[10px] uppercase">· Suggested</span>
+              )}
             </span>
+
+            {complaint.aiCategory && complaint.aiCategory !== complaint.category && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-sm text-xs font-mono font-semibold bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-secondary)]">
+                <Sparkles className="w-3 h-3 text-[var(--accent-primary)]" />
+                <span>AI Suggested: {complaint.aiCategory}</span>
+              </span>
+            )}
 
             {/* Priority Pill */}
             <div

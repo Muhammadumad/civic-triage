@@ -12,7 +12,12 @@ import {
 // e.g. https://civic-triage-api.onrender.com
 // Locally falls back to http://localhost:5000
 export const API_BASE_URL = (
-  process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'
+  process.env.NEXT_PUBLIC_API_URL ||
+  (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1'
+    ? 'https://civic-triage.onrender.com'
+    : process.env.NODE_ENV === 'production'
+    ? 'https://civic-triage.onrender.com'
+    : 'http://localhost:5000')
 ).replace(/\/+$/, '').replace(/\/api$/, '');
 
 const CATEGORY_MAP_TO_FE: Record<string, ComplaintCategory> = {
@@ -423,7 +428,7 @@ export function normalizeBackendComplaint(raw: any): Complaint {
       suggestedCategory: aiCategory,
       confidence: typeof raw.aiConfidence === 'number' ? (raw.aiConfidence <= 1 ? raw.aiConfidence : raw.aiConfidence / 100) : 0.94,
       classificationReason: raw.aiReason || raw.classificationReason || 'AI classifier analyzed civic keywords and visual vectors.',
-      modelVersion: 'Gemini 3.5 Flash-Lite (Multimodal Vision)',
+      modelVersion: raw.modelUsed || (raw.aiSource === 'gemini' ? 'Gemini 3.5 Flash-Lite' : 'Civic Heuristics Fallback'),
       visualFeatures: raw.recommendedAction ? [raw.recommendedAction] : ['surface anomaly', 'public right-of-way'],
     },
     suspectedDuplicates: Array.isArray(raw.suspectedDuplicates) ? raw.suspectedDuplicates : undefined,
