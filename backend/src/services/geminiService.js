@@ -7,8 +7,11 @@ const VALID_CATEGORIES = [
 ];
 
 const DEFAULT_CANDIDATE_MODELS = [
-  'gemini-3.5-flash-lite', 'gemini-3.6-flash', 'gemini-3.5-flash',
-  'gemini-flash-lite-latest', 'gemini-3.8-flash', 'gemini-flash-latest',
+  'gemini-2.0-flash',           // fast, free tier, multimodal
+  'gemini-2.0-flash-lite',      // fastest, lowest cost
+  'gemini-1.5-flash',           // stable fallback
+  'gemini-1.5-flash-latest',    // alias
+  'gemini-1.5-pro',             // high accuracy fallback
 ];
 
 let aiClient = null;
